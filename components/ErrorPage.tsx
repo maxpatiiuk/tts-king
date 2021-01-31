@@ -4,6 +4,8 @@ import React                        from 'react';
 import LanguageContext              from './LanguageContext';
 import { LanguageStringsStructure } from '../lib/languages';
 import { CommonStrings }            from '../localization/global';
+import { PublicMenu }               from './PublicMenu';
+import { Centered }                 from './UI';
 
 interface ErrorPageLocalization extends LanguageStringsStructure {
 	'en-US': {
@@ -23,22 +25,22 @@ const LanguageStrings: ErrorPageLocalization = {
 const ErrorPage = ({errorCode = 404}: {errorCode?: number}) =>
 	<LanguageContext.Consumer>
 		{(language) =>
-			<Layout>
-				<head>
-					<title>{errorCode}</title>
-				</head>
-				<div className="text-center">
-					<h1 className='text-9xl py-2 text-indigo-300'>{errorCode}</h1>
-					<h2>{LanguageStrings[language].header}</h2>
-					<p>
-						{LanguageStrings[language].message}
-						<Link href="/">
-							<a className='block pt-10'>
-								{CommonStrings[language].returnToHomePage}
-							</a>
-						</Link>
-					</p>
-				</div>
+			<Layout title={errorCode.toString()}>
+				<PublicMenu />
+				<Centered>
+					<div className="text-center">
+						<h1 className='text-9xl py-2 text-indigo-300'>{errorCode}</h1>
+						<h2>{LanguageStrings[language].header}</h2>
+						<p>
+							{LanguageStrings[language].message}
+							<Link href="/">
+								<a className='block pt-10 transition text-red-400 hover:text-black'>
+									{CommonStrings[language].returnToHomePage}
+								</a>
+							</Link>
+						</p>
+					</div>
+				</Centered>
 			</Layout>
 		}
 	</LanguageContext.Consumer>;
