@@ -1,15 +1,17 @@
-import Head            from 'next/head';
-import React           from 'react';
-import LanguageContext from './LanguageContext';
-import SiteInfo        from '../const/siteInfo';
-import { themeColor }  from '../const/siteConfig';
+import Head                   from 'next/head';
+import React                  from 'react';
+import LanguageContext        from './LanguageContext';
+import SiteInfo               from '../const/siteInfo';
+import { themeColor, robots } from '../const/siteConfig';
 
 const Layout = ({
 	title,
 	children,
+	private_page=false
 }: {
 	title?: string,
 	children: React.ReactNode,
+	private_page?: boolean
 }) =>
 	<LanguageContext.Consumer>
 		{(language) =>
@@ -23,22 +25,17 @@ const Layout = ({
 								title
 					}</title>
 					<link rel='icon' href='/favicon.ico' />
-					<meta
-						name='description'
-						content={SiteInfo[language].description}
-					/>
-					<meta
-						name='keywords'
-						content={SiteInfo[language].keywords}
-					/>
-					<meta
-						name='author'
-						content={SiteInfo[language].author}
-					/>
-					<meta
-						name='theme-color'
-						content={themeColor}
-					/>
+					<meta name='robots' content={private_page ? 'noindex,nofollow' : robots} />
+					<meta name='description' content={SiteInfo[language].description} />
+					<meta name='keywords' content={SiteInfo[language].keywords} />
+					<meta name='author' content={SiteInfo[language].author} />
+					<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+					<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+					<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+					<link rel="manifest" href="/site.webmanifest" />
+					<link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color={themeColor} />
+					<meta name="msapplication-TileColor" content={themeColor} />
+					<meta name="theme-color" content={themeColor} />
 				</Head>
 				<div id='root' className='flex flex-col w-screen min-h-screen'>
 					{children}
