@@ -21,8 +21,7 @@ export default function App({Component, pageProps}: AppProps) {
 
 /*
 * TTS MASTER
-*  TODO: add manifest.json
-*  TODO: add favicons
+*  TODO: replace start_url in site.webmanifest
 *  TODO: make page search engine indexable
 *  TODO: implement Google Analytics
 *  TODO: use Vercel's hosting
