@@ -1,7 +1,7 @@
 import Head                   from 'next/head';
 import React                  from 'react';
 import LanguageContext        from './LanguageContext';
-import SiteInfo               from '../const/siteInfo';
+import siteInfo               from '../const/siteInfo';
 import { themeColor, robots } from '../const/siteConfig';
 
 const Layout = ({
@@ -19,16 +19,16 @@ const Layout = ({
 				<Head>
 					<title>{
 						typeof title === 'undefined' ?
-							SiteInfo[language].title :
+							siteInfo[language].title :
 							title.substr(-1) === ' ' ?
-								`${title}- ${SiteInfo[language].title}` :
+								`${title}- ${siteInfo[language].title}` :
 								title
 					}</title>
 					<link rel='icon' href='/favicon.ico' />
 					<meta name='robots' content={private_page ? 'noindex,nofollow' : robots} />
-					<meta name='description' content={SiteInfo[language].description} />
-					<meta name='keywords' content={SiteInfo[language].keywords} />
-					<meta name='author' content={SiteInfo[language].author} />
+					<meta name='description' content={siteInfo[language].description} />
+					<meta name='keywords' content={siteInfo[language].keywords} />
+					<meta name='author' content={siteInfo[language].author} />
 					<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 					<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
 					<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />

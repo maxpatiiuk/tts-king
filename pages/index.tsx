@@ -2,9 +2,14 @@ import Layout         from '../components/Layout';
 import { PublicMenu } from '../components/PublicMenu';
 import Link           from 'next/link';
 import { Centered }   from '../components/UI';
+import useSWR         from 'swr';
+import { fetcher }    from '../lib/swrHelper';
 
-const Home = () =>
-	<Layout>
+export default function Home() {
+
+	const { data:isUserAuthorized, error } = useSWR('/api/is_user_authorized',fetcher);
+
+	return <Layout>
 		<PublicMenu />
 		<Centered>
 			<h1
@@ -24,14 +29,22 @@ const Home = () =>
 					TTS King helps you stay productive no matter where you are!
 				</p>
 				<p className='pt-3'>
-					<Link href='/sign_up'>
-						<a
-							className='hover:bg-red-500 hover:text-white bg-transparent text-red-500'
-						>Sign up</a>
-					</Link> now and see for yourself.
+					{
+						(error || !isUserAuthorized) ?
+							<Link href='/sign_in'>
+								<a
+									className='hover:bg-red-500 hover:text-white bg-transparent text-red-500'
+								>Sign up</a>
+							</Link> :
+							<Link href='/profile'>
+								<a
+									className='hover:bg-red-500 hover:text-white bg-transparent text-red-500'
+								>Go to your profile</a>
+							</Link>
+					}
+					{' '}now and see for yourself.
 				</p>
 			</div>
 		</Centered>
 	</Layout>;
-
-export default Home;
+}
