@@ -1,5 +1,5 @@
 import Layout                       from '../components/Layout';
-import Link                         from 'next/Link';
+import Link                         from 'next/link';
 import React                        from 'react';
 import LanguageContext              from './LanguageContext';
 import { LanguageStringsStructure } from '../lib/languages';

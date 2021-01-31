@@ -2,24 +2,25 @@ import { AvailableLanguages, LanguageStringsStructure } from '../lib/languages';
 import SiteInfo                                         from '../const/siteInfo';
 import React                                            from 'react';
 import LanguageContext                                  from './LanguageContext';
-import Link                                             from 'next/Link';
-import { useRouter } from 'next/Router'
+import Link                                             from 'next/link';
+import { useRouter }                                                  from 'next/router';
+import { FirebaseAuthConsumer } from '@react-firebase/auth';
 
 interface ErrorPageLocalization extends LanguageStringsStructure {
 	'en-US': {
 		about: string,
 		signIn: string,
-		signUp: string,
 		pricing: string,
+		profile: string,
 	},
 }
 
 const Navigation: ErrorPageLocalization = {
 	'en-US': {
 		about: 'About',
-		signIn: 'Sign In',
-		signUp: 'Sign Up',
+		signIn: 'Sign In with Google',
 		pricing: 'Pricing',
+		profile: 'My Profile'
 	},
 };
 
@@ -30,7 +31,7 @@ interface MenuItem {
 }
 
 const menuItemsDictionary = (language: AvailableLanguages['type']): (
-	Record<'left' | 'right', Record<string, MenuItem>>
+	Record<'left' | 'right' | 'right_signed_in', Record<string, MenuItem>>
 	) => (
 	{
 		'left': {
@@ -51,16 +52,18 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 			'/sign_in': {
 				label: Navigation[language].signIn,
 			},
-			'/sign_up': {
-				label: Navigation[language].signUp,
-			},
 		},
+		'right_signed_in': {
+			'/profile': {
+				label: Navigation[language].profile
+			}
+		}
 	}
 );
 
 const MenuItems = ({
 	menuItems,
-	currentPage
+	currentPage,
 }: {
 	menuItems: Record<string, MenuItem>,
 	currentPage: string,
@@ -75,7 +78,7 @@ const MenuItems = ({
 				${
 					menuItem.classNames ||
 					(
-						currentPage===linkPath ?
+						currentPage === linkPath ?
 							'text-gray-300 underline' :
 							'text-gray-600'
 					)
@@ -87,13 +90,25 @@ const MenuItems = ({
 
 export function PublicMenu() {
 
-	const { route } = useRouter();
+	const {route} = useRouter();
 
 	return <LanguageContext.Consumer>{
 		(language) => <header className='p-4 border-b mb-4'>
 			<div className="container flex flex-wrap justify-between max-w-screen-lg mx-auto">
 				<MenuItems currentPage={route} menuItems={menuItemsDictionary(language).left} />
-				<MenuItems currentPage={route} menuItems={menuItemsDictionary(language).right} />
+				<FirebaseAuthConsumer>
+					{({isSignedIn}) =>
+						isSignedIn ?
+							<MenuItems
+								currentPage={route}
+								menuItems={menuItemsDictionary(language).right_signed_in}
+							/> :
+							<MenuItems
+								currentPage={route}
+								menuItems={menuItemsDictionary(language).right}
+							/>
+					}
+				</FirebaseAuthConsumer>
 			</div>
 		</header>
 	}</LanguageContext.Consumer>;
