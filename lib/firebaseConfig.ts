@@ -19,10 +19,12 @@ if (!firebase.apps.length)
 	firebase.initializeApp(firebaseConfig);
 
 const app = firebase.app();
-export const auth = firebase.auth();
+export const auth = firebase.auth;
 export const db = firebase.firestore();
 export const now = firebase.firestore.Timestamp.now();
 export const storage = firebase.storage();
+
+auth().useDeviceLanguage();
 
 //TODO: remove this
 console.log(app.name ? 'Firebase Mode Activated!' : 'Firebase not working :(');

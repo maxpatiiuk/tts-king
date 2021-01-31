@@ -1,16 +1,14 @@
 import { LanguageStringsStructure } from '../lib/languages';
 import { strip } from '../lib/localizationHelper';
 
-interface ErrorPageLocalization extends LanguageStringsStructure {
+const siteInfo: LanguageStringsStructure & {
 	'en-US': {
 		title: string,
 		description: string,
 		keywords: string,
 		author: string,
 	},
-}
-
-const SiteInfo: ErrorPageLocalization = {
+} = {
 	'en-US': {
 		title: 'TTS King',
 		description: strip(`Convert your daily news digests into a simple podcast you can listen to
@@ -23,4 +21,4 @@ const SiteInfo: ErrorPageLocalization = {
 	},
 };
 
-export default SiteInfo;
+export default siteInfo;

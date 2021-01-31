@@ -1,26 +1,25 @@
 import { AvailableLanguages, LanguageStringsStructure } from '../lib/languages';
-import SiteInfo                                         from '../const/siteInfo';
+import siteInfo                                         from '../const/siteInfo';
 import React                                            from 'react';
 import LanguageContext                                  from './LanguageContext';
 import Link                                             from 'next/link';
-import { useRouter }                                                  from 'next/router';
-import { FirebaseAuthConsumer } from '@react-firebase/auth';
+import { useRouter }                                    from 'next/router';
+import useSWR                                           from 'swr';
+import { fetcher }                                      from '../lib/swrHelper';
 
-interface ErrorPageLocalization extends LanguageStringsStructure {
+const languageStrings: LanguageStringsStructure & {
 	'en-US': {
 		about: string,
 		signIn: string,
 		pricing: string,
 		profile: string,
 	},
-}
-
-const Navigation: ErrorPageLocalization = {
+} = {
 	'en-US': {
 		about: 'About',
-		signIn: 'Sign In with Google',
+		signIn: 'Sign Up / Sign in',
 		pricing: 'Pricing',
-		profile: 'My Profile'
+		profile: 'My Profile',
 	},
 };
 
@@ -36,28 +35,28 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 	{
 		'left': {
 			'/': {
-				label: SiteInfo[language].title,
+				label: siteInfo[language].title,
 				classNames: 'font-bold bg-clip-text bg-gradient-to-l ' +
 					'from-yellow-400 to-purple-400 text-transparent',
 				collapsable: false,
 			},
 			'/about': {
-				label: Navigation[language].about,
+				label: languageStrings[language].about,
 			},
 			'/pricing': {
-				label: Navigation[language].pricing,
+				label: languageStrings[language].pricing,
 			},
 		},
 		'right': {
 			'/sign_in': {
-				label: Navigation[language].signIn,
+				label: languageStrings[language].signIn,
 			},
 		},
 		'right_signed_in': {
 			'/profile': {
-				label: Navigation[language].profile
-			}
-		}
+				label: languageStrings[language].profile,
+			},
+		},
 	}
 );
 
@@ -91,24 +90,20 @@ const MenuItems = ({
 export function PublicMenu() {
 
 	const {route} = useRouter();
+	const { data:isUserAuthorized, error } = useSWR('/api/is_user_authorized',fetcher);
 
 	return <LanguageContext.Consumer>{
 		(language) => <header className='p-4 border-b mb-4'>
 			<div className="container flex flex-wrap justify-between max-w-screen-lg mx-auto">
 				<MenuItems currentPage={route} menuItems={menuItemsDictionary(language).left} />
-				<FirebaseAuthConsumer>
-					{({isSignedIn}) =>
-						isSignedIn ?
-							<MenuItems
-								currentPage={route}
-								menuItems={menuItemsDictionary(language).right_signed_in}
-							/> :
-							<MenuItems
-								currentPage={route}
-								menuItems={menuItemsDictionary(language).right}
-							/>
-					}
-				</FirebaseAuthConsumer>
+				<MenuItems
+					currentPage={route}
+					menuItems={menuItemsDictionary(language)[
+						(error || !isUserAuthorized) ?
+							'right' :
+							'right_signed_in'
+						]}
+				/>
 			</div>
 		</header>
 	}</LanguageContext.Consumer>;

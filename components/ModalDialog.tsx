@@ -23,7 +23,7 @@ export const ModalDialog = namedComponent(({
 
 	const {className} = css.resolve``;
 
-	Modal.setAppElement('#root');
+	Modal.setAppElement('#__next');
 
 	return <div className='modal-root'>
 		<Modal
@@ -55,6 +55,7 @@ export const ModalDialog = namedComponent(({
 				},
 			}}
 			portalClassName={className}
+			className={'w-full'}
 			shouldCloseOnEsc={typeof handleCloseClick === 'function'}
 		>
 			<div className="bg-white shadow-xl w-auto w-1/2 m-auto">
