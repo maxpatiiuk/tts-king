@@ -21,6 +21,12 @@ export default function App({Component, pageProps}: AppProps) {
 
 /*
 * TTS MASTER
+*
+* now:
+*
+*
+* after done:
+*  TODO: finish the `about` page
 *  TODO: replace start_url in site.webmanifest
 *  TODO: make page search engine indexable
 *  TODO: implement Google Analytics

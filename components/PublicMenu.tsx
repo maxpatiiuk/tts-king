@@ -1,14 +1,16 @@
 import { AvailableLanguages, LanguageStringsStructure } from '../lib/languages';
 import SiteInfo                                         from '../const/siteInfo';
-import React                                       from 'react';
+import React                                            from 'react';
 import LanguageContext                                  from './LanguageContext';
-import Link from 'next/Link';
+import Link                                             from 'next/Link';
+import { useRouter } from 'next/Router'
 
 interface ErrorPageLocalization extends LanguageStringsStructure {
 	'en-US': {
 		about: string,
 		signIn: string,
 		signUp: string,
+		pricing: string,
 	},
 }
 
@@ -17,6 +19,7 @@ const Navigation: ErrorPageLocalization = {
 		about: 'About',
 		signIn: 'Sign In',
 		signUp: 'Sign Up',
+		pricing: 'Pricing',
 	},
 };
 
@@ -40,6 +43,9 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 			'/about': {
 				label: Navigation[language].about,
 			},
+			'/pricing': {
+				label: Navigation[language].pricing,
+			},
 		},
 		'right': {
 			'/sign_in': {
@@ -53,50 +59,41 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 );
 
 const MenuItems = ({
-	isCollapsed,
 	menuItems,
+	currentPage
 }: {
-	isCollapsed: boolean,
-	menuItems: Record<string, MenuItem>
+	menuItems: Record<string, MenuItem>,
+	currentPage: string,
 }) => <div className='flex gap-x-4 items-center'>{
-	Object.entries(menuItems).map(([linkPath, menuItem],index)=>
-		(!isCollapsed || menuItem.collapsable!==true) &&
+	Object.entries(menuItems).map(([linkPath, menuItem], index) =>
 		<Link
 			href={linkPath}
 			key={index}
 		>
 			<a className={
 				`hover:text-black
-				${menuItem.classNames||'text-gray-600'}
-				${menuItem.collapsable===false ? '' : 'hidden md:block'}`
+				${
+					menuItem.classNames ||
+					(
+						currentPage===linkPath ?
+							'text-gray-300 underline' :
+							'text-gray-600'
+					)
+				}`
 			}>{menuItem.label}</a>
-		</Link>
+		</Link>,
 	)
 }</div>;
 
 export function PublicMenu() {
 
-	const [isCollapsed, setIsCollapsed] = React.useState<boolean>(false);
+	const { route } = useRouter();
 
 	return <LanguageContext.Consumer>{
 		(language) => <header className='p-4 border-b mb-4'>
 			<div className="container flex flex-wrap justify-between max-w-screen-lg mx-auto">
-				<MenuItems isCollapsed={isCollapsed} menuItems={menuItemsDictionary(language).left} />
-				<MenuItems isCollapsed={isCollapsed} menuItems={menuItemsDictionary(language).right} />
-				<button
-					role='button'
-					onClick={()=>setIsCollapsed(!isCollapsed)}
-					className={`rounded border border-gray-600 hover:border-black md:hidden`}
-				>
-					<svg
-						className="fill-current h-5 w-5 m-1.5"
-						viewBox="0 0 20 20"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<title>Menu</title>
-						<path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-					</svg>
-				</button>
+				<MenuItems currentPage={route} menuItems={menuItemsDictionary(language).left} />
+				<MenuItems currentPage={route} menuItems={menuItemsDictionary(language).right} />
 			</div>
 		</header>
 	}</LanguageContext.Consumer>;
