@@ -16,7 +16,7 @@ export const ModalDialog = namedComponent(({
 	isOpen?: boolean,
 	title: string,
 	onClose?: () => void,
-	buttons: React.ReactNode,
+	buttons?: React.ReactNode,
 	children: React.ReactNode,
 	onCloseClick?: () => void,
 }) => {
@@ -103,3 +103,10 @@ export const ModalDialog = namedComponent(({
 		`}</style>
 	</div>;
 }, 'ModalDialog');
+
+export const Loading = namedComponent(()=><ModalDialog
+	title='Loading...'
+>
+	{ /* TODO: add a fancy loading bar here */ }
+	Loading...
+</ModalDialog>,'Loading');

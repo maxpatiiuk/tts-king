@@ -1,6 +1,6 @@
 import Layout         from '../components/Layout';
 import { PublicMenu } from '../components/PublicMenu';
-import Link           from 'next/Link';
+import Link           from 'next/link';
 import { Centered }   from '../components/UI';
 
 const Home = () =>
