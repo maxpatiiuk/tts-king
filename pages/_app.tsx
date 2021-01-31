@@ -1,10 +1,13 @@
 import 'tailwindcss/tailwind.css';
-import { AppProps }           from 'next/app';
-import ErrorBoundary          from '../components/ErrorBoundary';
-import { useRouter }          from 'next/router';
-import React                  from 'react';
-import LanguageContext        from '../components/LanguageContext';
-import { AvailableLanguages } from '../lib/languages';
+import { AppProps }             from 'next/app';
+import ErrorBoundary            from '../components/ErrorBoundary';
+import { useRouter }            from 'next/router';
+import React                    from 'react';
+import LanguageContext          from '../components/LanguageContext';
+import { AvailableLanguages }   from '../lib/languages';
+import { FirebaseAuthProvider } from '@react-firebase/auth';
+import firebase                 from 'firebase';
+import { firebaseConfig }       from '../const/siteConfig';
 
 export default function App({Component, pageProps}: AppProps) {
 
@@ -12,11 +15,15 @@ export default function App({Component, pageProps}: AppProps) {
 
 	return <ErrorBoundary>
 		<LanguageContext.Provider value={locale as AvailableLanguages['type']}>
-			<Component {...pageProps} />
+			<FirebaseAuthProvider
+				firebase={firebase}
+				{...firebaseConfig}
+			>
+				<Component {...pageProps} />
+			</FirebaseAuthProvider>;
 		</LanguageContext.Provider>
 	</ErrorBoundary>;
 }
-
 
 
 /*
