@@ -1,6 +1,6 @@
 import { namedComponent } from '../lib/stateManagement';
 import Modal              from 'react-modal';
-import * as React         from 'react';
+import React         from 'react';
 import css                from 'styled-jsx/css';
 
 //grey - bg-white border border-gray-300 hover:bg-gray-50 px-4 py-2 rounded-md sm:text-sm sm:w-auto text-gray-700

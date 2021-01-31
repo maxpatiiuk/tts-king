@@ -7,32 +7,32 @@
 
 'use strict';
 
-export interface Action<action_name extends string> {
-	type: action_name
+export interface Action<ACTION_NAME extends string> {
+	type: ACTION_NAME
 }
 
-export interface State<state_name extends string> {
-	type: state_name
+export interface State<STATE_NAME extends string> {
+	type: STATE_NAME
 }
 
 type GenerateReducerDictionary<STATE, ACTION extends Action<string>> = {
-	[action_type in ACTION['type']]: (state: STATE, action: Extract<ACTION, Action<action_type>>) => STATE
+	[actionType in ACTION['type']]: (state: STATE, action: Extract<ACTION, Action<actionType>>) => STATE
 }
 
 type GenerateDispatchDictionary<ACTION extends Action<string>> = {
-	[action_type in ACTION['type']]: (action: Extract<ACTION, Action<action_type>>) => void
+	[actionType in ACTION['type']]: (action: Extract<ACTION, Action<actionType>>) => void
 }
 
-function assertExhaustive(case_type: never): never {
-	throw new Error(`Non-exhaustive switch. Unhandled case:${case_type as string}`);
+function assertExhaustive(caseType: never): never {
+	throw new Error(`Non-exhaustive switch. Unhandled case:${caseType as string}`);
 }
 
 
 // assignees names to components so that they easier to identify in the inspector and profiler
-export function namedComponent<T>(component_function: T, component_name: string): T {
+export function namedComponent<T>(component: T, name: string): T {
 	// @ts-ignore
-	component_function.displayName = component_name;
-	return component_function;
+	component.displayName = name;
+	return component;
 }
 
 export const generateReducer = <STATE,

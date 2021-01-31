@@ -40,7 +40,7 @@ const Layout = ({
 						content={themeColor}
 					/>
 				</Head>
-				<div id='root'>
+				<div id='root' className='flex flex-col w-screen min-h-screen'>
 					{children}
 				</div>
 			</>
