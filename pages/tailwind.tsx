@@ -1,7 +1,9 @@
-import { Section, Subsection } from './UI';
+import { Section, Subsection } from '../components/UI';
 
-const Content = ()=>
-	<div className='p-4'>
+//TODO: delete this file
+
+export default function Tailwind(){
+	return <div className='p-4'>
 		<Section title='Core'>
 			<Subsection title='Colors'>
 				<table className='table-auto text-center'>
@@ -242,5 +244,4 @@ const Content = ()=>
 			<p>tailwindcss-aspect-ratio - force el into an aspect ratio</p>
 		</Section>
 	</div>;
-
-export default Content;
+}

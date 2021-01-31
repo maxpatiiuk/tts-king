@@ -34,7 +34,7 @@ const ErrorPage = ({errorCode = 404}: {errorCode?: number}) =>
 						{LanguageStrings[language].message}
 						<Link href="/">
 							<a className='block pt-10'>
-								{CommonStrings[language].return_to_homepage}
+								{CommonStrings[language].returnToHomePage}
 							</a>
 						</Link>
 					</p>

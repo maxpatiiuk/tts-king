@@ -26,6 +26,7 @@ export default function App({Component, pageProps}: AppProps) {
 *  TODO: make page search engine indexable
 *  TODO: implement Google Analytics
 *  TODO: use Vercel's hosting
+*  TODO: add a dark mode
 * */
 
 /*
