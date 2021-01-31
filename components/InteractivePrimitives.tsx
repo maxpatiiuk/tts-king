@@ -30,7 +30,7 @@ export const ButtonDanger = ({
 }) =>
 	<button
 		type="button"
-		className={`bg-red-600 hover:bg-red-700 ${extraStyles}`}
+		className={`bg-red-600 hover:bg-red-700 ${baseButtonStyle} ${extraStyles}`}
 		{...props}
 	>
 		{children}

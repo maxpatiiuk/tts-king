@@ -1,28 +1,20 @@
 import 'tailwindcss/tailwind.css';
-import { AppProps }             from 'next/app';
-import ErrorBoundary            from '../components/ErrorBoundary';
-import { useRouter }            from 'next/router';
-import React                    from 'react';
-import LanguageContext          from '../components/LanguageContext';
-import { AvailableLanguages }   from '../lib/languages';
-import { FirebaseAuthProvider } from '@react-firebase/auth';
-import firebase                 from 'firebase';
-import { firebaseConfig }       from '../const/siteConfig';
+import { AppProps }           from 'next/app';
+import ErrorBoundary          from '../components/ErrorBoundary';
+import { useRouter }          from 'next/router';
+import React                  from 'react';
+import LanguageContext        from '../components/LanguageContext';
+import { AvailableLanguages } from '../lib/languages';
 
 export default function App({Component, pageProps}: AppProps) {
 
 	const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
 
-	return <ErrorBoundary>
-		<LanguageContext.Provider value={locale as AvailableLanguages['type']}>
-			<FirebaseAuthProvider
-				firebase={firebase}
-				{...firebaseConfig}
-			>
-				<Component {...pageProps} />
-			</FirebaseAuthProvider>;
-		</LanguageContext.Provider>
-	</ErrorBoundary>;
+	return <LanguageContext.Provider value={locale as AvailableLanguages['type']}>
+		<ErrorBoundary>
+			<Component {...pageProps} />
+		</ErrorBoundary>
+	</LanguageContext.Provider>;
 }
 
 
@@ -30,7 +22,8 @@ export default function App({Component, pageProps}: AppProps) {
 * TTS MASTER
 *
 * now:
-*
+*  TODO: finish google sign in
+*  TODO: add facebook and apple sign in
 *
 * after done:
 *  TODO: finish the `about` page
@@ -39,6 +32,8 @@ export default function App({Component, pageProps}: AppProps) {
 *  TODO: implement Google Analytics
 *  TODO: use Vercel's hosting
 *  TODO: add a dark mode
+*  TODO: change domain in the google auth firebase
+*    (https://firebase.google.com/docs/auth/web/google-signin?authuser=0#expandable-4)
 * */
 
 /*

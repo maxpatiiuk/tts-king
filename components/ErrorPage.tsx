@@ -3,18 +3,16 @@ import Link                         from 'next/link';
 import React                        from 'react';
 import LanguageContext              from './LanguageContext';
 import { LanguageStringsStructure } from '../lib/languages';
-import { CommonStrings }            from '../localization/global';
+import { commonStrings }            from '../localization/global';
 import { PublicMenu }               from './PublicMenu';
 import { Centered }                 from './UI';
 
-interface ErrorPageLocalization extends LanguageStringsStructure {
+const languageStrings: LanguageStringsStructure & {
 	'en-US': {
 		header: string,
 		message: string,
 	},
-}
-
-const LanguageStrings: ErrorPageLocalization = {
+} = {
 	'en-US': {
 		header: 'Oops! Nothing was found',
 		message: `The page you are looking for might have been removed,
@@ -30,12 +28,12 @@ const ErrorPage = ({errorCode = 404}: {errorCode?: number}) =>
 				<Centered>
 					<div className="text-center">
 						<h1 className='text-9xl py-2 text-indigo-300'>{errorCode}</h1>
-						<h2>{LanguageStrings[language].header}</h2>
+						<h2>{languageStrings[language].header}</h2>
 						<p>
-							{LanguageStrings[language].message}
+							{languageStrings[language].message}
 							<Link href="/">
 								<a className='block pt-10 transition text-red-400 hover:text-black'>
-									{CommonStrings[language].returnToHomePage}
+									{commonStrings[language].returnToHomePage}
 								</a>
 							</Link>
 						</p>
