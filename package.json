@@ -14,18 +14,16 @@
 		"url": "git://github.com/maxxxxxdlp/TTS_KING"
 	},
 	"dependencies": {
-		"@react-firebase/auth": "^0.2.10",
-		"cookies": "^0.8.0",
 		"firebase": "^8.2.5",
+		"firebase-admin": "^9.4.2",
 		"next": "^10.0.5",
+		"next-firebase-auth": "^0.10.0",
 		"react": "17.0.1",
 		"react-dom": "17.0.1",
 		"react-modal": "^3.12.1",
-		"swr": "^0.4.1",
 		"tailwindcss": "^2.0.2"
 	},
 	"devDependencies": {
-		"@types/cookies": "^0.7.6",
 		"@types/node": "^14.14.21",
 		"@types/react": "^17.0.0",
 		"@types/react-dom": "^17.0.0",

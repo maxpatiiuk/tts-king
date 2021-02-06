@@ -5,6 +5,9 @@ import { useRouter }          from 'next/router';
 import React                  from 'react';
 import LanguageContext        from '../components/LanguageContext';
 import { AvailableLanguages } from '../lib/languages';
+import initAuth from '../lib/initAuth'
+
+initAuth();
 
 export default function App({Component, pageProps}: AppProps) {
 
