@@ -2,7 +2,7 @@ import Layout         from '../components/Layout';
 import { PublicMenu } from '../components/PublicMenu';
 import { Centered }   from '../components/UI';
 
-const Home = () =>
+const pricing = () =>
 	<Layout>
 		<PublicMenu />
 		<Centered>
@@ -11,4 +11,4 @@ const Home = () =>
 		</Centered>
 	</Layout>;
 
-export default Home;
+export default pricing;
