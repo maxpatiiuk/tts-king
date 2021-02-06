@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
 import React         from 'react';
 import { Loading }   from './ModalDialog';
-import useSWR        from 'swr';
-import { fetcher }   from '../lib/swrHelper';
+import { useAuth }   from './AuthContext';
 
 export default function FilterUsers({
 	isProtected,
@@ -15,9 +14,9 @@ export default function FilterUsers({
 }) {
 
 	const router = useRouter();
-	const { data:isUserAuthorized, error } = useSWR('/api/is_user_authorized',fetcher);
+	const { user } = useAuth();
 
-	return (error || !isUserAuthorized) === isProtected ?
+	return (user === null) === isProtected ?
 		router.push(redirectPath) && <Loading /> :
 		children;
 
