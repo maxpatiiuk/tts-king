@@ -1,7 +1,6 @@
 import { AvailableLanguages, LanguageStringsStructure } from '../lib/languages';
 import React                                            from 'react';
 import LanguageContext                                  from './LanguageContext';
-import { useAuth }                                      from './AuthContext';
 import Menu                                             from './Menu';
 import {
 	mainPageMenuItem,
@@ -11,37 +10,30 @@ import {
 
 const languageStrings: LanguageStringsStructure & {
 	'en-US': {
-		about: string,
-		signIn: string,
-		pricing: string,
+		profile: string,
+		signOut: string,
 	},
 } = {
 	'en-US': {
-		about: 'About',
-		signIn: 'Sign Up / Sign in',
-		pricing: 'Pricing',
+		profile: 'Profile',
+		signOut: 'Sign Out',
 	},
 };
 
 const menuItemsDictionary = (language: AvailableLanguages['type']): (
-	Record<'left' | 'right' | 'right_signed_in', Record<string, MenuItem>>
+	Record<'left' | 'right', Record<string, MenuItem>>
 	) => (
 	{
 		'left': {
 			'/': mainPageMenuItem(language),
-			'/about': {
-				label: languageStrings[language].about,
-			},
-			'/pricing': {
-				label: languageStrings[language].pricing,
+			'/profile': {
+				label: languageStrings[language].profile,
 			},
 		},
 		'right': {
-			'/sign_in': {
-				label: languageStrings[language].signIn,
+			'/dashboard/sign_out': {
+				label: languageStrings[language].signOut,
 			},
-		},
-		'right_signed_in': {
 			'/dashboard': {
 				label: commonMenuLanguageStrings[language].dashboard,
 			},
@@ -49,18 +41,11 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 	}
 );
 
-export function PublicMenu() {
-
-	const {user} = useAuth();
-
+export function PrivateMenu() {
 	return <LanguageContext.Consumer>{
 		(language) => <Menu menuItemGroups={[
 			menuItemsDictionary(language).left,
-			menuItemsDictionary(language)[
-				user === null ?
-					'right' :
-					'right_signed_in'
-				],
+			menuItemsDictionary(language).right,
 		]} />
 	}</LanguageContext.Consumer>;
 }

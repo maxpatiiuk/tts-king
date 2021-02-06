@@ -5,17 +5,17 @@ import { useRouter }          from 'next/router';
 import React                  from 'react';
 import LanguageContext        from '../components/LanguageContext';
 import { AvailableLanguages } from '../lib/languages';
-import initAuth from '../lib/initAuth'
+import { AuthProvider }       from '../components/AuthContext';
 
-initAuth();
-
-export default function App({Component, pageProps}: AppProps) {
+export default function app({Component, pageProps}: AppProps) {
 
 	const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
 
 	return <LanguageContext.Provider value={locale as AvailableLanguages['type']}>
 		<ErrorBoundary>
-			<Component {...pageProps} />
+			<AuthProvider>
+				<Component {...pageProps} />
+			</AuthProvider>
 		</ErrorBoundary>
 	</LanguageContext.Provider>;
 }
@@ -25,10 +25,10 @@ export default function App({Component, pageProps}: AppProps) {
 * TTS MASTER
 *
 * now:
-*  TODO: finish google sign in
-*  TODO: add facebook and apple sign in
+*  TODO: integrate users with their firestone data
 *
 * after done:
+*  TODO: add facebook and apple sign in
 *  TODO: finish the `about` page
 *  TODO: replace start_url in site.webmanifest
 *  TODO: make page search engine indexable

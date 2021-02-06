@@ -1,21 +1,37 @@
-// ./pages/demo
-import React from 'react';
-import {
-	useAuthUser,
-	withAuthUser,
-	withAuthUserTokenSSR,
-}            from 'next-firebase-auth';
+import React                  from 'react';
+import { GetServerSideProps } from 'next';
+import verifyAuthToken        from '../../lib/verifyAuthToken';
+import Layout                 from '../../components/Layout';
+import { PrivateMenu }        from '../../components/PrivateMenu';
+import { Centered }           from '../../components/UI';
 
-const Demo = () => {
-	const AuthUser = useAuthUser();
+interface DashboardProps {
+	email: string,
+	uid: string,
+}
+
+export default function dashboard(props:DashboardProps){
 	return (
-		<div>
-			<p>Your email is {AuthUser.email ? AuthUser.email : 'unknown'}.</p>
-		</div>
+		<Layout>
+			<PrivateMenu />
+			<Centered>
+				<p>{JSON.stringify(props)}</p>
+			</Centered>
+		</Layout>
 	);
 };
 
-// Note that this is a higher-order function.
-export const getServerSideProps = withAuthUserTokenSSR()();
+export const getServerSideProps:GetServerSideProps = async(context)=>{
+	const authStatus = await verifyAuthToken(context);
 
-export default withAuthUser()(Demo);
+	if(authStatus.error)
+		return authStatus.response;
+
+	else
+		return {
+			props: {
+				email: authStatus.token.email,
+				uid: authStatus.token.uid,
+			}
+		}
+};

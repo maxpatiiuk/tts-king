@@ -2,10 +2,10 @@ import ErrorPage           from '../components/ErrorPage';
 import React               from 'react';
 import { NextPageContext } from 'next';
 
-const Error = ({statusCode}: {statusCode: number})=>
+const error = ({statusCode}: {statusCode: number})=>
 	<ErrorPage errorCode={statusCode} />;
 
-Error.getInitialProps = ({res, err}: NextPageContext) => (
+error.getInitialProps = ({res, err}: NextPageContext) => (
 	{
 		statusCode: res ?
 			res.statusCode :
@@ -15,4 +15,4 @@ Error.getInitialProps = ({res, err}: NextPageContext) => (
 	}
 );
 
-export default Error;
+export default error;
