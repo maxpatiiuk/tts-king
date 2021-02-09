@@ -50,6 +50,6 @@
     ],
     "theme_color": "#fbbf24",
     "background_color": "#fbbf24",
-    "start_url": "http://localhost/",
+    "start_url": "http://localhost:3000/",
     "display": "standalone"
 }

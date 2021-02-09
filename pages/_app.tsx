@@ -1,11 +1,14 @@
 import 'tailwindcss/tailwind.css';
-import { AppProps }           from 'next/app';
-import ErrorBoundary          from '../components/ErrorBoundary';
-import { useRouter }          from 'next/router';
-import React                  from 'react';
-import LanguageContext        from '../components/LanguageContext';
-import { AvailableLanguages } from '../lib/languages';
-import { AuthProvider }       from '../components/AuthContext';
+import { AppProps }             from 'next/app';
+import ErrorBoundary            from '../components/ErrorBoundary';
+import { useRouter }            from 'next/router';
+import React                    from 'react';
+import LanguageContext          from '../components/LanguageContext';
+import { AvailableLanguages }   from '../lib/languages';
+import firebase                 from 'firebase/app';
+import 'firebase/auth';
+import { firebaseConfig }       from '../const/siteConfig';
+import { FirebaseAuthProvider } from '@react-firebase/auth';
 
 export default function app({Component, pageProps}: AppProps) {
 
@@ -13,9 +16,9 @@ export default function app({Component, pageProps}: AppProps) {
 
 	return <LanguageContext.Provider value={locale as AvailableLanguages['type']}>
 		<ErrorBoundary>
-			<AuthProvider>
+			<FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
 				<Component {...pageProps} />
-			</AuthProvider>
+			</FirebaseAuthProvider>
 		</ErrorBoundary>
 	</LanguageContext.Provider>;
 }
@@ -62,4 +65,16 @@ const DynamicComponentWithCustomLoading = dynamic(
 *
 * define css variables in a JS constants file
 *
+* */
+
+/*
+*
+* FIREBASE REALTIME DATABASE TODO:
+* "$other": { ".validate": false }
+* ".read": "query.orderByChild == 'owner'"
+* ".read": "query.orderByKey && query.limitToFirst <= 1000"
+* "auth.uid !== null" to check that any user is signed in
+* orderByChild: ".indexOn": ["field_1", "field_2"] ( when parents are going to be queried based on child field)
+* orderByValue: ".indexOn": ".value" ( when you have a 1d dictionary and you want to query based on values)
+* ".write": "newData.exists()" - forbid deletions
 * */
