@@ -1,7 +1,8 @@
-import { useRouter } from 'next/router';
-import React         from 'react';
-import { Loading }   from './ModalDialog';
-import { useAuth }   from './AuthContext';
+import { useRouter }            from 'next/router';
+import React                    from 'react';
+import { Loading }              from './ModalDialog';
+import { FirebaseAuthConsumer } from '@react-firebase/auth';
+import useClientSideRendering   from './useClientSideRendering';
 
 export default function FilterUsers({
 	isProtected,
@@ -14,10 +15,15 @@ export default function FilterUsers({
 }) {
 
 	const router = useRouter();
-	const { user } = useAuth();
+	const isClientSide = useClientSideRendering();
 
-	return (user === null) === isProtected ?
-		router.push(redirectPath) && <Loading /> :
-		children;
+	return isClientSide ?
+		<FirebaseAuthConsumer>{
+			({isSignedIn}) =>
+				isSignedIn === isProtected ?
+					children :
+					router.push(redirectPath) && <Loading />
+		}</FirebaseAuthConsumer> :
+		<></>;
 
 }
