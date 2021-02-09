@@ -1,13 +1,16 @@
-import { AvailableLanguages, LanguageStringsStructure } from '../lib/languages';
-import React                                            from 'react';
-import LanguageContext                                  from './LanguageContext';
-import { useAuth }                                      from './AuthContext';
-import Menu                                             from './Menu';
+import {
+	AvailableLanguages,
+	LanguageStringsStructure,
+}                               from '../lib/languages';
+import React                    from 'react';
+import LanguageContext          from './LanguageContext';
+import Menu                     from './Menu';
 import {
 	mainPageMenuItem,
 	MenuItem,
 	languageStrings as commonMenuLanguageStrings,
-}                                                       from '../lib/menuComponents';
+}                               from '../lib/menuComponents';
+import { FirebaseAuthConsumer } from '@react-firebase/auth';
 
 const languageStrings: LanguageStringsStructure & {
 	'en-US': {
@@ -50,17 +53,16 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 );
 
 export function PublicMenu() {
-
-	const {user} = useAuth();
-
-	return <LanguageContext.Consumer>{
-		(language) => <Menu menuItemGroups={[
-			menuItemsDictionary(language).left,
-			menuItemsDictionary(language)[
-				user === null ?
-					'right' :
-					'right_signed_in'
-				],
-		]} />
-	}</LanguageContext.Consumer>;
+	return <FirebaseAuthConsumer>{
+		({isSignedIn}) => <LanguageContext.Consumer>{
+			(language) => <Menu menuItemGroups={[
+				menuItemsDictionary(language).left,
+				menuItemsDictionary(language)[
+					isSignedIn ?
+						'right_signed_in' :
+						'right'
+					],
+			]} />
+		}</LanguageContext.Consumer>
+	}</FirebaseAuthConsumer>;
 }

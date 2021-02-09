@@ -14,6 +14,8 @@
 		"url": "git://github.com/maxxxxxdlp/TTS_KING"
 	},
 	"dependencies": {
+		"@react-firebase/auth": "^0.2.10",
+		"@react-firebase/database": "^0.3.11",
 		"firebase": "^8.2.5",
 		"firebase-admin": "^9.4.2",
 		"next": "^10.0.5",
