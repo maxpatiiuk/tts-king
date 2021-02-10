@@ -6,10 +6,7 @@ const clientEmail = process.env['FIREBASE_CLIENT_EMAIL'];
 const projectId = firebaseConfig.projectId;
 
 if (!privateKey || !clientEmail || !projectId)
-	throw new Error(
-		`Failure load Firebase credentials.
-		Follow the instructions in the README to set your Firebase credentials inside environment variables.`,
-	);
+	throw new Error('Failure loading Firebase credentials');
 
 if (!firebaseAdmin.apps.length)
 	firebaseAdmin.initializeApp({

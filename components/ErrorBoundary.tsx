@@ -39,14 +39,18 @@ const languageStrings: LanguageStringsStructure & {
 	},
 };
 
-export default class ErrorBoundary extends React.Component<{children: JSX.Element}, ErrorBoundaryState> {
+export default class ErrorBoundary
+	extends React.Component<{children: JSX.Element}, ErrorBoundaryState> {
 	state: ErrorBoundaryState = {
 		hasError: false,
 		error: undefined,
 		errorInfo: undefined,
 	};
 
-	componentDidCatch(error: {toString: () => string}, errorInfo: {componentStack: string}): void {
+	componentDidCatch(
+		error: {toString: () => string},
+		errorInfo: {componentStack: string},
+	): void {
 		console.error(error, errorInfo);
 		this.setState({
 			hasError: true,
@@ -77,7 +81,9 @@ export default class ErrorBoundary extends React.Component<{children: JSX.Elemen
 						</ButtonDanger>
 					</>}
 				>
-					<p>{languageStrings[language].unexpectedErrorHasOccurred}</p>
+					<p>{
+						languageStrings[language].unexpectedErrorHasOccurred
+					}</p>
 					<details style={{whiteSpace: 'pre-wrap'}}>
 						{this.state.error && this.state.error.toString()}
 						<br />

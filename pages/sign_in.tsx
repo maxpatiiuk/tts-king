@@ -1,15 +1,14 @@
-import Layout          from '../components/Layout';
-import { PublicMenu }  from '../components/PublicMenu';
-import React           from 'react';
-import { Centered }    from '../components/UI';
+import Layout         from '../components/Layout';
+import { PublicMenu } from '../components/PublicMenu';
+import React          from 'react';
+import { Centered }   from '../components/UI';
 import {
 	AvailableLanguages,
 	LanguageStringsStructure,
-}                      from '../lib/languages';
-import LanguageContext from '../components/LanguageContext';
-import FilterUsers     from '../components/FilterUsers';
-import { useRouter }   from 'next/router';
-import firebase        from 'firebase/app';
+}                     from '../lib/languages';
+import FilterUsers    from '../components/FilterUsers';
+import { useRouter }  from 'next/router';
+import firebase       from 'firebase/app';
 
 const languageStrings: LanguageStringsStructure & {
 	'en-US': {
@@ -35,10 +34,10 @@ export default function SignIn() {
 
 	async function initializeSignIn(language: AvailableLanguages['type']) {
 		try {
+			setErrorMessage(undefined);
 			const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 			await firebase.auth().signInWithPopup(googleAuthProvider);
 			await router.push('/dashboard');
-			setErrorMessage(undefined);
 		}
 		catch (error) {
 			setErrorMessage(
@@ -52,8 +51,8 @@ export default function SignIn() {
 		isProtected={false}
 		redirectPath='/'
 	>
-		<LanguageContext.Consumer>{
-			(language) => <Layout>
+		<Layout>{
+			(language) => <>
 				<PublicMenu />
 				<Centered>
 					<div>
@@ -74,7 +73,7 @@ export default function SignIn() {
 						</div>
 					</div>
 				</Centered>
-			</Layout>
-		}</LanguageContext.Consumer>
+			</>
+		}</Layout>
 	</FilterUsers>;
 }

@@ -14,9 +14,14 @@ export default function app({Component, pageProps}: AppProps) {
 
 	const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
 
-	return <LanguageContext.Provider value={locale as AvailableLanguages['type']}>
+	return <LanguageContext.Provider
+		value={locale as AvailableLanguages['type']}
+	>
 		<ErrorBoundary>
-			<FirebaseAuthProvider firebase={firebase} {...firebaseConfig}>
+			<FirebaseAuthProvider
+				firebase={firebase}
+				{...firebaseConfig}
+			>
 				<Component {...pageProps} />
 			</FirebaseAuthProvider>
 		</ErrorBoundary>
@@ -29,6 +34,7 @@ export default function app({Component, pageProps}: AppProps) {
 *
 * now:
 *  TODO: integrate users with their firestone data
+*  TODO: fix warnings and error messages reported in the console
 *
 * after done:
 *  TODO: add facebook and apple sign in
@@ -53,7 +59,8 @@ export default function app({Component, pageProps}: AppProps) {
 		query: { slug: post.slug },
 	}}
 >
-* don't export non-react components from react components! (they would cause an excess page reloads in development)
+* don't export non-react components from react components! (they would
+* cause an excess page reloads in development)
 * use dynamic imports to speed up page load:
 * const Fuse = (await import('fuse.js')).default; // for non react components
 import dynamic from 'next/dynamic'  // for react components:

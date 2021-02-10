@@ -1,16 +1,15 @@
 import React from 'react';
 
-const useClientSideRendering = ()=>{
+const useClientSideRendering = () => {
 
 	const [
 		isClientSide,
 		setIsClientSide] = React.useState<boolean>(false);
 
-
-	React.useEffect(()=>{
-		if(typeof window !== 'undefined')
+	React.useEffect(() => {
+		if (typeof window !== 'undefined')
 			setIsClientSide(true);
-	},[typeof window]);
+	}, [typeof window]);
 
 	return isClientSide;
 
