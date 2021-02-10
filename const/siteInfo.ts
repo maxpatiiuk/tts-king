@@ -1,5 +1,5 @@
 import { LanguageStringsStructure } from '../lib/languages';
-import { strip } from '../lib/localizationHelper';
+import { strip }                    from '../lib/localizationHelper';
 
 const siteInfo: LanguageStringsStructure & {
 	'en-US': {
@@ -11,11 +11,13 @@ const siteInfo: LanguageStringsStructure & {
 } = {
 	'en-US': {
 		title: 'TTS King',
-		description: strip(`Convert your daily news digests into a simple podcast you can listen to
-			while in transit, walking or even exercising. TTS King helps you stay productive
-			no matter where you are!`),
-		keywords: strip(`TTS King, tts, text-to-speech, text to speech, convert websites to audio,
-			website to audio, website to audiobook, reader mode, website reader mode, distraction
+		description: strip(`Convert your daily news digests into a
+			simple podcast you can listen to while in transit, walking or
+			even exercising. TTS King helps you stay productive no matter
+			where you are!`),
+		keywords: strip(`TTS King, tts, text-to-speech, text to
+			speech, convert websites to audio, website to audio, website
+			to audiobook, reader mode, website reader mode, distraction
 			free browser`),
 		author: 'Maksym Patiiuk',
 	},

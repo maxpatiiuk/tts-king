@@ -6,6 +6,6 @@ export const commonStrings: LanguageStringsStructure & {
 	},
 } = {
 	'en-US': {
-		returnToHomePage: '← Return to homepage',
+		returnToHomePage: '&#8592; Return to homepage',
 	},
 };

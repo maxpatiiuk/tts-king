@@ -1,6 +1,7 @@
 /*
 *
-* Generator of type safe-reducer and dispatches. Replaces the need for switch(){} statements
+* Generator of type safe-reducer and dispatches
+* Replaces the need for switch(){} statements
 * This code is based on https://github.com/maxxxxxdlp/typesafe_reducer
 *
 * */
@@ -16,19 +17,27 @@ export interface State<STATE_NAME extends string> {
 }
 
 type GenerateReducerDictionary<STATE, ACTION extends Action<string>> = {
-	[actionType in ACTION['type']]: (state: STATE, action: Extract<ACTION, Action<actionType>>) => STATE
+	[actionType in ACTION['type']]: (props: {
+		state: STATE,
+		action: Extract<ACTION, Action<actionType>>
+	}) => STATE
 }
 
 type GenerateDispatchDictionary<ACTION extends Action<string>> = {
-	[actionType in ACTION['type']]: (action: Extract<ACTION, Action<actionType>>) => void
+	[actionType in ACTION['type']]: (
+		action: Extract<ACTION, Action<actionType>>,
+	) => void
 }
 
 function assertExhaustive(caseType: never): never {
-	throw new Error(`Non-exhaustive switch. Unhandled case:${caseType as string}`);
+	throw new Error(`Non-exhaustive switch. Unhandled case:${
+		caseType as string
+	}`);
 }
 
 
-// assignees names to components so that they easier to identify in the inspector and profiler
+// assignees names to components so that they easier to identify in the
+// inspector and profiler
 export function namedComponent<T>(component: T, name: string): T {
 	// @ts-ignore
 	component.displayName = name;
@@ -46,8 +55,7 @@ export const generateReducer = <STATE,
 		(
 			obj != null && typeof obj[action['type']] === 'function'
 		) ?
-			// (()=>{console.log(state,action); return obj[action['type']](state,action as any)})() :
-			obj[action['type']](state, action as any) :
+			obj[action['type']]({state, action: action as any}) :
 			assertExhaustive(action['type'] as never);
 
 export const generateDispatch = <ACTION extends Action<string>>(

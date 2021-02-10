@@ -1,5 +1,8 @@
-import { AvailableLanguages, LanguageStringsStructure } from './languages';
-import siteInfo                                         from '../const/siteInfo';
+import {
+	AvailableLanguages,
+	LanguageStringsStructure,
+}               from './languages';
+import siteInfo from '../const/siteInfo';
 
 export interface MenuItem {
 	label: string,
@@ -7,7 +10,9 @@ export interface MenuItem {
 	collapsable?: boolean,  // true
 }
 
-export const mainPageMenuItem = (language: AvailableLanguages['type']) => (
+export const mainPageMenuItem = (
+	language: AvailableLanguages['type'],
+) => (
 	{
 		label: siteInfo[language].title,
 		classNames: 'font-bold bg-clip-text bg-gradient-to-l ' +

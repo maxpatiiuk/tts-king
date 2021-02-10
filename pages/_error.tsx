@@ -2,7 +2,7 @@ import ErrorPage           from '../components/ErrorPage';
 import React               from 'react';
 import { NextPageContext } from 'next';
 
-const error = ({statusCode}: {statusCode: number})=>
+const error = ({statusCode}: {statusCode: number}) =>
 	<ErrorPage errorCode={statusCode} />;
 
 error.getInitialProps = ({res, err}: NextPageContext) => (

@@ -4,7 +4,7 @@ import { Loading }              from '../../components/ModalDialog';
 import { useRouter }            from 'next/router';
 import FilterUsers              from '../../components/FilterUsers';
 import { FirebaseAuthConsumer } from '@react-firebase/auth';
-import firebase from 'firebase/app';
+import firebase                 from 'firebase/app';
 
 export default function sign_out() {
 
@@ -25,14 +25,14 @@ export default function sign_out() {
 	}, [firebaseLoaded]);
 
 	return (
-		<Layout>
-			<FilterUsers
+		<Layout>{
+			() => <FilterUsers
 				isProtected={true}
 				redirectPath='/'>
 				<FirebaseAuthConsumer>
 					{
 						() =>
-							void(
+							void (
 								!firebaseLoaded &&
 								setFirebaseLoaded(true)
 							) ||
@@ -40,6 +40,6 @@ export default function sign_out() {
 					}
 				</FirebaseAuthConsumer>
 			</FilterUsers>
-		</Layout>
+		}</Layout>
 	);
 };
