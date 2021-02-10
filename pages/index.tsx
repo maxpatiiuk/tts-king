@@ -5,18 +5,16 @@ import { Centered }                 from '../components/UI';
 import { FirebaseAuthConsumer }     from '@react-firebase/auth';
 import { LanguageStringsStructure } from '../lib/languages';
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		tts: string,
-		king: string,
-		header: string,
-		paragraph_1: string,
-		paragraph_2: string,
-		go_to_dashboard: string,
-		sign_up: string,
-		action_statement: (action_link: JSX.Element) => string,
-	},
-} = {
+const languageStrings: LanguageStringsStructure<{
+	tts: string,
+	king: string,
+	header: string,
+	paragraph_1: string,
+	paragraph_2: string,
+	go_to_dashboard: string,
+	sign_up: string,
+	action_statement: (action_link: JSX.Element) => string,
+}> = {
 	'en-US': {
 		tts: 'TTS',
 		king: 'King',
@@ -45,7 +43,7 @@ export default function index() {
 					to-purple-400 text-transparent pb-3 flex-shrink-0'
 				>
 					<span className='sm:block'>{
-						languageStrings[language].tts2
+						languageStrings[language].tts
 					} </span>
 					<span>{languageStrings[language].king}</span>
 				</h1>
