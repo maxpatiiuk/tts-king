@@ -1,10 +1,7 @@
 import { namedComponent } from '../lib/stateManagement';
 import Modal              from 'react-modal';
-import React         from 'react';
+import React              from 'react';
 import css                from 'styled-jsx/css';
-
-//grey - bg-white border border-gray-300 hover:bg-gray-50 px-4 py-2 rounded-md sm:text-sm sm:w-auto text-gray-700
-//red - bg-red-600 hover:bg-red-700 inline-flex px-4 py-2 rounded-md sm:text-sm
 
 export const ModalDialog = namedComponent(({
 	isOpen = true,
@@ -59,14 +56,17 @@ export const ModalDialog = namedComponent(({
 			shouldCloseOnEsc={typeof handleCloseClick === 'function'}
 		>
 			<div className="bg-white shadow-xl w-auto w-1/2 m-auto">
-				<div className="bg-gray-50 p-4 flex justify-between items-center">
+				<div className="bg-gray-50 p-4 flex justify-between
+					items-center">
 					<h3 className="text-lg text-gray-900">
 						{title}
 					</h3>
 					{
 						handleCloseClick &&
 						<div
-							className="flex items-center justify-center rounded-full bg-red-100 sm:h-10 sm:w-10 cursor-pointer"
+							className="flex items-center justify-center
+								rounded-full bg-red-100 sm:h-10 sm:w-10
+								cursor-pointer"
 							onClick={handleCloseClick}
 						>
 							<svg
@@ -105,9 +105,9 @@ export const ModalDialog = namedComponent(({
 	</div>;
 }, 'ModalDialog');
 
-export const Loading = namedComponent(()=><ModalDialog
+export const Loading = namedComponent(() => <ModalDialog
 	title='Loading...'
 >
-	{ /* TODO: add a fancy loading bar here */ }
+	{ /* TODO: add a fancy loading bar here */}
 	Loading...
-</ModalDialog>,'Loading');
+</ModalDialog>, 'Loading');

@@ -1,22 +1,23 @@
-import { AvailableLanguages, LanguageStringsStructure } from '../lib/languages';
-import React                                            from 'react';
-import LanguageContext                                  from './LanguageContext';
-import Menu                                             from './Menu';
+import {
+	AvailableLanguages,
+	LanguageStringsStructure,
+}                      from '../lib/languages';
+import React           from 'react';
+import LanguageContext from './LanguageContext';
+import Menu            from './Menu';
 import {
 	mainPageMenuItem,
 	MenuItem,
 	languageStrings as commonMenuLanguageStrings,
-}                                                       from '../lib/menuComponents';
+}                      from '../lib/menuComponents';
 
 const languageStrings: LanguageStringsStructure & {
 	'en-US': {
 		profile: string,
-		signOut: string,
 	},
 } = {
 	'en-US': {
 		profile: 'Profile',
-		signOut: 'Sign Out',
 	},
 };
 
@@ -31,9 +32,6 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 			},
 		},
 		'right': {
-			'/dashboard/sign_out': {
-				label: languageStrings[language].signOut,
-			},
 			'/dashboard': {
 				label: commonMenuLanguageStrings[language].dashboard,
 			},
