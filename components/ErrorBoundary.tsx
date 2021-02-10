@@ -23,14 +23,12 @@ type ErrorBoundaryState =
 	errorInfo: {componentStack: string}
 };
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		title: string,
-		reload: string,
-		previousPage: string,
-		unexpectedErrorHasOccurred: string,
-	},
-} = {
+const languageStrings: LanguageStringsStructure<{
+	title: string,
+	reload: string,
+	previousPage: string,
+	unexpectedErrorHasOccurred: string,
+}> = {
 	'en-US': {
 		title: 'Unexpected Error',
 		reload: 'Reload',

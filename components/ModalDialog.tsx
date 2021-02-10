@@ -56,17 +56,17 @@ export const ModalDialog = namedComponent(({
 			shouldCloseOnEsc={typeof handleCloseClick === 'function'}
 		>
 			<div className="bg-white shadow-xl w-auto w-1/2 m-auto">
-				<div className="bg-gray-50 p-4 flex justify-between
-					items-center">
+				<div className={`bg-gray-50 p-4 flex justify-between
+					items-center`}>
 					<h3 className="text-lg text-gray-900">
 						{title}
 					</h3>
 					{
 						handleCloseClick &&
 						<div
-							className="flex items-center justify-center
+							className={`flex items-center justify-center
 								rounded-full bg-red-100 sm:h-10 sm:w-10
-								cursor-pointer"
+								cursor-pointer`}
 							onClick={handleCloseClick}
 						>
 							<svg

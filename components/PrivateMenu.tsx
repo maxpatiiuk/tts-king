@@ -11,11 +11,9 @@ import {
 	languageStrings as commonMenuLanguageStrings,
 }                      from '../lib/menuComponents';
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		profile: string,
-	},
-} = {
+const languageStrings: LanguageStringsStructure<{
+	profile: string,
+}> = {
 	'en-US': {
 		profile: 'Profile',
 	},

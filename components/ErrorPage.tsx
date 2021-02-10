@@ -6,12 +6,10 @@ import { commonStrings }            from '../localization/global';
 import { PublicMenu }               from './PublicMenu';
 import { Centered }                 from './UI';
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		header: string,
-		message: string,
-	},
-} = {
+const languageStrings: LanguageStringsStructure<{
+	header: string,
+	message: string,
+}> = {
 	'en-US': {
 		header: 'Oops! Nothing was found',
 		message: `The page you are looking for might have been removed,

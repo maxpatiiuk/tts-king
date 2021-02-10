@@ -12,13 +12,11 @@ import {
 }                               from '../lib/menuComponents';
 import { FirebaseAuthConsumer } from '@react-firebase/auth';
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		about: string,
-		signIn: string,
-		pricing: string,
-	},
-} = {
+const languageStrings: LanguageStringsStructure<{
+	about: string,
+	signIn: string,
+	pricing: string,
+}> = {
 	'en-US': {
 		about: 'About',
 		signIn: 'Sign Up / Sign in',
