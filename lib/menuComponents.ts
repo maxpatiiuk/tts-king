@@ -21,11 +21,9 @@ export const mainPageMenuItem = (
 	}
 );
 
-export const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		dashboard: string,
-	},
-} = {
+export const languageStrings: LanguageStringsStructure<{
+	dashboard: string,
+}> = {
 	'en-US': {
 		dashboard: 'My Dashboard',
 	},

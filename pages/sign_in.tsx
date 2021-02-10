@@ -10,13 +10,11 @@ import FilterUsers    from '../components/FilterUsers';
 import { useRouter }  from 'next/router';
 import firebase       from 'firebase/app';
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		choseSignInMethod: string,
-		signInWithGoogle: string,
-		unexpectedErrorHasOccurred: string,
-	}
-} = {
+const languageStrings: LanguageStringsStructure<{
+	choseSignInMethod: string,
+	signInWithGoogle: string,
+	unexpectedErrorHasOccurred: string,
+}> = {
 	'en-US': {
 		choseSignInMethod: 'Select your preferred sign in method:',
 		signInWithGoogle: 'Sign in with Google',

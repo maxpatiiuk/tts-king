@@ -1,14 +1,12 @@
 import { LanguageStringsStructure } from '../lib/languages';
 import { strip }                    from '../lib/localizationHelper';
 
-const siteInfo: LanguageStringsStructure & {
-	'en-US': {
-		title: string,
-		description: string,
-		keywords: string,
-		author: string,
-	},
-} = {
+const siteInfo: LanguageStringsStructure<{
+	title: string,
+	description: string,
+	keywords: string,
+	author: string,
+}> = {
 	'en-US': {
 		title: 'TTS King',
 		description: strip(`Convert your daily news digests into a

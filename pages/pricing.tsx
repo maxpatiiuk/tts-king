@@ -3,12 +3,10 @@ import { PublicMenu }               from '../components/PublicMenu';
 import { Centered }                 from '../components/UI';
 import { LanguageStringsStructure } from '../lib/languages';
 
-const languageStrings: LanguageStringsStructure & {
-	'en-US': {
-		header: string,
-		subheader: string,
-	},
-} = {
+const languageStrings: LanguageStringsStructure<{
+	header: string,
+	subheader: string,
+}> = {
 	'en-US': {
 		header: 'It\'s free! For now...',
 		subheader: 'Enjoy it while you can',
