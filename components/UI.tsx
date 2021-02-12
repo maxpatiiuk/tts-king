@@ -38,7 +38,11 @@ export const Centered = ({
 
 export const Content = ({
 	children,
+	className='',
 }: {
-	children: React.ReactNode
+	children: React.ReactNode,
+	className?: string,
 }) =>
-	<div className='container mx-auto'>{children}</div>;
+	<div className={`container mx-auto ${className}`}>{
+		children
+	}</div>;

@@ -4,20 +4,17 @@ import Link                         from 'next/link';
 import { Centered }                 from '../components/UI';
 import { FirebaseAuthConsumer }     from '@react-firebase/auth';
 import { LanguageStringsStructure } from '../lib/languages';
+import siteInfo                     from '../const/siteInfo';
 
 const languageStrings: LanguageStringsStructure<{
-	tts: string,
-	king: string,
 	header: string,
 	paragraph_1: string,
 	paragraph_2: string,
 	go_to_dashboard: string,
 	sign_up: string,
-	action_statement: (action_link: JSX.Element) => string,
+	action_statement: (action_link: JSX.Element) => JSX.Element,
 }> = {
 	'en-US': {
-		tts: 'TTS',
-		king: 'King',
 		header: 'Because your time is important!',
 		paragraph_1: `Convert your daily news digests into a simple podcast you
 			can listen to while in transit, walking or even exercising.`,
@@ -25,9 +22,10 @@ const languageStrings: LanguageStringsStructure<{
 			are!`,
 		go_to_dashboard: 'Go to your dashboard',
 		sign_up: 'Sign up',
-		action_statement: (action_link: JSX.Element) => `${
-			action_link
-		} now and see for yourself.`,
+		action_statement: (action_link: JSX.Element) => <>
+			{action_link}
+			{' '}now and see for yourself.
+		</>
 	},
 };
 
@@ -43,9 +41,9 @@ export default function index() {
 					to-purple-400 text-transparent pb-3 flex-shrink-0'
 				>
 					<span className='sm:block'>{
-						languageStrings[language].tts
+						siteInfo[language].tts
 					} </span>
-					<span>{languageStrings[language].king}</span>
+					<span>{siteInfo[language].king}</span>
 				</h1>
 				<div>
 					<h2 className='text-3xl pt-2 pb-3'>{

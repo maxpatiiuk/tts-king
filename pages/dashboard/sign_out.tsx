@@ -6,6 +6,8 @@ import FilterUsers              from '../../components/FilterUsers';
 import { FirebaseAuthConsumer } from '@react-firebase/auth';
 import firebase                 from 'firebase/app';
 
+//TODO: delete this page and replace it with a button in the `dashboard/profile`
+
 export default function sign_out() {
 
 	const router = useRouter();
