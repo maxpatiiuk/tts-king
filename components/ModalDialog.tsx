@@ -6,7 +6,7 @@ import css                from 'styled-jsx/css';
 export const ModalDialog = namedComponent(({
 	isOpen = true,
 	title,
-	buttons = [],
+	buttons,
 	children,
 	onCloseClick: handleCloseClick,
 }: {
