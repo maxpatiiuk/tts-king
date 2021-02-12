@@ -1,14 +1,16 @@
 import 'tailwindcss/tailwind.css';
-import { AppProps }             from 'next/app';
-import ErrorBoundary            from '../components/ErrorBoundary';
-import { useRouter }            from 'next/router';
-import React                    from 'react';
-import LanguageContext          from '../components/LanguageContext';
-import { AvailableLanguages }   from '../lib/languages';
-import firebase                 from 'firebase/app';
+import { AppProps }                 from 'next/app';
+import ErrorBoundary                from '../components/ErrorBoundary';
+import { useRouter }                from 'next/router';
+import React                        from 'react';
+import LanguageContext              from '../components/LanguageContext';
+import { AvailableLanguages }       from '../lib/languages';
+import firebase                     from 'firebase/app';
 import 'firebase/auth';
-import { firebaseConfig }       from '../const/siteConfig';
-import { FirebaseAuthProvider } from '@react-firebase/auth';
+import 'firebase/database';
+import { firebaseConfig }           from '../const/siteConfig';
+import { FirebaseAuthProvider }     from '@react-firebase/auth';
+import { FirebaseDatabaseProvider } from '@react-firebase/database';
 
 export default function app({Component, pageProps}: AppProps) {
 
@@ -22,7 +24,11 @@ export default function app({Component, pageProps}: AppProps) {
 				firebase={firebase}
 				{...firebaseConfig}
 			>
-				<Component {...pageProps} />
+				<FirebaseDatabaseProvider
+					firebase={firebase}
+					{...firebaseConfig}>
+					<Component {...pageProps} />
+				</FirebaseDatabaseProvider>
 			</FirebaseAuthProvider>
 		</ErrorBoundary>
 	</LanguageContext.Provider>;
@@ -34,7 +40,7 @@ export default function app({Component, pageProps}: AppProps) {
 *
 * now:
 *  TODO: integrate users with their firestone data
-*  TODO: fix warnings and error messages reported in the console
+*  TODO: create a record in a database whenever a new user signs in
 *
 * after done:
 *  TODO: add facebook and apple sign in

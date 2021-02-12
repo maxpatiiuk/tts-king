@@ -25,7 +25,7 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 	{
 		'left': {
 			'/': mainPageMenuItem(language),
-			'/profile': {
+			'/dashboard/profile': {
 				label: languageStrings[language].profile,
 			},
 		},
