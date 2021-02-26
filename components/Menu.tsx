@@ -2,6 +2,7 @@ import Link          from 'next/link';
 import React         from 'react';
 import { useRouter } from 'next/router';
 import { MenuItem }  from '../lib/menuComponents';
+import { Content }   from './UI';
 
 
 const MenuItems = ({
@@ -41,8 +42,8 @@ export default function Menu({
 	const {route} = useRouter();
 
 	return <header className='p-4 border-b mb-4'>
-		<div className="container flex flex-wrap justify-between
-			max-w-screen-lg mx-auto">{
+		<Content className="flex-wrap justify-between
+			max-w-screen-lg">{
 			menuItemGroups.map((
 				menuItems,
 				index,
@@ -53,6 +54,6 @@ export default function Menu({
 						menuItems={menuItems}
 					/>,
 			)
-		}</div>
+		}</Content>
 	</header>;
 }
