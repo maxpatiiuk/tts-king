@@ -43,6 +43,6 @@ export const Content = ({
 	children: React.ReactNode,
 	className?: string,
 }) =>
-	<div className={`container mx-auto ${className}`}>{
+	<div className={`container mx-auto max-w-screen-lg flex ${className}`}>{
 		children
 	}</div>;

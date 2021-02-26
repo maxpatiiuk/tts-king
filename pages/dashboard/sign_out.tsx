@@ -3,7 +3,6 @@ import Layout                   from '../../components/Layout';
 import { Loading }              from '../../components/ModalDialog';
 import { useRouter }            from 'next/router';
 import FilterUsers              from '../../components/FilterUsers';
-import { FirebaseAuthConsumer } from '@react-firebase/auth';
 import firebase                 from 'firebase/app';
 
 //TODO: delete this page and replace it with a button in the `dashboard/profile`
@@ -30,18 +29,14 @@ export default function sign_out() {
 		<Layout>{
 			() => <FilterUsers
 				isProtected={true}
-				redirectPath='/'>
-				<FirebaseAuthConsumer>
-					{
-						() =>
-							void (
-								!firebaseLoaded &&
-								setFirebaseLoaded(true)
-							) ||
-							<Loading />
-					}
-				</FirebaseAuthConsumer>
-			</FilterUsers>
+				redirectPath='/'>{
+					() =>
+						void (
+							!firebaseLoaded &&
+							setFirebaseLoaded(true)
+						) ||
+						<Loading />
+			}</FilterUsers>
 		}</Layout>
 	);
 };
