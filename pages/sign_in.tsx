@@ -49,27 +49,33 @@ export default function SignIn() {
 		(language) => <FilterUsers
 			isProtected={false}
 			redirectPath='/'
-		>
-			<PublicMenu />
-			<Centered>
-				<div>
-					{
-						typeof errorMessage !== 'undefined' && <div
-							className='p-4 text-white bg-red-400 mb-4'
-						>{errorMessage}</div>
-					}
-					<h2>{languageStrings[language].choseSignInMethod}</h2>
-					<div className="flex flex-column gap-y-1 pt-4">
-						<button
-							className='border border-gray-200 p-4 bg-gray-200
-										hover:bg-white w-full box-content'
-							onClick={initializeSignIn.bind(null, language)}
-						>
-							{languageStrings[language].signInWithGoogle}
-						</button>
+		>{
+			()=><>
+				<PublicMenu />
+				<Centered>
+					<div>
+						{
+							typeof errorMessage !== 'undefined' && <div
+								className='p-4 text-white bg-red-400 mb-4'
+							>{errorMessage}</div>
+						}
+						<h2>{languageStrings[language].choseSignInMethod}</h2>
+						<div className="flex flex-column gap-y-1 pt-4">
+							<button
+								className='border border-gray-200 p-4
+									bg-gray-200 hover:bg-white w-full
+									box-content'
+								onClick={initializeSignIn.bind(
+									null,
+									language
+								)}
+							>
+								{languageStrings[language].signInWithGoogle}
+							</button>
+						</div>
 					</div>
-				</div>
-			</Centered>
-		</FilterUsers>
+				</Centered>
+			</>
+		}</FilterUsers>
 	}</Layout>;
 }
