@@ -18,7 +18,7 @@ const languageStrings: LanguageStringsStructure<{
 };
 
 const ErrorPage = ({errorCode = 404}: {errorCode?: number}) =>
-	<Layout title={errorCode.toString()}>
+	<Layout title={errorCode.toString()} private_page>
 		{(language) =>
 			<>
 				<PublicMenu />

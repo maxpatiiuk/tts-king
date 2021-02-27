@@ -44,9 +44,10 @@ export default function app({Component, pageProps}: AppProps) {
 *
 * after done:
 *  TODO: add facebook and apple sign in
+*  TODO: replace all localhost instances in ALL FILES with real domain
+*  TODO: replace " in attributes with '
 *  TODO: finish the `about` page
-*  TODO: replace start_url in site.webmanifest
-*  TODO: make page search engine indexable
+*  TODO: make pages search engine indexable
 *  TODO: implement Google Analytics
 *  TODO: use Vercel's hosting
 *  TODO: add a dark mode
@@ -57,7 +58,6 @@ export default function app({Component, pageProps}: AppProps) {
 /*
 * NODE.JS TODO:
 * swr for client-side data fetching
-* .env.local for global env constants
 * async/await instead of promises
 * <Link
 	href={{
@@ -65,8 +65,7 @@ export default function app({Component, pageProps}: AppProps) {
 		query: { slug: post.slug },
 	}}
 >
-* don't export non-react components from react components! (they would
-* cause an excess page reloads in development)
+* don't export non-react components from react components!
 * use dynamic imports to speed up page load:
 * const Fuse = (await import('fuse.js')).default; // for non react components
 import dynamic from 'next/dynamic'  // for react components:

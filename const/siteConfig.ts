@@ -1,5 +1,6 @@
 export const themeColor = '#fbbf24';
 export const robots = 'noindex,nofollow';
+export const domain = 'http://localhost:3000/';
 
 export const firebaseConfig = {
 	apiKey: 'AIzaSyAp_YqutAE6-WzD3k7X2rJ0GJ6w95KMJyM',
