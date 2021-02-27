@@ -31,7 +31,7 @@ const languageStrings: LanguageStringsStructure<{
 
 
 export default function index() {
-	return <Layout>{
+	return <Layout page_url=''>{
 		(language) => <>
 			<PublicMenu />
 			<Centered>

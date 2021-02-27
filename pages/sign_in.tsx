@@ -11,11 +11,13 @@ import { useRouter }  from 'next/router';
 import firebase       from 'firebase/app';
 
 const languageStrings: LanguageStringsStructure<{
+	title: string,
 	choseSignInMethod: string,
 	signInWithGoogle: string,
 	unexpectedErrorHasOccurred: string,
 }> = {
 	'en-US': {
+		title: 'Sign In ',
 		choseSignInMethod: 'Select your preferred sign in method:',
 		signInWithGoogle: 'Sign in with Google',
 		unexpectedErrorHasOccurred: 'Unexpected error has occurred',
@@ -45,7 +47,10 @@ export default function SignIn() {
 		}
 	}
 
-	return <Layout>{
+	return <Layout
+		page_url='sign_in'
+		title={languageStrings}
+	>{
 		(language) => <FilterUsers
 			isProtected={false}
 			redirectPath='/'
