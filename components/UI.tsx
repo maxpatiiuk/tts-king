@@ -30,19 +30,24 @@ export const Centered = ({
 	children,
 }: {
 	children: React.ReactNode
-}) => <div className='flex-grow flex items-center mb-10 justify-center'>
+}) => <main className='flex-grow flex items-center mb-10 justify-center'>
 	<div className='sm:flex gap-x-5 max-w-2xl mx-5'>
 		{children}
 	</div>
-</div>;
+</main>;
 
-export const Content = ({
+export const contentClassName = 'container mx-auto max-w-screen-lg flex';
+export function Content({
 	children,
 	className='',
 }: {
 	children: React.ReactNode,
 	className?: string,
-}) =>
-	<div className={`container mx-auto max-w-screen-lg flex ${className}`}>{
+	notMain?: boolean,
+}){
+	return <div
+		className={`${contentClassName} ${className}`}
+	>{
 		children
 	}</div>;
+}
