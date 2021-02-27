@@ -1,0 +1,8 @@
+http://localhost:3000/
+http://localhost:3000/about
+http://localhost:3000/pricing
+http://localhost:3000/sign_in
+http://localhost:3000/en-US
+http://localhost:3000/en-US/about
+http://localhost:3000/en-US/pricing
+http://localhost:3000/en-US/sign_in
