@@ -8,21 +8,21 @@ import siteInfo                     from '../const/siteInfo';
 
 const languageStrings: LanguageStringsStructure<{
 	header: string,
-	paragraph_1: string,
-	paragraph_2: string,
-	go_to_dashboard: string,
-	sign_up: string,
-	action_statement: (action_link: JSX.Element) => JSX.Element,
+	paragraph1: string,
+	paragraph2: string,
+	goToDashboard: string,
+	signUp: string,
+	actionStatement: (action_link: JSX.Element) => JSX.Element,
 }> = {
 	'en-US': {
 		header: 'Because your time is important!',
-		paragraph_1: `Convert your daily news digests into a simple podcast you
+		paragraph1: `Convert your daily news digests into a simple podcast you
 			can listen to while in transit, walking or even exercising.`,
-		paragraph_2: `TTS King helps you stay productive no matter where you
+		paragraph2: `TTS King helps you stay productive no matter where you
 			are!`,
-		go_to_dashboard: 'Go to your dashboard',
-		sign_up: 'Sign up',
-		action_statement: (action_link: JSX.Element) => <>
+		goToDashboard: 'Go to your dashboard',
+		signUp: 'Sign up',
+		actionStatement: (action_link: JSX.Element) => <>
 			{action_link}
 			{' '}now and see for yourself.
 		</>
@@ -49,12 +49,12 @@ export default function index() {
 					<h2 className='text-3xl pt-2 pb-3'>{
 						languageStrings[language].header
 					}</h2>
-					<p>{languageStrings[language].paragraph_1}</p>
+					<p>{languageStrings[language].paragraph1}</p>
 					<p className='pt-4'>{
-						languageStrings[language].paragraph_2
+						languageStrings[language].paragraph2
 					}</p>
 					<p className='pt-3'>{
-						languageStrings[language].action_statement(
+						languageStrings[language].actionStatement(
 							<FirebaseAuthConsumer>{
 								({isSignedIn}) => isSignedIn ?
 									<Link href='/dashboard'>
@@ -64,14 +64,14 @@ export default function index() {
 											text-red-500'
 										>{
 											languageStrings[
-												language].go_to_dashboard
+												language].goToDashboard
 										}</a>
 									</Link> :
 									<Link href='/sign_in'>
 										<a className='hover:bg-red-500
 											hover:text-white bg-transparent
 											text-red-500'
-										>{languageStrings[language].sign_up}</a>
+										>{languageStrings[language].signUp}</a>
 									</Link>
 							}</FirebaseAuthConsumer>,
 						)
