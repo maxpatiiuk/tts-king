@@ -4,6 +4,8 @@ import { Loading }              from './ModalDialog';
 import { FirebaseAuthConsumer } from '@react-firebase/auth';
 import useClientSideRendering   from './useClientSideRendering';
 import { RenderableChildren }   from '@react-firebase/auth/dist/types';
+import { PrivateMenu }          from './PrivateMenu';
+import { PublicMenu }           from './PublicMenu';
 
 
 export default function FilterUsers({
@@ -25,7 +27,14 @@ export default function FilterUsers({
 				props.providerId === null ?
 					<Loading /> :
 					props.isSignedIn === isProtected ?
-						children(props) :
+						<>
+							{
+								isProtected ?
+									<PrivateMenu /> :
+									<PublicMenu />
+							}
+							{children(props)}
+						</> :
 						void (
 							router.push(redirectPath)
 						) ||
