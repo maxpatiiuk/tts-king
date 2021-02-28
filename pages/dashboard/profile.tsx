@@ -1,6 +1,5 @@
 import React           from 'react';
 import Layout          from '../../components/Layout';
-import { PrivateMenu } from '../../components/PrivateMenu';
 import FilterUsers     from '../../components/FilterUsers';
 import { Content }     from '../../components/UI';
 import {
@@ -71,7 +70,7 @@ function downloadFile({
 	document.body.removeChild(element);
 }
 
-export default function dashboard() {
+export default function profile() {
 
 	const [
 		downloadUserData,
@@ -152,122 +151,123 @@ export default function dashboard() {
 		currentLanguage,
 	]);
 
-	return (
-		<Layout>{
-			(language) => <>
+	return <Layout>{
+		(language) => <>
 
-				{
-					!currentLanguage &&
-					setCurrentLanguage(language)
-				}
+			{
+				!currentLanguage &&
+				setCurrentLanguage(language)
+			}
+			{
+				(
+					downloadUserData ||
+					deleteUserData
+				) && <Loading />
+			}
+			<FilterUsers
+				isProtected={true}
+				redirectPath={'/sign_in'}
+			>{
+				({user}) => <Content
+					className='flex-col'
+				>
 
-				{
-					void (
-						console.log(
-							{
-								downloadUserData,
-								deleteUserData,
-							},
-						)
-					)
-				}
-				{
-					(
-						downloadUserData ||
-						deleteUserData
-					) && <Loading />
-				}
-				<PrivateMenu />
-				<FilterUsers
-					isProtected={true}
-					redirectPath={'/sign_in'}
-				>{
-					({user}) => <Content
-						className='flex-col'
-					>
+					{
+						!currentUser &&
+						setCurrentUser(user)
+					}
 
-						{
-							!currentUser &&
-							setCurrentUser(user)
+					<div className='flex justify-center'>
+						<Image
+							className='rounded-full'
+							src={user.photoURL}
+							alt={user.displayName}
+							width={96}
+							height={96}
+						/>
+					</div>
+
+					<LabeledField label='Name'>
+						{user.displayName}
+					</LabeledField>
+
+					<LabeledField label='Email'>
+						{user.email}
+					</LabeledField>
+
+					<button
+						className={dangerLinkClassName}
+						onClick={() =>
+							setDownloadUserData(true)
 						}
+					>{
+						languageStrings[language].downloadData
+					}</button>
 
-						<div className='flex justify-center'>
-							<Image
-								className='rounded-full'
-								src={user.photoURL}
-								alt={user.displayName}
-								width={96}
-								height={96}
-							/>
-						</div>
-
-						<LabeledField label='Name'>
-							{user.displayName}
-						</LabeledField>
-
-						<LabeledField label='Email'>
-							{user.email}
-						</LabeledField>
-
-						<DangerLink props={{
-							onClick: () =>
-								setDownloadUserData(true),
-						}}>Download my data</DangerLink>
-
-						{
-							showDeleteUserPrompt &&
-							<ModalDialog
-								title={
-									languageStrings[language
-										].deleteAccountConfirmationTitle
-								}
-								buttons={<>
-									<ButtonPrimary props={{
-										onClick: () =>
-											setShowDeleteUserPrompt(
-												false,
-											),
-									}}>
-										{languageStrings[language
-											].cancelDeleteAccount}
-									</ButtonPrimary>
-									<ButtonSuccess props={{
-										onClick: () => {
-											setDownloadUserData(true);
-											setDeleteUserData(true);
-										},
-									}}>
-										{languageStrings[language
-											].downloadAndDeleteAccount}
-									</ButtonSuccess>
-									<ButtonDanger props={{
-										onClick: () =>
-											setDeleteUserData(true),
-									}}>
-										{languageStrings[language
-											].deleteAccount}
-									</ButtonDanger>
-								</>}
-							>
-								{languageStrings[
-									language].deleteAccountConfirmation}
-								<br /><br />
-								{languageStrings[
-									language].deleteAccountConsequences}
-							</ModalDialog>
+					{
+						showDeleteUserPrompt &&
+						<ModalDialog
+							title={
+								languageStrings[language
+									].deleteAccountConfirmationTitle
+							}
+							buttons={<>
+								<button
+									className={primaryButtonClassName}
+									onClick={() =>
+										setShowDeleteUserPrompt(
+											false,
+										)}
+								>
+									{languageStrings[language
+										].cancelDeleteAccount}
+								</button>
+								<button
+									className={successButtonClassName}
+									onClick={() => {
+										setDownloadUserData(true);
+										setDeleteUserData(true);
+									}}
+								>
+									{languageStrings[language
+										].downloadAndDeleteAccount}
+								</button>
+								<button
+									className={dangerButtonClassName}
+									onClick={() =>
+										setDeleteUserData(true)
+									}
+								>
+									{languageStrings[language
+										].confirmDeleteAccount}
+								</button>
+							</>}
+						>
+							{languageStrings[
+								language].deleteAccountConfirmation}
+							<br /><br />
+							{languageStrings[
+								language].deleteAccountConsequences}
+						</ModalDialog>
+					}
+					<button
+						className={dangerLinkClassName}
+						onClick={() =>
+							setShowDeleteUserPrompt(true)
 						}
-						<DangerLink props={{
-							onClick: () =>
-								setShowDeleteUserPrompt(true),
-						}}>Delete account</DangerLink>
+					>{
+						languageStrings[language].deleteAccount
+					}</button>
 
-						<DangerLink props={{
-							onClick: signOut,
-						}}>Sign out</DangerLink>
+					<button
+						className={dangerLinkClassName}
+						onClick={signOut}
+					>{
+						languageStrings[language].signOut
+					}</button>
 
-					</Content>
-				}</FilterUsers>
-			</>
-		}</Layout>
-	);
+				</Content>
+			}</FilterUsers>
+		</>
+	}</Layout>;
 }
