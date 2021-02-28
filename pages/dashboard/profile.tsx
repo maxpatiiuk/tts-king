@@ -27,10 +27,11 @@ const languageStrings: LanguageStringsStructure<{
 	deleteAccountConfirmationTitle: string,
 	deleteAccountConfirmation: string,
 	deleteAccountConsequences: string,
-	deleteAccount: string,
+	confirmDeleteAccount: string,
 	cancelDeleteAccount: string,
 	downloadAndDeleteAccount: string,
 	noSavedData: string,
+	deleteAccount: string,
 }> = {
 	'en-US': {
 		downloadData: 'Download my data',
@@ -40,10 +41,11 @@ const languageStrings: LanguageStringsStructure<{
 			account?`,
 		deleteAccountConsequences: `You listening stats and saved stories
 			would be permanently deleted.`,
-		deleteAccount: 'Yes, delete',
+		confirmDeleteAccount: 'Yes, delete',
 		cancelDeleteAccount: 'No, don\'t delete',
 		downloadAndDeleteAccount: 'Download my data and delete',
 		noSavedData: 'We don\'t have any saved data on you',
+		deleteAccount: 'Delete account'
 	},
 };
 
