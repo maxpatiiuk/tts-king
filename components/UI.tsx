@@ -36,7 +36,7 @@ export const Centered = ({
 	</div>
 </main>;
 
-export const contentClassName = 'container mx-auto max-w-screen-lg flex';
+export const contentClassName = 'container mx-auto max-w-screen-lg';
 export function Content({
 	children,
 	className='',
@@ -45,9 +45,9 @@ export function Content({
 	className?: string,
 	notMain?: boolean,
 }){
-	return <div
+	return <main
 		className={`${contentClassName} ${className}`}
 	>{
 		children
-	}</div>;
+	}</main>;
 }
