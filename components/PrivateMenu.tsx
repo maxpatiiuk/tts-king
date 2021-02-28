@@ -13,9 +13,13 @@ import {
 
 const languageStrings: LanguageStringsStructure<{
 	profile: string,
+	sources: string,
+	stats: string,
 }> = {
 	'en-US': {
 		profile: 'Profile',
+		sources: 'Sources',
+		stats: 'Stats',
 	},
 };
 
@@ -28,6 +32,12 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 			'/dashboard/profile': {
 				label: languageStrings[language].profile,
 			},
+			'/dashboard/sources': {
+				label: languageStrings[language].sources,
+			},
+			'/dashboard/stats': {
+				label: languageStrings[language].stats,
+			}
 		},
 		'right': {
 			'/dashboard': {
