@@ -2,18 +2,19 @@ import Layout                       from '../components/Layout';
 import Link                         from 'next/link';
 import React                        from 'react';
 import { LanguageStringsStructure } from '../lib/languages';
-import { commonStrings }            from '../localization/global';
 import { PublicMenu }               from './PublicMenu';
 import { Centered }                 from './UI';
 
 const languageStrings: LanguageStringsStructure<{
 	header: string,
 	message: string,
+	returnToHomePage: string,
 }> = {
 	'en-US': {
 		header: 'Oops! Nothing was found',
 		message: `The page you are looking for might have been removed,
 		had its name changed or is temporarily unavailable.`,
+		returnToHomePage: '← Return to homepage',
 	},
 };
 
@@ -33,7 +34,7 @@ const ErrorPage = ({errorCode = 404}: {errorCode?: number}) =>
 							<Link href="/">
 								<a className='block pt-10 transition
 									text-red-400 hover:text-black'>
-									{commonStrings[
+									{languageStrings[
 										language].returnToHomePage}
 								</a>
 							</Link>

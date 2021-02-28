@@ -8,8 +8,6 @@ const siteInfo: LanguageStringsStructure<{
 	author: string,
 	tts: string,
 	king: string,
-	yes: string,
-	no: string,
 }> = {
 	'en-US': {
 		title: 'TTS King',
@@ -24,8 +22,6 @@ const siteInfo: LanguageStringsStructure<{
 			to audiobook, reader mode, website reader mode, distraction
 			free browser`),
 		author: 'Maksym Patiiuk',
-		yes: 'Yes',
-		no: 'No'
 	},
 };
 
