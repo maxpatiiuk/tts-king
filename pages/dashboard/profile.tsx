@@ -14,12 +14,12 @@ import {
 	LanguageStringsStructure,
 }                      from '../../lib/languages';
 import {
-	ButtonDanger,
-	ButtonPrimary,
-	ButtonSuccess,
-	DangerLink,
-	LabeledField,
-}                      from '../../components/InteractivePrimitives';
+	dangerButtonClassName,
+	dangerLinkClassName,
+	primaryButtonClassName,
+	successButtonClassName,
+	LabeledField
+} from '../../components/InteractivePrimitives';
 import firebase        from 'firebase/app';
 
 const languageStrings: LanguageStringsStructure<{
