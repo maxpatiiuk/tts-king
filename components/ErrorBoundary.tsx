@@ -8,7 +8,7 @@
 
 import React                        from 'react';
 import { ModalDialog }              from './ModalDialog';
-import { ButtonDanger }             from './InteractivePrimitives';
+import { dangerButtonClassName }    from './InteractivePrimitives';
 import { LanguageStringsStructure } from '../lib/languages';
 import LanguageContext              from './LanguageContext';
 
@@ -63,20 +63,18 @@ export default class ErrorBoundary
 				{(language) => <ModalDialog
 					title={'Unexpected Error'}
 					buttons={<>
-						<ButtonDanger
-							props={{
-								onClick: window.location.reload,
-							}}
+						<button
+							className={dangerButtonClassName}
+							onClick={window.location.reload}
 						>
 							{languageStrings[language].reload}
-						</ButtonDanger>
-						<ButtonDanger
-							props={{
-								onClick: window.history.back,
-							}}
+						</button>
+						<button
+							className={dangerButtonClassName}
+							onClick={window.history.back}
 						>
 							{languageStrings[language].previousPage}
-						</ButtonDanger>
+						</button>
 					</>}
 				>
 					<p>{
