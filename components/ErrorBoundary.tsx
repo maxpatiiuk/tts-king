@@ -9,9 +9,9 @@
 
 import React                        from 'react';
 import { ModalDialog }              from './ModalDialog';
-import { dangerButtonClassName }    from './InteractivePrimitives';
-import { LanguageStringsStructure }         from '../lib/languages';
-import { GetUserLanguage } from './LanguageContext';
+import { dangerButtonClassName } from './InteractivePrimitives';
+import { LocalizationStrings }   from '../lib/languages';
+import { GetUserLanguage }       from './LanguageContext';
 
 type ErrorBoundaryState =
   {
@@ -24,7 +24,7 @@ type ErrorBoundaryState =
   errorInfo: {componentStack: string}
 };
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   title: string,
   reload: string,
   previousPage: string,
@@ -58,9 +58,9 @@ export default class ErrorBoundary
     });
   }
 
-  render(): JSX.Element {
-    if (this.state.hasError)
-      return <GetUserLanguage languageStrings={languageStrings}>
+  render = (): JSX.Element =>
+    this.state.hasError ?
+      <GetUserLanguage localizationStrings={localizationStrings}>
         {(languageStrings) => <ModalDialog
           title={'Unexpected Error'}
           buttons={<>
@@ -88,8 +88,6 @@ export default class ErrorBoundary
           </details>
         </ModalDialog>
         }
-      </GetUserLanguage>;
-    else
-      return this.props.children;
-  }
+      </GetUserLanguage> :
+      this.props.children;
 }

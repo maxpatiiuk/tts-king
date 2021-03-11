@@ -6,7 +6,7 @@ import { Content }              from '../../components/UI';
 
 
 export default function dashboard() {
-  return <Layout>{
+  return <Layout privatePage>{  // TODO: add title herer
     () => <FilterUsers
       isProtected={true}
       redirectPath={'/sign_in'}

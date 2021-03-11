@@ -1,9 +1,9 @@
 import Layout                       from '../components/Layout';
 import { PublicMenu }               from '../components/PublicMenu';
-import { Centered }                 from '../components/UI';
-import { LanguageStringsStructure } from '../lib/languages';
+import { Centered }            from '../components/UI';
+import { LocalizationStrings } from '../lib/languages';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   title: string,
   comeBackLater: string,
 }> = {
@@ -17,8 +17,8 @@ const languageStrings: LanguageStringsStructure<{
 const about = () =>
   <Layout
     pageUrl='about'
-    title={languageStrings}
-    languageStrings={languageStrings}
+    title={localizationStrings}
+    localizationStrings={localizationStrings}
   >{
     (languageStrings) => <>
       <PublicMenu />

@@ -5,14 +5,14 @@ import siteInfo                             from '../const/siteInfo';
 import { domain, robots, themeColor } from '../const/siteConfig';
 import {
   DEFAULT_LANGUAGE,
-  LanguageStringsStructure,
+  LocalizationStrings,
   Language,
   AVAILABLE_LANGUAGES
 }                                     from '../lib/languages';
 
 function extractTitle(
   language: Language,
-  title?: string | LanguageStringsStructure<{
+  title?: string | LocalizationStrings<{
     title: string,
   }>,
 ): string {
@@ -34,22 +34,22 @@ export default function Layout<DEFINITIONS extends Record<string,
   string | Function> = Record<never,string|Function>>({
   title,
   children,
-  languageStrings,
+  localizationStrings,
   privatePage = false,
   pageUrl,
 }: {
-  title?: string | LanguageStringsStructure<{
+  title?: string | LocalizationStrings<{
     title: string,
   }>,
   children: (
     languageStrings:DEFINITIONS,
     language: Language
   ) => React.ReactNode,
-  languageStrings?: LanguageStringsStructure<DEFINITIONS>
+  localizationStrings?: LocalizationStrings<DEFINITIONS>
   privatePage?: boolean,
   pageUrl?: string,
 }):JSX.Element {
-  return <GetUserLanguage languageStrings={siteInfo}>
+  return <GetUserLanguage localizationStrings={siteInfo}>
     {(siteInfo, language) =>
       <>
         <Head>
@@ -139,12 +139,14 @@ export default function Layout<DEFINITIONS extends Record<string,
           className='flex flex-col w-screen min-h-screen'
         >
           {children(
-            typeof languageStrings === 'undefined' ?
+            typeof localizationStrings === 'undefined' ?
               // need to cheat here a little bit
-              // if definitions were not provided, this value would be
-              // of type Record<never,string|Function>
+              // if definitions were not provided,
+              // children's first argument would be of type
+              // Record<never,string|Function> because `DEFINITIONS`
+              // would use it's default value in that case
               undefined as unknown as DEFINITIONS:
-              languageStrings[language],
+              localizationStrings[language],
             language
           )}
         </div>

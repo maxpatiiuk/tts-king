@@ -1,6 +1,6 @@
-import { LanguageStringsStructure } from '../lib/languages';
+import { LocalizationStrings } from '../lib/languages';
 
-const commonStrings: LanguageStringsStructure<{
+const commonStrings: LocalizationStrings<{
   yes: string,
   no: string,
 }> = {

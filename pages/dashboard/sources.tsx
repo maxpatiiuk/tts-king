@@ -4,7 +4,7 @@ import FilterUsers              from '../../components/FilterUsers';
 import { Content }              from '../../components/UI';
 import {
   Language,
-  LanguageStringsStructure,
+  LocalizationStrings,
 } from '../../lib/languages';
 import {
   dangerButtonClassName,
@@ -19,7 +19,7 @@ import {
   sourceSubscriptions,
 }                               from '../../lib/sources';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   mySources: string,
   addSource: string,
   subscribe: string,
@@ -41,10 +41,10 @@ const languageStrings: LanguageStringsStructure<{
 
 
 function SourceLine({
-  localizedLanguageStrings,
+  languageStrings,
   source: [sourceName, sourceData],
 }: {
-  localizedLanguageStrings: typeof languageStrings[Language],
+  languageStrings: typeof localizationStrings[Language],
   source: [string, DatabaseSource],
 }) {
   return <tr className='border-gray-300 border-b last:border-b-0'>
@@ -67,7 +67,7 @@ function SourceLine({
               alert('Unsubscribed')
             }
           >{
-            localizedLanguageStrings.unsubscribe
+            languageStrings.unsubscribe
           }</button> :
           <button
             className={successButtonClassName}
@@ -75,7 +75,7 @@ function SourceLine({
               alert('Subscribed')
             }
           >{
-            localizedLanguageStrings.subscribe
+            languageStrings.subscribe
           }</button>
       )
     }</td>
@@ -92,10 +92,10 @@ function SourceLine({
 }
 
 function SourceSubscriptionLine({
-  localizedLanguageStrings,
+  languageStrings,
   source: [, sourceData],
 }: {
-  localizedLanguageStrings: typeof languageStrings[Language],
+  languageStrings: typeof localizationStrings[Language],
   source: [string, Source],
 }) {
   return <tr className='border-gray-300 border-b last:border-b-0'>
@@ -112,14 +112,17 @@ function SourceSubscriptionLine({
           alert('Subscribed')
         }
       >{
-        localizedLanguageStrings.subscribe
+        languageStrings.subscribe
       }</button>
     </td>
   </tr>;
 }
 
 export default function sources() {
-  return <Layout languageStrings={languageStrings}>{
+  return <Layout
+    privatePage
+    localizationStrings={localizationStrings}
+  >{
     (languageStrings, language) => <FilterUsers
       isProtected={true}
       redirectPath={'/sign_in'}
@@ -165,7 +168,7 @@ export default function sources() {
               ).map(source =>
                 <SourceLine
                   key={source[0]}
-                  localizedLanguageStrings={languageStrings}
+                  languageStrings={languageStrings}
                   source={source}
                 />,
               )}
@@ -231,7 +234,7 @@ export default function sources() {
                 ).map(source =>
                   <SourceSubscriptionLine
                     key={source[0]}
-                    localizedLanguageStrings={languageStrings}
+                    languageStrings={languageStrings}
                     source={source}
                   />,
                 )
