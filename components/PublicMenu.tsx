@@ -1,16 +1,13 @@
-import {
-  AvailableLanguages,
-  LanguageStringsStructure,
-}                               from '../lib/languages';
-import React                    from 'react';
-import LanguageContext          from './LanguageContext';
-import Menu                     from './Menu';
+import { Language, LanguageStringsStructure } from '../lib/languages';
+import React                                  from 'react';
+import { GetUserLanguage }                    from './LanguageContext';
+import Menu                                   from './Menu';
 import {
   languageStrings as commonMenuLanguageStrings,
   mainPageMenuItem,
   MenuItem,
-}                               from '../lib/menuComponents';
-import { FirebaseAuthConsumer } from '@react-firebase/auth';
+}                                             from '../lib/menuComponents';
+import { FirebaseAuthConsumer }               from '@react-firebase/auth';
 
 const languageStrings: LanguageStringsStructure<{
   about: string,
@@ -24,22 +21,25 @@ const languageStrings: LanguageStringsStructure<{
   },
 };
 
-const menuItemsDictionary = (language: AvailableLanguages['type']): (
+const menuItemsDictionary = (
+  localizedLanguageStrings: typeof languageStrings[Language],
+  language: Language,
+): (
   Record<'left' | 'right' | 'right_signed_in', Record<string, MenuItem>>
   ) => (
   {
     'left': {
       '/': mainPageMenuItem(language),
       '/about': {
-        label: languageStrings[language].about,
+        label: localizedLanguageStrings.about,
       },
       '/pricing': {
-        label: languageStrings[language].pricing,
+        label: localizedLanguageStrings.pricing,
       },
     },
     'right': {
       '/sign_in': {
-        label: languageStrings[language].signIn,
+        label: localizedLanguageStrings.signIn,
       },
     },
     'right_signed_in': {
@@ -52,15 +52,16 @@ const menuItemsDictionary = (language: AvailableLanguages['type']): (
 
 export function PublicMenu() {
   return <FirebaseAuthConsumer>{
-    ({isSignedIn}) => <LanguageContext.Consumer>{
-      (language) => <Menu menuItemGroups={[
-        menuItemsDictionary(language).left,
-        menuItemsDictionary(language)[
+
+    ({isSignedIn}) => <GetUserLanguage languageStrings={languageStrings}>{
+      (languageStrings, language) => <Menu menuItemGroups={[
+        menuItemsDictionary(languageStrings, language).left,
+        menuItemsDictionary(languageStrings, language)[
           isSignedIn ?
             'right_signed_in' :
             'right'
           ],
       ]} />
-    }</LanguageContext.Consumer>
+    }</GetUserLanguage>
   }</FirebaseAuthConsumer>;
 }

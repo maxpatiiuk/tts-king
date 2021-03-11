@@ -1,4 +1,4 @@
-import { AvailableLanguages, LanguageStringsStructure } from './languages';
+import { Language, LanguageStringsStructure } from './languages';
 
 export type DatabaseSource = {
   label_color: string,
@@ -19,7 +19,7 @@ const LanguageStrings: LanguageStringsStructure<{
 };
 
 export const defaultDatabaseSources = (
-  language: AvailableLanguages['type'],
+  language: Language,
 ): Record<string,
   DatabaseSource> => (
   {

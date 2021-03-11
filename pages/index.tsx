@@ -31,8 +31,8 @@ const languageStrings: LanguageStringsStructure<{
 
 
 export default function index() {
-  return <Layout page_url=''>{
-    (language) => <>
+  return <Layout pageUrl='' languageStrings={languageStrings}>{
+    (languageStrings, language) => <>
       <PublicMenu />
       <Centered>
         <h1
@@ -47,14 +47,14 @@ export default function index() {
         </h1>
         <div>
           <h2 className='text-3xl pt-2 pb-3'>{
-            languageStrings[language].header
+            languageStrings.header
           }</h2>
-          <p>{languageStrings[language].paragraph1}</p>
+          <p>{languageStrings.paragraph1}</p>
           <p className='pt-4'>{
-            languageStrings[language].paragraph2
+            languageStrings.paragraph2
           }</p>
           <p className='pt-3'>{
-            languageStrings[language].actionStatement(
+            languageStrings.actionStatement(
               <FirebaseAuthConsumer>{
                 ({isSignedIn}) => isSignedIn ?
                   <Link href='/dashboard'>
@@ -63,15 +63,14 @@ export default function index() {
                       hover:text-white bg-transparent
                       text-red-500'
                     >{
-                      languageStrings[
-                        language].goToDashboard
+                      languageStrings.goToDashboard
                     }</a>
                   </Link> :
                   <Link href='/sign_in'>
                     <a className='hover:bg-red-500
                       hover:text-white bg-transparent
                       text-red-500'
-                    >{languageStrings[language].signUp}</a>
+                    >{languageStrings.signUp}</a>
                   </Link>
               }</FirebaseAuthConsumer>,
             )
