@@ -14,24 +14,24 @@ import { FirebaseDatabaseProvider } from '@react-firebase/database';
 
 export default function app({Component, pageProps}: AppProps) {
 
-	const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
+  const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
 
-	return <LanguageContext.Provider
-		value={locale as AvailableLanguages['type']}
-	>
-		<ErrorBoundary>
-			<FirebaseAuthProvider
-				firebase={firebase}
-				{...firebaseConfig}
-			>
-				<FirebaseDatabaseProvider
-					firebase={firebase}
-					{...firebaseConfig}>
-					<Component {...pageProps} />
-				</FirebaseDatabaseProvider>
-			</FirebaseAuthProvider>
-		</ErrorBoundary>
-	</LanguageContext.Provider>;
+  return <LanguageContext.Provider
+    value={locale as AvailableLanguages['type']}
+  >
+    <ErrorBoundary>
+      <FirebaseAuthProvider
+        firebase={firebase}
+        {...firebaseConfig}
+      >
+        <FirebaseDatabaseProvider
+          firebase={firebase}
+          {...firebaseConfig}>
+          <Component {...pageProps} />
+        </FirebaseDatabaseProvider>
+      </FirebaseAuthProvider>
+    </ErrorBoundary>
+  </LanguageContext.Provider>;
 }
 
 
@@ -41,6 +41,7 @@ export default function app({Component, pageProps}: AppProps) {
 * now:
 *  TODO: integrate users with their firestone data
 *  TODO: create a record in a database whenever a new user signs in
+*  TODO: add offline PWA support (and service worker)
 *
 * after done:
 *  TODO: add facebook and apple sign in
@@ -60,10 +61,10 @@ export default function app({Component, pageProps}: AppProps) {
 * swr for client-side data fetching
 * async/await instead of promises
 * <Link
-	href={{
-		pathname: '/blog/[slug]',
-		query: { slug: post.slug },
-	}}
+  href={{
+    pathname: '/blog/[slug]',
+    query: { slug: post.slug },
+  }}
 >
 * don't export non-react components from react components!
 * use dynamic imports to speed up page load:
@@ -71,8 +72,8 @@ export default function app({Component, pageProps}: AppProps) {
 import dynamic from 'next/dynamic'  // for react components:
 
 const DynamicComponentWithCustomLoading = dynamic(
-	() => import('../components/hello'),
-	{ loading: () => <p>...</p> }
+  () => import('../components/hello'),
+  { loading: () => <p>...</p> }
 )
 *
 * define css variables in a JS constants file
