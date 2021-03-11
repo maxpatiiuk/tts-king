@@ -1,6 +1,6 @@
 import {
   Language,
-  LanguageStringsStructure,
+  LocalizationStrings,
 }               from './languages';
 import siteInfo from '../const/siteInfo';
 
@@ -21,7 +21,7 @@ export const mainPageMenuItem = (
   }
 );
 
-export const languageStrings: LanguageStringsStructure<{
+export const localizationStrings: LocalizationStrings<{
   dashboard: string,
 }> = {
   'en-US': {

@@ -26,7 +26,7 @@ export default function sign_out() {
   }, [firebaseLoaded]);
 
   return (
-    <Layout>{
+    <Layout privatePage>{
       () => <FilterUsers
         isProtected={true}
         redirectPath='/'>{

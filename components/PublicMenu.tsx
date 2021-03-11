@@ -1,15 +1,15 @@
-import { Language, LanguageStringsStructure } from '../lib/languages';
-import React                                  from 'react';
+import { Language, LocalizationStrings } from '../lib/languages';
+import React                             from 'react';
 import { GetUserLanguage }                    from './LanguageContext';
 import Menu                                   from './Menu';
 import {
-  languageStrings as commonMenuLanguageStrings,
+  localizationStrings as commonMenuLocalizationStrings,
   mainPageMenuItem,
   MenuItem,
 }                                             from '../lib/menuComponents';
 import { FirebaseAuthConsumer }               from '@react-firebase/auth';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   about: string,
   signIn: string,
   pricing: string,
@@ -22,7 +22,7 @@ const languageStrings: LanguageStringsStructure<{
 };
 
 const menuItemsDictionary = (
-  localizedLanguageStrings: typeof languageStrings[Language],
+  languageStrings: typeof localizationStrings[Language],
   language: Language,
 ): (
   Record<'left' | 'right' | 'right_signed_in', Record<string, MenuItem>>
@@ -31,20 +31,20 @@ const menuItemsDictionary = (
     'left': {
       '/': mainPageMenuItem(language),
       '/about': {
-        label: localizedLanguageStrings.about,
+        label: languageStrings.about,
       },
       '/pricing': {
-        label: localizedLanguageStrings.pricing,
+        label: languageStrings.pricing,
       },
     },
     'right': {
       '/sign_in': {
-        label: localizedLanguageStrings.signIn,
+        label: languageStrings.signIn,
       },
     },
     'right_signed_in': {
       '/dashboard': {
-        label: commonMenuLanguageStrings[language].dashboard,
+        label: commonMenuLocalizationStrings[language].dashboard,
       },
     },
   }
@@ -53,7 +53,7 @@ const menuItemsDictionary = (
 export function PublicMenu() {
   return <FirebaseAuthConsumer>{
 
-    ({isSignedIn}) => <GetUserLanguage languageStrings={languageStrings}>{
+    ({isSignedIn}) => <GetUserLanguage localizationStrings={localizationStrings}>{
       (languageStrings, language) => <Menu menuItemGroups={[
         menuItemsDictionary(languageStrings, language).left,
         menuItemsDictionary(languageStrings, language)[

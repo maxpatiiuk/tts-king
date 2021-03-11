@@ -2,11 +2,11 @@ import Layout                       from '../components/Layout';
 import { PublicMenu }               from '../components/PublicMenu';
 import Link                         from 'next/link';
 import { Centered }                 from '../components/UI';
-import { FirebaseAuthConsumer }     from '@react-firebase/auth';
-import { LanguageStringsStructure } from '../lib/languages';
-import siteInfo                     from '../const/siteInfo';
+import { FirebaseAuthConsumer } from '@react-firebase/auth';
+import { LocalizationStrings }  from '../lib/languages';
+import siteInfo                 from '../const/siteInfo';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   header: string,
   paragraph1: string,
   paragraph2: string,
@@ -31,7 +31,10 @@ const languageStrings: LanguageStringsStructure<{
 
 
 export default function index() {
-  return <Layout pageUrl='' languageStrings={languageStrings}>{
+  return <Layout
+    pageUrl=''
+    localizationStrings={localizationStrings}
+  >{
     (languageStrings, language) => <>
       <PublicMenu />
       <Centered>

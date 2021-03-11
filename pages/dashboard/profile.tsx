@@ -10,7 +10,7 @@ import Image         from 'next/image';
 import { useRouter } from 'next/router';
 import {
   Language,
-  LanguageStringsStructure,
+  LocalizationStrings,
 }                    from '../../lib/languages';
 import {
   dangerButtonClassName,
@@ -21,7 +21,7 @@ import {
 }                    from '../../components/InteractivePrimitives';
 import firebase      from 'firebase/app';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   downloadData: string,
   signOut: string,
   deleteAccountConfirmationTitle: string,
@@ -131,7 +131,7 @@ export default function profile() {
       (value) => {
         downloadFile({
           data: value.val() ||
-            languageStrings[currentLanguage].noSavedData,
+            localizationStrings[currentLanguage].noSavedData,
           fileName: `${currentUser.uid}.json`,
         });
 
@@ -153,7 +153,10 @@ export default function profile() {
     currentLanguage,
   ]);
 
-  return <Layout languageStrings={languageStrings}>{
+  return <Layout
+    privatePage
+    localizationStrings={localizationStrings}
+  >{
     (languageStrings, language) => <>
 
       {

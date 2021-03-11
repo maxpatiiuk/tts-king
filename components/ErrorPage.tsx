@@ -1,11 +1,11 @@
 import Layout                       from '../components/Layout';
 import Link                         from 'next/link';
-import React                                            from 'react';
-import { LanguageStringsStructure } from '../lib/languages';
-import { PublicMenu }                                   from './PublicMenu';
+import React                   from 'react';
+import { LocalizationStrings } from '../lib/languages';
+import { PublicMenu }          from './PublicMenu';
 import { Centered }                 from './UI';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   header: string,
   message: string,
   returnToHomePage: string,
@@ -23,7 +23,7 @@ const ErrorPage = ({errorCode = 404}: {errorCode?: number}) =>
   <Layout
     title={errorCode.toString()}
     privatePage
-    languageStrings={languageStrings}
+    localizationStrings={localizationStrings}
   >
     {(languageStrings) =>
       <>

@@ -3,13 +3,13 @@ import React         from 'react';
 import { Centered }  from '../components/UI';
 import {
   Language,
-  LanguageStringsStructure,
+  LocalizationStrings,
 } from '../lib/languages';
 import FilterUsers   from '../components/FilterUsers';
 import { useRouter } from 'next/router';
 import firebase      from 'firebase/app';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   title: string,
   choseSignInMethod: string,
   signInWithGoogle: string,
@@ -32,7 +32,7 @@ export default function SignIn() {
   const router = useRouter();
 
   async function initializeSignIn(
-    localizedLanguageStrings: typeof languageStrings[Language]
+    languageStrings: typeof localizationStrings[Language]
   ) {
     try {
       setErrorMessage(undefined);
@@ -42,7 +42,7 @@ export default function SignIn() {
     }
     catch (error) {
       setErrorMessage(
-        `${localizedLanguageStrings.unexpectedErrorHasOccurred}:
+        `${languageStrings.unexpectedErrorHasOccurred}:
         <br/>${error.message}`,
       );
     }
@@ -50,8 +50,8 @@ export default function SignIn() {
 
   return <Layout
     pageUrl='sign_in'
-    title={languageStrings}
-    languageStrings={languageStrings}
+    title={localizationStrings}
+    localizationStrings={localizationStrings}
   >{
     (languageStrings) => <FilterUsers
       isProtected={false}

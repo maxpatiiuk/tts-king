@@ -1,4 +1,4 @@
-import { Language, LanguageStringsStructure } from './languages';
+import { Language, LocalizationStrings } from './languages';
 
 export type DatabaseSource = {
   label_color: string,
@@ -10,7 +10,7 @@ export type DatabaseSource = {
   type: 'category'
 });
 
-const LanguageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   uncategorized: string
 }> = {
   'en-US': {
@@ -23,7 +23,7 @@ export const defaultDatabaseSources = (
 ): Record<string,
   DatabaseSource> => (
   {
-    [LanguageStrings[language].uncategorized]: {
+    [localizationStrings[language].uncategorized]: {
       type: 'category',
       priority: 0,
       label_color: '#cccccc',

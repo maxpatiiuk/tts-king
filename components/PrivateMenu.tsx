@@ -1,17 +1,17 @@
 import {
   Language,
-  LanguageStringsStructure,
+  LocalizationStrings,
 } from '../lib/languages';
 import React                                from 'react';
 import { GetUserLanguage } from './LanguageContext';
 import Menu                                 from './Menu';
 import {
-  languageStrings as commonMenuLanguageStrings,
+  localizationStrings as commonMenuLocalizationStrings,
   mainPageMenuItem,
   MenuItem,
 }                      from '../lib/menuComponents';
 
-const languageStrings: LanguageStringsStructure<{
+const localizationStrings: LocalizationStrings<{
   profile: string,
   sources: string,
   stats: string,
@@ -24,7 +24,7 @@ const languageStrings: LanguageStringsStructure<{
 };
 
 const menuItemsDictionary = (
-  localizedLanguageStrings: typeof languageStrings[Language],
+  languageStrings: typeof localizationStrings[Language],
   language: Language
 ): (
   Record<'left' | 'right', Record<string, MenuItem>>
@@ -33,25 +33,25 @@ const menuItemsDictionary = (
     'left': {
       '/': mainPageMenuItem(language),
       '/dashboard/profile': {
-        label: localizedLanguageStrings.profile,
+        label: languageStrings.profile,
       },
       '/dashboard/sources': {
-        label: localizedLanguageStrings.sources,
+        label: languageStrings.sources,
       },
       '/dashboard/stats': {
-        label: localizedLanguageStrings.stats,
+        label: languageStrings.stats,
       },
     },
     'right': {
       '/dashboard': {
-        label: commonMenuLanguageStrings[language].dashboard,
+        label: commonMenuLocalizationStrings[language].dashboard,
       },
     },
   }
 );
 
 export function PrivateMenu() {
-  return <GetUserLanguage languageStrings={languageStrings}>{
+  return <GetUserLanguage localizationStrings={localizationStrings}>{
     (languageStrings, language) => <Menu menuItemGroups={[
       menuItemsDictionary(languageStrings, language).left,
       menuItemsDictionary(languageStrings, language).right,

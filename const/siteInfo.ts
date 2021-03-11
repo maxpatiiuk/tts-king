@@ -1,7 +1,7 @@
-import { LanguageStringsStructure } from '../lib/languages';
-import { strip }                    from '../lib/localizationHelper';
+import { LocalizationStrings } from '../lib/languages';
+import { strip }               from '../lib/localizationHelper';
 
-const siteInfo: LanguageStringsStructure<{
+const siteInfo: LocalizationStrings<{
   title: string,
   description: string,
   keywords: string,
