@@ -9,7 +9,7 @@ import {
 import Image         from 'next/image';
 import { useRouter } from 'next/router';
 import {
-  AvailableLanguages,
+  Language,
   LanguageStringsStructure,
 }                    from '../../lib/languages';
 import {
@@ -93,7 +93,7 @@ export default function profile() {
   const [
     currentLanguage,
     setCurrentLanguage,
-  ] = React.useState<AvailableLanguages['type'] | false>(false);
+  ] = React.useState<Language | false>(false);
 
 
   const router = useRouter();
@@ -153,8 +153,8 @@ export default function profile() {
     currentLanguage,
   ]);
 
-  return <Layout>{
-    (language) => <>
+  return <Layout languageStrings={languageStrings}>{
+    (languageStrings, language) => <>
 
       {
         !currentLanguage &&
@@ -203,15 +203,14 @@ export default function profile() {
               setDownloadUserData(true)
             }
           >{
-            languageStrings[language].downloadData
+            languageStrings.downloadData
           }</button>
 
           {
             showDeleteUserPrompt &&
             <ModalDialog
               title={
-                languageStrings[language
-                  ].deleteAccountConfirmationTitle
+                languageStrings.deleteAccountConfirmationTitle
               }
               buttons={<>
                 <button
@@ -221,8 +220,7 @@ export default function profile() {
                       false,
                     )}
                 >
-                  {languageStrings[language
-                    ].cancelDeleteAccount}
+                  {languageStrings.cancelDeleteAccount}
                 </button>
                 <button
                   className={successButtonClassName}
@@ -231,8 +229,7 @@ export default function profile() {
                     setDeleteUserData(true);
                   }}
                 >
-                  {languageStrings[language
-                    ].downloadAndDeleteAccount}
+                  {languageStrings.downloadAndDeleteAccount}
                 </button>
                 <button
                   className={dangerButtonClassName}
@@ -240,16 +237,13 @@ export default function profile() {
                     setDeleteUserData(true)
                   }
                 >
-                  {languageStrings[language
-                    ].confirmDeleteAccount}
+                  {languageStrings.confirmDeleteAccount}
                 </button>
               </>}
             >
-              {languageStrings[
-                language].deleteAccountConfirmation}
+              {languageStrings.deleteAccountConfirmation}
               <br /><br />
-              {languageStrings[
-                language].deleteAccountConsequences}
+              {languageStrings.deleteAccountConsequences}
             </ModalDialog>
           }
           <button
@@ -258,14 +252,14 @@ export default function profile() {
               setShowDeleteUserPrompt(true)
             }
           >{
-            languageStrings[language].deleteAccount
+            languageStrings.deleteAccount
           }</button>
 
           <button
             className={dangerLinkClassName}
             onClick={signOut}
           >{
-            languageStrings[language].signOut
+            languageStrings.signOut
           }</button>
 
         </Content>

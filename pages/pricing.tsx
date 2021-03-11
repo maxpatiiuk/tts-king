@@ -17,17 +17,18 @@ const languageStrings: LanguageStringsStructure<{
 
 const pricing = () =>
   <Layout
-    page_url='pricing'
+    pageUrl='pricing'
     title={languageStrings}
+    languageStrings={languageStrings}
   >{
-    (language) => <>
+    (languageStrings) => <>
       <PublicMenu />
       <Centered>
         <h1 className='text-9xl font-bold'>{
-          languageStrings[language].header
+          languageStrings.header
         }</h1>
         <p className='text-xl'>{
-          languageStrings[language].subheader
+          languageStrings.subheader
         }</p>
       </Centered>
     </>

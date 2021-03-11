@@ -10,8 +10,8 @@
 import React                        from 'react';
 import { ModalDialog }              from './ModalDialog';
 import { dangerButtonClassName }    from './InteractivePrimitives';
-import { LanguageStringsStructure } from '../lib/languages';
-import LanguageContext              from './LanguageContext';
+import { LanguageStringsStructure }         from '../lib/languages';
+import { GetUserLanguage } from './LanguageContext';
 
 type ErrorBoundaryState =
   {
@@ -60,26 +60,26 @@ export default class ErrorBoundary
 
   render(): JSX.Element {
     if (this.state.hasError)
-      return <LanguageContext.Consumer>
-        {(language) => <ModalDialog
+      return <GetUserLanguage languageStrings={languageStrings}>
+        {(languageStrings) => <ModalDialog
           title={'Unexpected Error'}
           buttons={<>
             <button
               className={dangerButtonClassName}
               onClick={window.location.reload}
             >
-              {languageStrings[language].reload}
+              {languageStrings.reload}
             </button>
             <button
               className={dangerButtonClassName}
               onClick={window.history.back}
             >
-              {languageStrings[language].previousPage}
+              {languageStrings.previousPage}
             </button>
           </>}
         >
           <p>{
-            languageStrings[language].unexpectedErrorHasOccurred
+            languageStrings.unexpectedErrorHasOccurred
           }</p>
           <details style={{whiteSpace: 'pre-wrap'}}>
             {this.state.error && this.state.error.toString()}
@@ -88,7 +88,7 @@ export default class ErrorBoundary
           </details>
         </ModalDialog>
         }
-      </LanguageContext.Consumer>;
+      </GetUserLanguage>;
     else
       return this.props.children;
   }
