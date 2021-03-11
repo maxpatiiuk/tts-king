@@ -1,3 +1,3 @@
 export type {
-	RunMutation,
+  RunMutation,
 } from '@react-firebase/database/dist/components/FirebaseDatabaseMutation';
