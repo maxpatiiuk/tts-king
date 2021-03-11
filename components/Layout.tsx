@@ -1,17 +1,17 @@
 import Head                           from 'next/head';
-import React                          from 'react';
-import LanguageContext                from './LanguageContext';
-import siteInfo                       from '../const/siteInfo';
+import React                                from 'react';
+import { GetUserLanguage } from './LanguageContext';
+import siteInfo                             from '../const/siteInfo';
 import { domain, robots, themeColor } from '../const/siteConfig';
 import {
-  AvailableLanguages,
-  defaultLanguage,
+  DEFAULT_LANGUAGE,
   LanguageStringsStructure,
-  listOfLanguages,
+  Language,
+  AVAILABLE_LANGUAGES
 }                                     from '../lib/languages';
 
 function extractTitle(
-  language: AvailableLanguages['type'],
+  language: Language,
   title?: string | LanguageStringsStructure<{
     title: string,
   }>,
@@ -29,21 +29,28 @@ function extractTitle(
     titleString;
 }
 
-const Layout = ({
+
+export default function Layout<DEFINITIONS extends Record<string,
+  string | Function> = Record<never,string|Function>>({
   title,
   children,
-  private_page = false,
-  page_url,
+  languageStrings,
+  privatePage = false,
+  pageUrl,
 }: {
   title?: string | LanguageStringsStructure<{
     title: string,
   }>,
-  children: (language: AvailableLanguages['type']) => React.ReactNode,
-  private_page?: boolean,
-  page_url?: string,
-}) =>
-  <LanguageContext.Consumer>
-    {(language) =>
+  children: (
+    languageStrings:DEFINITIONS,
+    language: Language
+  ) => React.ReactNode,
+  languageStrings?: LanguageStringsStructure<DEFINITIONS>
+  privatePage?: boolean,
+  pageUrl?: string,
+}):JSX.Element {
+  return <GetUserLanguage languageStrings={siteInfo}>
+    {(siteInfo, language) =>
       <>
         <Head>
           <title>{
@@ -51,15 +58,15 @@ const Layout = ({
           }</title>
           <link rel='icon' href='/favicon.ico' />
           <meta name='robots' content={
-            private_page ? 'noindex,nofollow' : robots
+            privatePage ? 'noindex,nofollow' : robots
           } />
           <meta name='description' content={
-            siteInfo[language].description
+            siteInfo.description
           } />
           <meta name='keywords' content={
-            siteInfo[language].keywords
+            siteInfo.keywords
           } />
-          <meta name='author' content={siteInfo[language].author} />
+          <meta name='author' content={siteInfo.author} />
           <link
             rel="apple-touch-icon"
             sizes="180x180"
@@ -86,10 +93,10 @@ const Layout = ({
             color={themeColor}
           />
           {
-            typeof page_url !== 'undefined' &&
+            typeof pageUrl !== 'undefined' &&
             <>
               {[
-                ...listOfLanguages,
+                ...AVAILABLE_LANGUAGES,
                 'x-default',
               ].map(language =>
                 <link
@@ -101,24 +108,24 @@ const Layout = ({
                       '' :
                       language
                   }${
-                    page_url === '' ?
+                    pageUrl === '' ?
                       '' :
                       `${
                         language === 'x-default' ?
                           '' :
                           '/'
-                      }${page_url}`
+                      }${pageUrl}`
                   }`}
                 />,
               )}
               {
-                language === defaultLanguage &&
+                language === DEFAULT_LANGUAGE &&
                 <link
                   rel="canonical"
                   href={`${domain.slice(0, -1)}${
-                    page_url === '' ?
+                    pageUrl === '' ?
                       '' :
-                      `/${page_url}`
+                      `/${pageUrl}`
                   }`}
                 />
               }
@@ -131,10 +138,17 @@ const Layout = ({
           id='root'
           className='flex flex-col w-screen min-h-screen'
         >
-          {children(language)}
+          {children(
+            typeof languageStrings === 'undefined' ?
+              // need to cheat here a little bit
+              // if definitions were not provided, this value would be
+              // of type Record<never,string|Function>
+              undefined as unknown as DEFINITIONS:
+              languageStrings[language],
+            language
+          )}
         </div>
       </>
     }
-  </LanguageContext.Consumer>;
-
-export default Layout;
+  </GetUserLanguage>;
+}

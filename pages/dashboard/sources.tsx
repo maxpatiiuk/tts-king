@@ -3,9 +3,9 @@ import Layout                   from '../../components/Layout';
 import FilterUsers              from '../../components/FilterUsers';
 import { Content }              from '../../components/UI';
 import {
-  AvailableLanguages,
+  Language,
   LanguageStringsStructure,
-}                               from '../../lib/languages';
+} from '../../lib/languages';
 import {
   dangerButtonClassName,
   fieldClassName,
@@ -41,10 +41,10 @@ const languageStrings: LanguageStringsStructure<{
 
 
 function SourceLine({
-  language,
+  localizedLanguageStrings,
   source: [sourceName, sourceData],
 }: {
-  language: AvailableLanguages['type'],
+  localizedLanguageStrings: typeof languageStrings[Language],
   source: [string, DatabaseSource],
 }) {
   return <tr className='border-gray-300 border-b last:border-b-0'>
@@ -67,7 +67,7 @@ function SourceLine({
               alert('Unsubscribed')
             }
           >{
-            languageStrings[language].unsubscribe
+            localizedLanguageStrings.unsubscribe
           }</button> :
           <button
             className={successButtonClassName}
@@ -75,7 +75,7 @@ function SourceLine({
               alert('Subscribed')
             }
           >{
-            languageStrings[language].subscribe
+            localizedLanguageStrings.subscribe
           }</button>
       )
     }</td>
@@ -92,10 +92,10 @@ function SourceLine({
 }
 
 function SourceSubscriptionLine({
-  language,
+  localizedLanguageStrings,
   source: [, sourceData],
 }: {
-  language: AvailableLanguages['type'],
+  localizedLanguageStrings: typeof languageStrings[Language],
   source: [string, Source],
 }) {
   return <tr className='border-gray-300 border-b last:border-b-0'>
@@ -112,15 +112,15 @@ function SourceSubscriptionLine({
           alert('Subscribed')
         }
       >{
-        languageStrings[language].subscribe
+        localizedLanguageStrings.subscribe
       }</button>
     </td>
   </tr>;
 }
 
 export default function sources() {
-  return <Layout>{
-    (language) => <FilterUsers
+  return <Layout languageStrings={languageStrings}>{
+    (languageStrings, language) => <FilterUsers
       isProtected={true}
       redirectPath={'/sign_in'}
     >{
@@ -133,11 +133,11 @@ export default function sources() {
               <thead className='text-left text-2xl'>
               <tr>
                 <th>{
-                  languageStrings[language].mySources
+                  languageStrings.mySources
                 }</th>
                 <th />
                 <th className='w-px whitespace-nowrap'>{
-                  languageStrings[language].priority
+                  languageStrings.priority
                 }</th>
               </tr>
               </thead>
@@ -165,7 +165,7 @@ export default function sources() {
               ).map(source =>
                 <SourceLine
                   key={source[0]}
-                  language={language}
+                  localizedLanguageStrings={languageStrings}
                   source={source}
                 />,
               )}
@@ -174,8 +174,7 @@ export default function sources() {
                   <input
                     className={`${fieldClassName} w-full`}
                     placeholder={
-                      languageStrings[language
-                        ].categoryName
+                      languageStrings.categoryName
                     }
                     type='text'
                     value=''
@@ -191,8 +190,7 @@ export default function sources() {
                     }
                     onClick={() => alert('Added')}
                   >{
-                    languageStrings[language
-                      ].subscribe
+                    languageStrings.subscribe
                   }</button>
                 </td>
               </tr>
@@ -205,7 +203,7 @@ export default function sources() {
                   className='text-2xl w-px whitespace-nowrap'
                 >
                   <div className='mb-2'>{
-                    languageStrings[language].addSource
+                    languageStrings.addSource
                   }</div>
                 </th>
                 <th colSpan={2}>
@@ -213,8 +211,7 @@ export default function sources() {
                     <input
                       className={fieldClassName}
                       placeholder={
-                        languageStrings[language
-                          ].search
+                        languageStrings.search
                       }
                       type="text"
                       value=''
@@ -234,7 +231,7 @@ export default function sources() {
                 ).map(source =>
                   <SourceSubscriptionLine
                     key={source[0]}
-                    language={language}
+                    localizedLanguageStrings={languageStrings}
                     source={source}
                   />,
                 )

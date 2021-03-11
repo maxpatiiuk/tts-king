@@ -1,11 +1,14 @@
-import { Action } from './stateManagement';
 
-export const defaultLanguage = 'en-US' as const;
-export const listOfLanguages = ['en-US'] as const;
-export type AvailableLanguages = Action<'en-US'>
+export const DEFAULT_LANGUAGE = 'en-US' as const;
+export const AVAILABLE_LANGUAGES:Readonly<string[]> = ['en-US'] as const;
+export type Language = typeof AVAILABLE_LANGUAGES[number];
 
 export type LanguageStringsStructure<DEFINITIONS extends Record<string,
-  string | number | Function>> = {
-  readonly [language in AvailableLanguages['type']]:
-  DEFINITIONS
-}
+  string | Function>> = {
+    readonly [language in Language]:
+    DEFINITIONS
+  };
+
+export const dummyLanguageStrings:LanguageStringsStructure<{}> = {
+  'en-US': {},
+};

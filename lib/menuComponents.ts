@@ -1,5 +1,5 @@
 import {
-  AvailableLanguages,
+  Language,
   LanguageStringsStructure,
 }               from './languages';
 import siteInfo from '../const/siteInfo';
@@ -11,7 +11,7 @@ export interface MenuItem {
 }
 
 export const mainPageMenuItem = (
-  language: AvailableLanguages['type'],
+  language: Language,
 ) => (
   {
     label: siteInfo[language].title,

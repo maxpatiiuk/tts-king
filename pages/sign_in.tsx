@@ -2,9 +2,9 @@ import Layout        from '../components/Layout';
 import React         from 'react';
 import { Centered }  from '../components/UI';
 import {
-  AvailableLanguages,
+  Language,
   LanguageStringsStructure,
-}                    from '../lib/languages';
+} from '../lib/languages';
 import FilterUsers   from '../components/FilterUsers';
 import { useRouter } from 'next/router';
 import firebase      from 'firebase/app';
@@ -31,7 +31,9 @@ export default function SignIn() {
   ] = React.useState<string | undefined>(undefined);
   const router = useRouter();
 
-  async function initializeSignIn(language: AvailableLanguages['type']) {
+  async function initializeSignIn(
+    localizedLanguageStrings: typeof languageStrings[Language]
+  ) {
     try {
       setErrorMessage(undefined);
       const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
@@ -40,17 +42,18 @@ export default function SignIn() {
     }
     catch (error) {
       setErrorMessage(
-        `${languageStrings[language].unexpectedErrorHasOccurred}:
+        `${localizedLanguageStrings.unexpectedErrorHasOccurred}:
         <br/>${error.message}`,
       );
     }
   }
 
   return <Layout
-    page_url='sign_in'
+    pageUrl='sign_in'
     title={languageStrings}
+    languageStrings={languageStrings}
   >{
-    (language) => <FilterUsers
+    (languageStrings) => <FilterUsers
       isProtected={false}
       redirectPath='/'
     >{
@@ -61,7 +64,7 @@ export default function SignIn() {
               className='p-4 text-white bg-red-400 mb-4'
             >{errorMessage}</div>
           }
-          <h2>{languageStrings[language].choseSignInMethod}</h2>
+          <h2>{languageStrings.choseSignInMethod}</h2>
           <div className="flex flex-column gap-y-1 pt-4">
             <button
               className='border border-gray-200 p-4
@@ -69,10 +72,10 @@ export default function SignIn() {
                   box-content'
               onClick={initializeSignIn.bind(
                 null,
-                language,
+                languageStrings,
               )}
             >
-              {languageStrings[language].signInWithGoogle}
+              {languageStrings.signInWithGoogle}
             </button>
           </div>
         </div>

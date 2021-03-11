@@ -16,13 +16,14 @@ const languageStrings: LanguageStringsStructure<{
 
 const about = () =>
   <Layout
-    page_url='about'
+    pageUrl='about'
     title={languageStrings}
+    languageStrings={languageStrings}
   >{
-    (language) => <>
+    (languageStrings) => <>
       <PublicMenu />
       <Centered>
-        <p>{languageStrings[language].comeBackLater}</p>
+        <p>{languageStrings.comeBackLater}</p>
       </Centered>
     </>
   }</Layout>;

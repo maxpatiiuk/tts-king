@@ -4,7 +4,7 @@ import ErrorBoundary                from '../components/ErrorBoundary';
 import { useRouter }                from 'next/router';
 import React                        from 'react';
 import LanguageContext              from '../components/LanguageContext';
-import { AvailableLanguages }       from '../lib/languages';
+import { Language }       from '../lib/languages';
 import firebase                     from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
@@ -17,7 +17,7 @@ export default function app({Component, pageProps}: AppProps) {
   const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
 
   return <LanguageContext.Provider
-    value={locale as AvailableLanguages['type']}
+    value={locale as Language}
   >
     <ErrorBoundary>
       <FirebaseAuthProvider
