@@ -20,8 +20,7 @@ const localizationStrings: LocalizationStrings<{
 
 export const defaultDatabaseSources = (
   language: Language,
-): Record<string,
-  DatabaseSource> => (
+): Record<string, DatabaseSource> => (
   {
     [localizationStrings[language].uncategorized]: {
       type: 'category',

@@ -5,37 +5,55 @@ import { Content }              from '../../components/UI';
 import {
   Language,
   LocalizationStrings,
-} from '../../lib/languages';
+}                               from '../../lib/languages';
 import {
   dangerButtonClassName,
   fieldClassName,
   successButtonClassName,
-}                               from '../../components/InteractivePrimitives';
-import { FirebaseDatabaseNode } from '@react-firebase/database';
+}                                from '../../components/InteractivePrimitives';
+import { FirebaseDatabaseNode }  from '@react-firebase/database';
 import {
   DatabaseSource,
   defaultDatabaseSources,
   Source,
   sourceSubscriptions,
-}                               from '../../lib/sources';
+}                                from '../../lib/sources';
+import { State }                 from '../../lib/stateManagement';
+import commonLocalizationStrings from '../../const/commonStrings';
 
 const localizationStrings: LocalizationStrings<{
   mySources: string,
-  addSource: string,
+  availableSubscriptions: string,
   subscribe: string,
   unsubscribe: string,
   priority: string,
   search: string,
-  categoryName: string,
+  newSourceName: string,
+  sourceName: string
+  controls: string
+  confirmDeleteTitle: string,
+  confirmDeleteMessage: string,
+  confirmDeleteCategoryMessage: string,
+  confirmDeleteSubscription: string,
+  label: string,
 }> = {
   'en-US': {
     mySources: 'My sources',
-    addSource: 'Add source',
+    availableSubscriptions: 'Available Subscriptions',
     subscribe: 'Subscribe',
     unsubscribe: 'Unsubscribe',
     priority: 'Priority',
     search: '🔍\tSearch',
-    categoryName: 'New Category\'s Name',
+    newSourceName: 'New Source\'s Name',
+    sourceName: 'Source Name',
+    controls: 'Controls',
+    confirmDeleteTitle: 'Confirm Deletion',
+    confirmDeleteMessage: 'Are you sure you want to delete this source?',
+    confirmDeleteCategoryMessage: 'All posts belonging to this source would ' +
+      'be removed',
+    confirmDeleteSubscription: 'All posts added by this subscription would ' +
+      'be removed',
+    label: 'Label',
   },
 };
 
@@ -43,12 +61,14 @@ const localizationStrings: LocalizationStrings<{
 function SourceLine({
   languageStrings,
   source: [sourceName, sourceData],
+  commonStrings
 }: {
   languageStrings: typeof localizationStrings[Language],
   source: [string, DatabaseSource],
+  commonStrings: typeof commonLocalizationStrings[Language]
 }) {
-  return <tr className='border-gray-300 border-b last:border-b-0'>
-    <td className='pt-2 pb-2 pr-4'>{
+  return <div className='contents'>
+    <div>{
       sourceSubscriptions[sourceName]?.label ||
       <input
         className={`w-full ${fieldClassName}`}
@@ -56,13 +76,44 @@ function SourceLine({
         value={sourceName}
         onChange={() => alert('Renamed')}
       />
-    }</td>
-    <td className='pr-4 w-px whitespace-nowrap'>{
+    }</div>
+    <div className='relative'>
+      <div className='absolute bottom-0 h-full left-0'>
+        <img
+          src={'data:image/svg+xml,%3Csvg ' +
+          'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"/%3E'}
+          alt=''
+          className='block h-full w-auto'
+        />
+        <label>
+          <span
+            className='absolute inset-0 h-full w-auto rounded-full'
+            style={{
+              backgroundColor: sourceData.label_color
+            }}
+          />
+          <input
+            className={`sr-only`}
+            type='color'
+            value={sourceData.label_color}
+            onChange={() => alert('Color changed')}
+          />
+        </label>
+      </div>
+    </div>
+    <input
+      className={`${fieldClassName} w-full`}
+      type='number'
+      min={0}
+      value={sourceData.priority}
+      onChange={() => alert('Priority Changed')}
+    />
+    <div>{
       'subscribed' in sourceData &&
       (
         sourceData.subscribed ?
           <button
-            className={dangerButtonClassName}
+            className={`${dangerButtonClassName} w-full`}
             onClick={() =>
               alert('Unsubscribed')
             }
@@ -70,7 +121,7 @@ function SourceLine({
             languageStrings.unsubscribe
           }</button> :
           <button
-            className={successButtonClassName}
+            className={`${successButtonClassName} w-full`}
             onClick={() =>
               alert('Subscribed')
             }
@@ -78,17 +129,14 @@ function SourceLine({
             languageStrings.subscribe
           }</button>
       )
-    }</td>
-    <td>
-      <input
-        className={`${fieldClassName} w-full`}
-        type='number'
-        min={0}
-        value={sourceData.priority}
-        onChange={() => alert('Changed')}
-      />
-    </td>
-  </tr>;
+    }</div>
+    <button
+      className={`${dangerButtonClassName} w-full`}
+      onChange={()=>alert('Are you sure?')}
+    >{
+      commonStrings.delete
+    }</button>
+  </div>;
 }
 
 function SourceSubscriptionLine({
@@ -98,14 +146,10 @@ function SourceSubscriptionLine({
   languageStrings: typeof localizationStrings[Language],
   source: [string, Source],
 }) {
-  return <tr className='border-gray-300 border-b last:border-b-0'>
-    <td className='pt-2 pb-2 pr-4 w-px whitespace-nowrap'>{
-      sourceData.label
-    }</td>
-    <td className='pr-4 text-gray-600'>{
-      sourceData.description
-    }</td>
-    <td className='w-px whitespace-nowrap'>
+  return <div className='contents'>
+    <div>{sourceData.label}</div>
+    <div className='text-gray-600'>{sourceData.description}</div>
+    <div>
       <button
         className={successButtonClassName}
         onClick={() =>
@@ -114,8 +158,13 @@ function SourceSubscriptionLine({
       >{
         languageStrings.subscribe
       }</button>
-    </td>
-  </tr>;
+    </div>
+  </div>;
+}
+
+interface SourcesStates extends State<'State'> {
+  newCategoryName: string,
+  userSources: Record<string, DatabaseSource>
 }
 
 export default function sources() {
@@ -123,7 +172,7 @@ export default function sources() {
     privatePage
     localizationStrings={localizationStrings}
   >{
-    (languageStrings, language) => <FilterUsers
+    (languageStrings, language, commonStrings) => <FilterUsers
       isProtected={true}
       redirectPath={'/sign_in'}
     >{
@@ -132,19 +181,20 @@ export default function sources() {
           path={`users/${user.uid}/sources_meta`}
         >{
           data => <>
-            <table className='w-full'>
-              <thead className='text-left text-2xl'>
-              <tr>
-                <th>{
-                  languageStrings.mySources
-                }</th>
-                <th />
-                <th className='w-px whitespace-nowrap'>{
-                  languageStrings.priority
-                }</th>
-              </tr>
-              </thead>
-              <tbody>
+            <h2 className='text-4xl mb-3'>{languageStrings.mySources}</h2>
+            <div
+              className='grid gap-3 mb-10'
+              style={{
+                gridTemplateColumns: 'auto repeat(5, min-content)'
+              }}
+            >
+              <div className='contents text-2xl'>
+                <div>{languageStrings.sourceName}</div>
+                <div>{languageStrings.label}</div>
+                <div>{languageStrings.priority}</div>
+                <div className='col-span-2'>{languageStrings.controls}</div>
+              </div>
+              <hr className='col-span-full' />
               {Object.entries(
                 (
                   data.value ||
@@ -165,19 +215,21 @@ export default function sources() {
                     Number(priorityRight) ?
                       -1 :
                       1,
-              ).map(source =>
+              ).map((source, index) => <>
                 <SourceLine
                   key={source[0]}
                   languageStrings={languageStrings}
                   source={source}
-                />,
-              )}
-              <tr>
-                <td className='pt-2 pb-2 pr-4'>
+                  commonStrings={commonStrings}
+                />
+                <hr className='col-span-full' key={index} />
+              </>)}
+              <div className='contents'>
+                <div>
                   <input
                     className={`${fieldClassName} w-full`}
                     placeholder={
-                      languageStrings.categoryName
+                      languageStrings.newSourceName
                     }
                     type='text'
                     value=''
@@ -185,61 +237,56 @@ export default function sources() {
                       alert('Changed')
                     }
                   />
-                </td>
-                <td className='pr-4 w-px whitespace-nowrap'>
+                </div>
+                <div className='col-end-6'>
                   <button
-                    className={
-                      successButtonClassName
-                    }
+                    className={`${successButtonClassName} w-full`}
                     onClick={() => alert('Added')}
                   >{
-                    languageStrings.subscribe
+                    commonStrings.add
                   }</button>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-            <table className='mt-10 w-full'>
-              <thead className='text-left'>
-              <tr>
-                <th
-                  className='text-2xl w-px whitespace-nowrap'
-                >
-                  <div className='mb-2'>{
-                    languageStrings.addSource
-                  }</div>
-                </th>
-                <th colSpan={2}>
-                  <div className='flex justify-end mb-2'>
-                    <input
-                      className={fieldClassName}
-                      placeholder={
-                        languageStrings.search
-                      }
-                      type="text"
-                      value=''
-                      onChange={() => alert('Searching')}
-                    />
-                  </div>
-                </th>
-              </tr>
-              </thead>
-              <tbody>{
-                Object.entries(
-                  sourceSubscriptions,
-                ).filter(([sourceName]) =>
-                  Object.keys(
-                    data.value || {},
-                  ).indexOf(sourceName) === -1,
-                ).map(source =>
-                  <SourceSubscriptionLine
-                    key={source[0]}
-                    languageStrings={languageStrings}
-                    source={source}
-                  />,
-                )
-              }</tbody>
-            </table>
+                </div>
+              </div>
+            </div>
+            <div className='flex justify-between mb-3'>
+              <h2 className='text-4xl'>
+                {languageStrings.availableSubscriptions}
+              </h2>
+              <input
+                className={fieldClassName}
+                placeholder={
+                  languageStrings.search
+                }
+                type="text"
+                value=''
+                onChange={() => alert('Searching')}
+              />
+            </div>
+            <div
+              className='grid gap-3'
+              style={{
+                gridTemplateColumns: 'auto 1fr auto'
+              }}
+            >
+              {Object.entries(
+                sourceSubscriptions,
+              ).filter(([sourceName]) =>
+                Object.keys(
+                  data.value || {},
+                ).indexOf(sourceName) === -1,
+              ).map((source, index, list) => <>
+                <SourceSubscriptionLine
+                  key={source[0]}
+                  languageStrings={languageStrings}
+                  source={source}
+                />
+                {
+                  index + 1 < list.length &&
+                  <hr className='col-span-full' key={index} />
+                }
+              </>)
+              }
+            </div>
           </>
         }</FirebaseDatabaseNode>
 
