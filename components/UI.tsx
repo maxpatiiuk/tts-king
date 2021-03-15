@@ -36,7 +36,7 @@ export const Centered = ({
   </div>
 </main>;
 
-export const contentClassName = 'container mx-auto max-w-screen-lg';
+export const contentClassName = 'container mx-auto mb-10 max-w-screen-lg';
 
 export function Content({
   children,
