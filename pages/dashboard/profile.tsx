@@ -27,8 +27,6 @@ const localizationStrings: LocalizationStrings<{
   deleteAccountConfirmationTitle: string,
   deleteAccountConfirmation: string,
   deleteAccountConsequences: string,
-  confirmDeleteAccount: string,
-  cancelDeleteAccount: string,
   downloadAndDeleteAccount: string,
   noSavedData: string,
   deleteAccount: string,
@@ -41,8 +39,6 @@ const localizationStrings: LocalizationStrings<{
       account?`,
     deleteAccountConsequences: `You listening stats and saved stories
       would be permanently deleted.`,
-    confirmDeleteAccount: 'Yes, delete',
-    cancelDeleteAccount: 'No, don\'t delete',
     downloadAndDeleteAccount: 'Download my data and delete',
     noSavedData: 'We don\'t have any saved data on you',
     deleteAccount: 'Delete account',
@@ -157,7 +153,7 @@ export default function profile() {
     privatePage
     localizationStrings={localizationStrings}
   >{
-    (languageStrings, language) => <>
+    (languageStrings, language, commonStrings) => <>
 
       {
         !currentLanguage &&
@@ -223,7 +219,7 @@ export default function profile() {
                       false,
                     )}
                 >
-                  {languageStrings.cancelDeleteAccount}
+                  {commonStrings.cancelDelete}
                 </button>
                 <button
                   className={successButtonClassName}
@@ -240,7 +236,7 @@ export default function profile() {
                     setDeleteUserData(true)
                   }
                 >
-                  {languageStrings.confirmDeleteAccount}
+                  {commonStrings.confirmDelete}
                 </button>
               </>}
             >

@@ -1,7 +1,7 @@
 import Head                           from 'next/head';
-import React                                from 'react';
-import { GetUserLanguage } from './LanguageContext';
-import siteInfo                             from '../const/siteInfo';
+import React                          from 'react';
+import { GetUserLanguage }            from './LanguageContext';
+import siteInfo                       from '../const/siteInfo';
 import { domain, robots, themeColor } from '../const/siteConfig';
 import {
   DEFAULT_LANGUAGE,
@@ -9,6 +9,7 @@ import {
   Language,
   AVAILABLE_LANGUAGES
 }                                     from '../lib/languages';
+import commonLocalizationStrings      from '../const/commonStrings';
 
 function extractTitle(
   language: Language,
@@ -43,7 +44,8 @@ export default function Layout<DEFINITIONS extends Record<string,
   }>,
   children: (
     languageStrings:DEFINITIONS,
-    language: Language
+    language: Language,
+    commonStrings: typeof commonLocalizationStrings[Language]
   ) => React.ReactNode,
   localizationStrings?: LocalizationStrings<DEFINITIONS>
   privatePage?: boolean,
@@ -147,7 +149,8 @@ export default function Layout<DEFINITIONS extends Record<string,
               // would use it's default value in that case
               undefined as unknown as DEFINITIONS:
               localizationStrings[language],
-            language
+            language,
+            commonLocalizationStrings[language]
           )}
         </div>
       </>
