@@ -1,6 +1,5 @@
 import {
-  Language,
-  LocalizationStrings,
+  Language
 }               from './languages';
 import siteInfo from '../const/siteInfo';
 
@@ -20,11 +19,3 @@ export const mainPageMenuItem = (
     collapsable: false,
   }
 );
-
-export const localizationStrings: LocalizationStrings<{
-  dashboard: string,
-}> = {
-  'en-US': {
-    dashboard: 'My Dashboard',
-  },
-};
