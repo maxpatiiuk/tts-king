@@ -1,29 +1,30 @@
-import React         from 'react';
-import Layout        from '../../components/Layout';
-import FilterUsers   from '../../components/FilterUsers';
-import { Content }   from '../../components/UI';
+import React                     from 'react';
+import Layout                    from '../../components/Layout';
+import FilterUsers               from '../../components/FilterUsers';
+import { contentClassName }      from '../../components/UI';
 import {
   Loading,
   ModalDialog,
-}                    from '../../components/ModalDialog';
-import Image         from 'next/image';
-import { useRouter } from 'next/router';
+}                                from '../../components/ModalDialog';
+import Image                     from 'next/image';
+import { useRouter }             from 'next/router';
 import {
+  extractString,
   Language,
   LocalizationStrings,
-}                    from '../../lib/languages';
+}                                from '../../lib/languages';
 import {
   dangerButtonClassName,
   dangerLinkClassName,
   LabeledField,
   primaryButtonClassName,
   successButtonClassName,
-}                    from '../../components/InteractivePrimitives';
-import firebase      from 'firebase/app';
+}                                from '../../components/InteractivePrimitives';
+import firebase                  from 'firebase/app';
+import commonLocalizationStrings from '../../const/commonStrings';
 
 const localizationStrings: LocalizationStrings<{
   downloadData: string,
-  signOut: string,
   deleteAccountConfirmationTitle: string,
   deleteAccountConfirmation: string,
   deleteAccountConsequences: string,
@@ -33,7 +34,7 @@ const localizationStrings: LocalizationStrings<{
 }> = {
   'en-US': {
     downloadData: 'Download my data',
-    signOut: 'Sign out',
+
     deleteAccountConfirmationTitle: 'Delete account?',
     deleteAccountConfirmation: `Are you sure you want to delete your
       account?`,
@@ -71,12 +72,8 @@ function downloadFile({
 export default function profile() {
 
   const [
-    downloadUserData,
-    setDownloadUserData,
-  ] = React.useState<boolean>(false);
-  const [
-    deleteUserData,
-    setDeleteUserData,
+    isLoading,
+    setIsLoading,
   ] = React.useState<boolean>(false);
   const [
     showDeleteUserPrompt,
@@ -99,84 +96,61 @@ export default function profile() {
     await firebase.auth().signOut();
   }
 
-  React.useEffect(() => {
+  async function deleteUserAccount(changeState: boolean = false) {
 
-    async function deleteUserAccount() {
-      if (!deleteUserData || !currentUser)
-        return;
-      setDeleteUserData(false);
-      await firebase.database().ref(
-        `users/${currentUser.uid}`,
-      ).set(null);
-      await signOut();
-    }
-
-    if (!downloadUserData && deleteUserData)
-      return void (
-        deleteUserAccount()
-      );
-
-    if (!downloadUserData || !currentUser)
+    if (!currentUser)
       return;
 
-    if (!currentLanguage)
+    if (changeState)
+      setIsLoading(true);
+
+    await firebase.database().ref(
+      `users/${currentUser.uid}`,
+    ).set(null);
+
+    await signOut();
+  }
+
+  async function downloadUserData(callback?: (() => void)) {
+
+    if (!currentUser || !currentLanguage)
       return;
+
+    setIsLoading(true);
 
     firebase.database().ref(`users/${currentUser.uid}`).on(
       'value',
       (value) => {
+
         downloadFile({
           data: value.val() ||
             localizationStrings[currentLanguage].noSavedData,
           fileName: `${currentUser.uid}.json`,
         });
 
-        setDownloadUserData(false);
-
-        if (deleteUserData)
-          void (
-            deleteUserAccount()
-          );
+        if (callback)
+          callback();
       },
     );
-
-    return;
-
-  }, [
-    downloadUserData,
-    currentUser,
-    deleteUserData,
-    currentLanguage,
-  ]);
+  }
 
   return <Layout
     privatePage
+    title={extractString(commonLocalizationStrings, 'profile')}
     localizationStrings={localizationStrings}
   >{
     (languageStrings, language, commonStrings) => <>
 
-      {
-        !currentLanguage &&
-        setCurrentLanguage(language)
-      }
-      {
-        (
-          downloadUserData ||
-          deleteUserData
-        ) && <Loading />
-      }
+      {!currentLanguage && setCurrentLanguage(language)}
+      {isLoading && <Loading />}
+
       <FilterUsers
         isProtected={true}
         redirectPath={'/sign_in'}
       >{
-        ({user}) => <Content
-          className='flex-col'
-        >
+        ({user}) => <div className={`${contentClassName} flex-col`}>
 
-          {
-            !currentUser &&
-            setCurrentUser(user)
-          }
+          {!currentUser && setCurrentUser(user)}
 
           <div className='flex justify-center'>
             <Image
@@ -197,10 +171,8 @@ export default function profile() {
           </LabeledField>
 
           <button
-            className={dangerLinkClassName}
-            onClick={() =>
-              setDownloadUserData(true)
-            }
+            className={`${dangerLinkClassName} block mt-4`}
+            onClick={() => downloadUserData(() => setIsLoading(false))}
           >{
             languageStrings.downloadData
           }</button>
@@ -223,18 +195,15 @@ export default function profile() {
                 </button>
                 <button
                   className={successButtonClassName}
-                  onClick={() => {
-                    setDownloadUserData(true);
-                    setDeleteUserData(true);
-                  }}
+                  onClick={() => downloadUserData(
+                    () => deleteUserAccount(false),
+                  )}
                 >
                   {languageStrings.downloadAndDeleteAccount}
                 </button>
                 <button
                   className={dangerButtonClassName}
-                  onClick={() =>
-                    setDeleteUserData(true)
-                  }
+                  onClick={() => deleteUserAccount()}
                 >
                   {commonStrings.confirmDelete}
                 </button>
@@ -246,7 +215,7 @@ export default function profile() {
             </ModalDialog>
           }
           <button
-            className={dangerLinkClassName}
+            className={`${dangerLinkClassName} block`}
             onClick={() =>
               setShowDeleteUserPrompt(true)
             }
@@ -255,13 +224,13 @@ export default function profile() {
           }</button>
 
           <button
-            className={dangerLinkClassName}
+            className={`${dangerLinkClassName} block`}
             onClick={signOut}
           >{
-            languageStrings.signOut
+            commonStrings.signOut
           }</button>
 
-        </Content>
+        </div>
       }</FilterUsers>
     </>
   }</Layout>;
