@@ -1,13 +1,13 @@
 import { Language, LocalizationStrings } from '../lib/languages';
 import React                             from 'react';
-import { GetUserLanguage }                    from './LanguageContext';
-import Menu                                   from './Menu';
+import { GetUserLanguage }               from './LanguageContext';
+import Menu                              from './Menu';
 import {
-  localizationStrings as commonMenuLocalizationStrings,
   mainPageMenuItem,
   MenuItem,
-}                                             from '../lib/menuComponents';
-import { FirebaseAuthConsumer }               from '@react-firebase/auth';
+}                                        from '../lib/menuComponents';
+import { FirebaseAuthConsumer }          from '@react-firebase/auth';
+import commonLocalizationStrings         from '../const/commonStrings';
 
 const localizationStrings: LocalizationStrings<{
   about: string,
@@ -44,7 +44,7 @@ const menuItemsDictionary = (
     },
     'right_signed_in': {
       '/dashboard': {
-        label: commonMenuLocalizationStrings[language].dashboard,
+        label: commonLocalizationStrings[language].dashboard,
       },
     },
   }
@@ -52,8 +52,9 @@ const menuItemsDictionary = (
 
 export function PublicMenu() {
   return <FirebaseAuthConsumer>{
-
-    ({isSignedIn}) => <GetUserLanguage localizationStrings={localizationStrings}>{
+    ({isSignedIn}) => <GetUserLanguage
+      localizationStrings={localizationStrings}
+    >{
       (languageStrings, language) => <Menu menuItemGroups={[
         menuItemsDictionary(languageStrings, language).left,
         menuItemsDictionary(languageStrings, language)[
