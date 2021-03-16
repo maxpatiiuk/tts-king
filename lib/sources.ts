@@ -7,7 +7,8 @@ export type DatabaseSource = {
   type: 'subscription',
   subscribed: boolean,
 } | {
-  type: 'category'
+  type: 'category',
+  label: string
 });
 
 const localizationStrings: LocalizationStrings<{
@@ -22,10 +23,11 @@ export const defaultDatabaseSources = (
   language: Language,
 ): Record<string, DatabaseSource> => (
   {
-    [localizationStrings[language].uncategorized]: {
+    'uncategorized': {
       type: 'category',
+      label: localizationStrings[language].uncategorized,
       priority: 0,
-      label_color: '#cccccc',
+      label_color: '#0011ff',
     },
   }
 );

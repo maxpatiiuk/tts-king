@@ -8,13 +8,15 @@
 
 'use strict';
 
-export interface Action<ACTION_NAME extends string> {
-  type: ACTION_NAME
-}
+export type Action<
+  ACTION_NAME extends string,
+  ACTION_CONTENT extends Record<string, unknown> = {}
+> = { type: ACTION_NAME} & ACTION_CONTENT;
 
-export interface State<STATE_NAME extends string> {
-  type: STATE_NAME
-}
+export type State<
+  STATE_NAME extends string,
+  STATE_CONTENT extends Record<string, unknown> = {}
+> = { type: STATE_NAME} & STATE_CONTENT;
 
 type GenerateReducerDictionary<STATE, ACTION extends Action<string>> = {
   [actionType in ACTION['type']]: (props: {
