@@ -2,7 +2,7 @@ import Link                 from 'next/link';
 import React                from 'react';
 import { useRouter }        from 'next/router';
 import { MenuItem }         from '../lib/menuComponents';
-import { contentClassName } from './UI';
+import { unpaddedContentClassName } from './UI';
 
 
 const MenuItems = ({
@@ -48,7 +48,7 @@ export default function Menu({
     className='p-4 border-b mb-4'
   >
     <nav
-      className={`${contentClassName} flex flex-wrap justify-between
+      className={`${unpaddedContentClassName} flex flex-wrap justify-between
         max-w-screen-lg flex-col sm:flex-row gap-4 sm:gap-0`}
       itemScope
       itemType="http://schema.org/SiteNavigationElement"

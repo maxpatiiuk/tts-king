@@ -13,23 +13,27 @@ import commonLocalizationStrings      from '../const/commonStrings';
 
 function extractTitle(
   language: Language,
-  title?: string | LocalizationStrings<{
-    title: string,
-  }>,
+  title:
+    string
+    | LocalizationStrings<{
+      title: string,
+    }>
+    | ((string:Language)=>string),
 ): string {
 
-  if (typeof title === 'undefined')
+  if (title === '')
     return siteInfo[language].title;
 
   const titleString = typeof title === 'object' ?
     title[language].title :
-    title;
+    typeof title === 'function' ?
+      title(language) :
+      title;
 
   return titleString.substr(-1) === ' ' ?
     `${titleString}- ${siteInfo[language].title}` :
     titleString;
 }
-
 
 export default function Layout<DEFINITIONS extends Record<string,
   string | Function> = Record<never,string|Function>>({
@@ -39,9 +43,12 @@ export default function Layout<DEFINITIONS extends Record<string,
   privatePage = false,
   pageUrl,
 }: {
-  title?: string | LocalizationStrings<{
-    title: string,
-  }>,
+  title:
+    string
+    | LocalizationStrings<{
+      title: string,
+    }>
+    | ((string:Language)=>string),
   children: (
     languageStrings:DEFINITIONS,
     language: Language,
