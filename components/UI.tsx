@@ -36,19 +36,7 @@ export const Centered = ({
   </div>
 </main>;
 
-export const contentClassName = 'container mx-auto mb-10 max-w-screen-lg';
+export const unpaddedContentClassName = 'container mx-auto max-w-screen-lg';
+export const contentClassName = `${unpaddedContentClassName} mb-10`;
 
-export function Content({
-  children,
-  className = '',
-}: {
-  children: React.ReactNode,
-  className?: string,
-  notMain?: boolean,
-}) {
-  return <main
-    className={`${contentClassName} ${className}`}
-  >{
-    children
-  }</main>;
-}
+export const Content = ()=>{};

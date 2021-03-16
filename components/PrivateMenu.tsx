@@ -1,24 +1,20 @@
 import {
   Language,
   LocalizationStrings,
-} from '../lib/languages';
-import React                                from 'react';
+}                          from '../lib/languages';
+import React               from 'react';
 import { GetUserLanguage } from './LanguageContext';
-import Menu                                 from './Menu';
+import Menu                from './Menu';
 import {
-  localizationStrings as commonMenuLocalizationStrings,
   mainPageMenuItem,
   MenuItem,
-}                      from '../lib/menuComponents';
+}                          from '../lib/menuComponents';
+import commonStrings       from '../const/commonStrings';
 
 const localizationStrings: LocalizationStrings<{
-  profile: string,
-  sources: string,
   stats: string,
 }> = {
   'en-US': {
-    profile: 'Profile',
-    sources: 'Sources',
     stats: 'Stats',
   },
 };
@@ -33,10 +29,10 @@ const menuItemsDictionary = (
     'left': {
       '/': mainPageMenuItem(language),
       '/dashboard/profile': {
-        label: languageStrings.profile,
+        label: commonStrings[language].profile,
       },
       '/dashboard/sources': {
-        label: languageStrings.sources,
+        label: commonStrings[language].sources,
       },
       '/dashboard/stats': {
         label: languageStrings.stats,
@@ -44,7 +40,7 @@ const menuItemsDictionary = (
     },
     'right': {
       '/dashboard': {
-        label: commonMenuLocalizationStrings[language].dashboard,
+        label: commonStrings[language].dashboard,
       },
     },
   }

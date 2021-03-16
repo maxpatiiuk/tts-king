@@ -1,7 +1,7 @@
 import React from 'react';
 
 const baseButtonStyle = 'inline-flex px-4 py-2 rounded-md sm:text-sm ' +
-  'justify-center text-gray-700';
+  'justify-center text-white';
 export const primaryButtonClassName = `${baseButtonStyle} bg-white
   hover:bg-grey-500 border`;
 export const secondaryButtonClassName = `${baseButtonStyle} bg-grey-200

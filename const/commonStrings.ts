@@ -7,6 +7,10 @@ const commonLocalizationStrings: LocalizationStrings<{
   delete: string,
   confirmDelete: string,
   cancelDelete: string,
+  profile: string,
+  dashboard: string,
+  signOut: string,
+  sources: string,
 }> = {
   'en-US': {
     yes: 'Yes',
@@ -15,6 +19,10 @@ const commonLocalizationStrings: LocalizationStrings<{
     delete: 'Delete',
     confirmDelete: 'Yes, delete',
     cancelDelete: 'No, don\'t delete',
+    profile: 'Profile',
+    dashboard: 'Dashboard',
+    signOut: 'Sign out',
+    sources: 'Sources',
   },
 };
 
