@@ -11,3 +11,10 @@ export type LocalizationStrings<DEFINITIONS extends Record<string,
     readonly [language in Language]:
     DEFINITIONS
   };
+
+export const extractString = <KEY extends string,
+  DEFINITIONS extends Record<KEY, string | Function>>(
+  localizationStrings: LocalizationStrings<DEFINITIONS>,
+  key: KEY,
+)=>(language:Language)=>
+  localizationStrings[language][key];
