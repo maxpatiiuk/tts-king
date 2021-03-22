@@ -38,6 +38,7 @@ export default function SignIn() {
       setErrorMessage(undefined);
       const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
       await firebase.auth().signInWithPopup(googleAuthProvider);
+      localStorage.setItem('signedIn','1');
       await router.push('/dashboard');
     }
     catch (error) {

@@ -6,24 +6,19 @@ import firebase                     from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import { firebaseConfig }           from '../const/siteConfig';
-import { FirebaseAuthProvider }     from '@react-firebase/auth';
-import { FirebaseDatabaseProvider } from '@react-firebase/database';
+import { AuthProvider }             from '../components/AuthContext';
 import { LanguageProvider }         from '../components/LanguageContext';
+
+if(!firebase.apps.length)
+  firebase.initializeApp(firebaseConfig);
 
 export default function app({Component, pageProps}: AppProps) {
 
   return <LanguageProvider>
     <ErrorBoundary>
-      <FirebaseAuthProvider
-        firebase={firebase}
-        {...firebaseConfig}
-      >
-        <FirebaseDatabaseProvider
-          firebase={firebase}
-          {...firebaseConfig}>
-          <Component {...pageProps} />
-        </FirebaseDatabaseProvider>
-      </FirebaseAuthProvider>
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </ErrorBoundary>
   </LanguageProvider>;
 }
