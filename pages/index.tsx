@@ -1,10 +1,11 @@
-import Layout                       from '../components/Layout';
-import { PublicMenu }               from '../components/PublicMenu';
-import Link                         from 'next/link';
-import { Centered }                 from '../components/UI';
-import { FirebaseAuthConsumer } from '@react-firebase/auth';
-import { LocalizationStrings }  from '../lib/languages';
-import siteInfo                 from '../const/siteInfo';
+import Layout                  from '../components/Layout';
+import { PublicMenu }          from '../components/PublicMenu';
+import Link                    from 'next/link';
+import { Centered }            from '../components/UI';
+import { LocalizationStrings } from '../lib/languages';
+import siteInfo                from '../const/siteInfo';
+import { AuthContext }         from '../components/AuthContext';
+import React                   from 'react';
 
 const localizationStrings: LocalizationStrings<{
   header: string,
@@ -31,7 +32,11 @@ const localizationStrings: LocalizationStrings<{
 
 
 export default function index() {
+
+  const {user} = React.useContext(AuthContext);
+
   return <Layout
+    title=''
     pageUrl=''
     localizationStrings={localizationStrings}
   >{
@@ -58,24 +63,22 @@ export default function index() {
           }</p>
           <p className='pt-3'>{
             languageStrings.actionStatement(
-              <FirebaseAuthConsumer>{
-                ({isSignedIn}) => isSignedIn ?
-                  <Link href='/dashboard'>
-                    <a
-                      className='hover:bg-red-500
-                      hover:text-white bg-transparent
-                      text-red-500'
-                    >{
-                      languageStrings.goToDashboard
-                    }</a>
-                  </Link> :
-                  <Link href='/sign_in'>
-                    <a className='hover:bg-red-500
-                      hover:text-white bg-transparent
-                      text-red-500'
-                    >{languageStrings.signUp}</a>
-                  </Link>
-              }</FirebaseAuthConsumer>,
+              user ?
+                <Link href='/dashboard'>
+                  <a
+                    className='hover:bg-red-500
+                    hover:text-white bg-transparent
+                    text-red-500'
+                  >{
+                    languageStrings.goToDashboard
+                  }</a>
+                </Link> :
+                <Link href='/sign_in'>
+                  <a className='hover:bg-red-500
+                    hover:text-white bg-transparent
+                    text-red-500'
+                  >{languageStrings.signUp}</a>
+                </Link>
             )
           }</p>
         </div>

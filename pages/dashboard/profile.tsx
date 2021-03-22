@@ -23,6 +23,7 @@ import {
 import firebase                  from 'firebase/app';
 import commonLocalizationStrings from '../../const/commonStrings';
 
+
 const localizationStrings: LocalizationStrings<{
   downloadData: string,
   deleteAccountConfirmationTitle: string,

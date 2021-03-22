@@ -6,8 +6,8 @@ import {
   mainPageMenuItem,
   MenuItem,
 }                                        from '../lib/menuComponents';
-import { FirebaseAuthConsumer }          from '@react-firebase/auth';
 import commonLocalizationStrings         from '../const/commonStrings';
+import { AuthContext }                   from './AuthContext';
 
 const localizationStrings: LocalizationStrings<{
   about: string,
@@ -51,18 +51,19 @@ const menuItemsDictionary = (
 );
 
 export function PublicMenu() {
-  return <FirebaseAuthConsumer>{
-    ({isSignedIn}) => <GetUserLanguage
-      localizationStrings={localizationStrings}
-    >{
-      (languageStrings, language) => <Menu menuItemGroups={[
-        menuItemsDictionary(languageStrings, language).left,
-        menuItemsDictionary(languageStrings, language)[
-          isSignedIn ?
-            'right_signed_in' :
-            'right'
-          ],
-      ]} />
-    }</GetUserLanguage>
-  }</FirebaseAuthConsumer>;
+
+  const {user} = React.useContext(AuthContext);
+
+  return <GetUserLanguage
+    localizationStrings={localizationStrings}
+  >{
+    (languageStrings, language) => <Menu menuItemGroups={[
+      menuItemsDictionary(languageStrings, language).left,
+      menuItemsDictionary(languageStrings, language)[
+        user ?
+          'right_signed_in' :
+          'right'
+        ],
+    ]} />
+  }</GetUserLanguage>;
 }
