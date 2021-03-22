@@ -1,24 +1,18 @@
 import 'tailwindcss/tailwind.css';
 import { AppProps }                 from 'next/app';
 import ErrorBoundary                from '../components/ErrorBoundary';
-import { useRouter }                from 'next/router';
 import React                        from 'react';
-import LanguageContext              from '../components/LanguageContext';
-import { Language }       from '../lib/languages';
 import firebase                     from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import { firebaseConfig }           from '../const/siteConfig';
 import { FirebaseAuthProvider }     from '@react-firebase/auth';
 import { FirebaseDatabaseProvider } from '@react-firebase/database';
+import { LanguageProvider }         from '../components/LanguageContext';
 
 export default function app({Component, pageProps}: AppProps) {
 
-  const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
-
-  return <LanguageContext.Provider
-    value={locale as Language}
-  >
+  return <LanguageProvider>
     <ErrorBoundary>
       <FirebaseAuthProvider
         firebase={firebase}
@@ -31,7 +25,7 @@ export default function app({Component, pageProps}: AppProps) {
         </FirebaseDatabaseProvider>
       </FirebaseAuthProvider>
     </ErrorBoundary>
-  </LanguageContext.Provider>;
+  </LanguageProvider>;
 }
 
 

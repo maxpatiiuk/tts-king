@@ -34,7 +34,6 @@ const localizationStrings: LocalizationStrings<{
 }> = {
   'en-US': {
     downloadData: 'Download my data',
-
     deleteAccountConfirmationTitle: 'Delete account?',
     deleteAccountConfirmation: `Are you sure you want to delete your
       account?`,
@@ -155,8 +154,8 @@ export default function profile() {
           <div className='flex justify-center'>
             <Image
               className='rounded-full'
-              src={user.photoURL}
-              alt={user.displayName}
+              src={user.photoURL || ''}  // TODO: add default user ava
+              alt={user.displayName || ''}
               width={96}
               height={96}
             />
