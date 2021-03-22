@@ -2,16 +2,28 @@ import React                    from 'react';
 import Layout                   from '../../components/Layout';
 import FilterUsers              from '../../components/FilterUsers';
 import { FirebaseDatabaseNode } from '@react-firebase/database';
-import { Content }              from '../../components/UI';
+import { contentClassName }     from '../../components/UI';
+import { LocalizationStrings }  from '../../lib/languages';
 
+const localizationStrings:LocalizationStrings<{
+  title: string
+}> = {
+  'en-US': {
+    title: 'Dashboard'
+  }
+};
 
 export default function dashboard() {
-  return <Layout privatePage>{  // TODO: add title herer
+  return <Layout
+    title={localizationStrings}
+    localizationStrings={localizationStrings}
+    privatePage
+  >{
     () => <FilterUsers
       isProtected={true}
       redirectPath={'/sign_in'}
     >{
-      ({user}) => <Content>
+      ({user}) => <div className={contentClassName}>
           <pre>{
             JSON.stringify(user, null, '\t')
           }</pre>
@@ -22,7 +34,7 @@ export default function dashboard() {
             // <Dashboard sources={value} />
             <p>{JSON.stringify(value)}</p>
         }</FirebaseDatabaseNode>
-      </Content>
+      </div>
     }</FilterUsers>
   }</Layout>;
 };
