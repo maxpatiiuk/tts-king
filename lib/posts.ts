@@ -2,9 +2,9 @@ export type DatabasePostMeta = Record<string, DatabasePost>;
 
 export type DatabasePost = (
   {
-    source_url: string,
+    sourceUrl: string,
   } | {
-  file_name: string,
+  fileName: string,
 }
   ) & {
   preview: string,

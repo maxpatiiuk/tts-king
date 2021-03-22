@@ -19,7 +19,8 @@ import {
   sourceSubscriptions,
 }                                from '../../lib/sources';
 import {
-  Action, generateReducer,
+  Action,
+  generateReducer,
   State,
 }                                from '../../lib/stateManagement';
 import commonLocalizationStrings from '../../const/commonStrings';
@@ -73,8 +74,11 @@ function SourceLine({
   source: [string, DatabaseSource],
   commonStrings: typeof commonLocalizationStrings[Language]
 }) {
+  // need to extract the value to silence the Stylelint error
+  const color = sourceData.labelColor;
+
   return <div className='contents'>
-    <div>{
+    <div key='sourceName'>{
       sourceData.type === 'subscription' ?
         sourceSubscriptions[sourceName]?.label :
         <input
@@ -84,7 +88,7 @@ function SourceLine({
           onChange={() => alert('Renamed')}
         />
     }</div>
-    <div className='relative'>
+    <div key='subscription' className='relative'>
       <div className='absolute bottom-0 left-0 h-full'>
         <img
           src={'data:image/svg+xml,%3Csvg ' +
@@ -96,13 +100,13 @@ function SourceLine({
           <span
             className='absolute inset-0 h-full w-auto rounded-full'
             style={{
-              backgroundColor: sourceData.label_color,
+              backgroundColor: color,
             }}
           />
           <input
             className={`sr-only`}
             type='color'
-            value={sourceData.label_color}
+            value={sourceData.labelColor}
             onChange={() => alert('Color changed')}
           />
         </label>
@@ -176,13 +180,16 @@ type LoadingState = State<'LoadingState'>;
 type MainState = State<'MainState',{
   newSourceName: string,
   searchQuery: string,
+  promptToDeleteSource: false|string,
   userSources: Record<string, DatabaseSource>
+  user: firebase.User,
 }>
 
 type SourcesStates = LoadingState| MainState;
 
 type LoadedAction = Action<'LoadedAction', {
-  userSources: Record<string, DatabaseSource>
+  userSources: Record<string, DatabaseSource>,
+  user: firebase.User
 }>;
 
 type ChangeSearchQueryAction = Action<'ChangeSearchQueryAction', {
@@ -224,11 +231,68 @@ type SourcesActions =
   | ConfirmDeleteSourceAction
   | CancelDeleteSourceAction;
 
-const reducer = generateReducer<SourcesStates,SourcesActions>({
 
+function mainState(state:SourcesStates):MainState{
+  if(state.type !== 'MainState')
+    throw new Error('Invalid state');
+  return state as MainState;
+}
+
+const reducer = generateReducer<SourcesStates,SourcesActions>({
+  'LoadedAction': ({action})=>({
+    type: 'MainState',
+    newSourceName: '',
+    searchQuery: '',
+    userSources: action.userSources,
+    promptToDeleteSource: false,
+    user: action.user,
+  }),
+  'ChangeSearchQueryAction': ({action, state})=>({
+    ...mainState(state),
+    searchQuery: action.searchQuery
+  }),
+  'ChangeNewSourceNameAction': ({action, state})=>({
+    ...mainState(state),
+    newSourceName: action.newSourceName
+  }),
+  'AddNewSourceAction': ({state:initialState})=>{
+
+    const state = mainState(initialState);
+
+    firebase.database().ref(`users/${state.user.uid}`).on(
+      'value',
+      (value) => {
+
+      });
+
+    return {
+      ...state,
+      newSourceName: ''
+    };
+  },
+  'RenameSourceAction': ({action, state})=>({
+    ...mainState(state),
+
+  }),
+  'ToggleSourceSubscriptionAction': ({action, state})=>({
+    ...mainState(state),
+
+  }),
+  'DeleteSourceAction': ({action, state})=>({
+    ...mainState(state),
+    promptToDeleteSource: action.sourceName
+  }),
+  'ConfirmDeleteSourceAction': ({action, state})=>({
+    ...mainState(state),
+
+  }),
+  'CancelDeleteSourceAction': ({state})=>({
+    ...mainState(state),
+    promptToDeleteSource: false,
+  }),
 });
 
-export default function sources() {
+export default function Sources() {
 
   const {user} = React.useContext(AuthContext);
 
@@ -245,11 +309,12 @@ export default function sources() {
       return;
 
     firebase.app().database().ref(
-      `users/${user.uid}/sources_meta`
+      `users/${user.uid}/sourcesMeta`
     ).on('value',(value)=>{
       dispatch({
         type: 'LoadedAction',
-        userSources: value.val()
+        userSources: value.val(),
+        user,
       });
     })
 
@@ -266,21 +331,26 @@ export default function sources() {
   >{
     (languageStrings, language, commonStrings) => <FilterUsers
       isProtected={true}
-      redirectPath={'/sign_in'}
+      redirectPath={'/signIn'}
     >{
       () => <div className={contentClassName}>
-        <h2 className='text-4xl mb-3'>{languageStrings.mySources}</h2>
+        <h2 className='text-xl sm:text-4xl mb-3'>
+          {languageStrings.mySources}
+        </h2>
         <div
           className='grid gap-3 mb-10'
           style={{
-            gridTemplateColumns: 'auto repeat(5, min-content)',
+            gridTemplateColumns: 'auto repeat(4, min-content)',
           }}
         >
           <div className='contents text-2xl'>
-            <div>{languageStrings.sourceName}</div>
-            <div>{languageStrings.label}</div>
-            <div>{languageStrings.priority}</div>
-            <div className='col-span-2'>{languageStrings.controls}</div>
+            <div key='sourceName'>{languageStrings.sourceName}</div>
+            <div key='label'>{languageStrings.label}</div>
+            <div key='priority'>{languageStrings.priority}</div>
+            <div
+              key='controls'
+              className='col-span-2'
+            >{languageStrings.controls}</div>
           </div>
           <hr className='col-span-full' />
           {Object.entries(
@@ -313,7 +383,7 @@ export default function sources() {
             <hr className='col-span-full' key={index} />
           </>)}
           <div className='contents'>
-            <div>
+            <div key='newSourceName'>
               <input
                 className={`${fieldClassName} w-full`}
                 placeholder={
@@ -326,7 +396,7 @@ export default function sources() {
                 }
               />
             </div>
-            <div className='col-end-6'>
+            <div className='col-end-6' key='addNewSource'>
               <button
                 className={`${successButtonClassName} w-full`}
                 onClick={() => alert('Added')}
@@ -337,7 +407,7 @@ export default function sources() {
           </div>
         </div>
         <div className='flex justify-between mb-3'>
-          <h2 className='text-4xl'>
+          <h2 className='text-xl sm:text-4xl'>
             {languageStrings.availableSubscriptions}
           </h2>
           <input

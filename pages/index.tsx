@@ -13,7 +13,7 @@ const localizationStrings: LocalizationStrings<{
   paragraph2: string,
   goToDashboard: string,
   signUp: string,
-  actionStatement: (action_link: JSX.Element) => JSX.Element,
+  actionStatement: (actionLink: JSX.Element) => JSX.Element,
 }> = {
   'en-US': {
     header: 'Because your time is important!',
@@ -23,8 +23,8 @@ const localizationStrings: LocalizationStrings<{
       are!`,
     goToDashboard: 'Go to your dashboard',
     signUp: 'Sign up',
-    actionStatement: (action_link: JSX.Element) => <>
-      {action_link}
+    actionStatement: (actionLink: JSX.Element) => <>
+      {actionLink}
       {' '}now and see for yourself.
     </>,
   },
