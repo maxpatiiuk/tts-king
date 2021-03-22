@@ -1,13 +1,12 @@
-import React                                  from 'react';
+import React                        from 'react';
 import {
   DEFAULT_LANGUAGE,
   Language,
   LocalizationStrings,
-} from '../lib/languages';
+}                                   from '../lib/languages';
+import { useRouter }                from 'next/router';
 
 const LanguageContext = React.createContext<Language>(DEFAULT_LANGUAGE);
-
-export default LanguageContext;
 
 export const GetUserLanguage =
   <DEFINITIONS extends Record<string, string | Function>>({
@@ -23,3 +22,18 @@ export const GetUserLanguage =
     (language) =>
       children(localizationStrings[language], language)
   }</LanguageContext.Consumer>;
+
+
+export const LanguageProvider = ({
+  children
+}:{
+  children: React.ReactNode
+})=>{
+
+  const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
+
+  return <LanguageContext.Provider value={locale as Language}>
+    {children}
+  </LanguageContext.Provider>;
+
+};

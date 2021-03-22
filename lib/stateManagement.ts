@@ -54,9 +54,7 @@ export const generateReducer = <STATE,
     state: STATE,
     action: Action<Key2>,
   ) =>
-    (
-      obj != null && typeof obj[action['type']] === 'function'
-    ) ?
+    typeof obj[action['type']] === 'function' ?
       obj[action['type']]({state, action: action as any}) :
       assertExhaustive(action['type'] as never);
 
@@ -66,8 +64,6 @@ export const generateDispatch = <ACTION extends Action<string>>(
   <Key2 extends keyof typeof obj>(
     action: Action<Key2>,
   ) =>
-    (
-      obj != null && typeof obj[action['type']] === 'function'
-    ) ?
+    typeof obj[action['type']] === 'function' ?
       obj[action['type']](action as any) :
       assertExhaustive(action['type'] as never);
