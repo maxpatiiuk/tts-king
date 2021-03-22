@@ -37,6 +37,4 @@ export const Centered = ({
 </main>;
 
 export const unpaddedContentClassName = 'container mx-auto max-w-screen-lg';
-export const contentClassName = `${unpaddedContentClassName} mb-10`;
-
-export const Content = ()=>{};
+export const contentClassName = `${unpaddedContentClassName} mb-10 p-4`;

@@ -8,6 +8,7 @@ import { AuthContext }        from './AuthContext';
 import firebase from "firebase/app";
 
 
+// TODO: provide default `redirectPath` depending on `isProtected`
 export default function FilterUsers<IS_PROTECTED extends boolean>({
   isProtected,
   redirectPath,

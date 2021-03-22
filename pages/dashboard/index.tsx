@@ -4,7 +4,6 @@ import FilterUsers             from '../../components/FilterUsers';
 import { contentClassName }    from '../../components/UI';
 import { LocalizationStrings } from '../../lib/languages';
 import firebase                from 'firebase/app';
-import 'firebase/database';
 import { AuthContext }         from '../../components/AuthContext';
 
 const localizationStrings:LocalizationStrings<{

@@ -25,7 +25,7 @@ const menuItemsDictionary = (
   languageStrings: typeof localizationStrings[Language],
   language: Language,
 ): (
-  Record<'left' | 'right' | 'right_signed_in', Record<string, MenuItem>>
+  Record<'left' | 'right' | 'rightSignedIn', Record<string, MenuItem>>
   ) => (
   {
     'left': {
@@ -42,7 +42,7 @@ const menuItemsDictionary = (
         label: languageStrings.signIn,
       },
     },
-    'right_signed_in': {
+    'rightSignedIn': {
       '/dashboard': {
         label: commonLocalizationStrings[language].dashboard,
       },
@@ -61,7 +61,7 @@ export function PublicMenu() {
       menuItemsDictionary(languageStrings, language).left,
       menuItemsDictionary(languageStrings, language)[
         user ?
-          'right_signed_in' :
+          'rightSignedIn' :
           'right'
         ],
     ]} />

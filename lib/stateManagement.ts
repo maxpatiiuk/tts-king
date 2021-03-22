@@ -32,7 +32,7 @@ type GenerateDispatchDictionary<ACTION extends Action<string>> = {
 }
 
 function assertExhaustive(caseType: never): never {
-  throw new Error(`Non-exhaustive switch. Unhandled case:${
+  throw new Error(`Non-exhaustive switch. Unhandled case: ${
     caseType as string
   }`);
 }
