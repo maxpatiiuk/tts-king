@@ -21,6 +21,7 @@ export default function sign_out() {
     if (firebaseLoaded)
       (
         async () => {
+          localStorage.setItem('signedIn','0');
           await firebase.auth().signOut();
           await router.push('/');
         }

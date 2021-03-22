@@ -1,9 +1,11 @@
-import React                    from 'react';
-import Layout                   from '../../components/Layout';
-import FilterUsers              from '../../components/FilterUsers';
-import { FirebaseDatabaseNode } from '@react-firebase/database';
-import { contentClassName }     from '../../components/UI';
-import { LocalizationStrings }  from '../../lib/languages';
+import React                   from 'react';
+import Layout                  from '../../components/Layout';
+import FilterUsers             from '../../components/FilterUsers';
+import { contentClassName }    from '../../components/UI';
+import { LocalizationStrings } from '../../lib/languages';
+import firebase                from 'firebase/app';
+import 'firebase/database';
+import { AuthContext }         from '../../components/AuthContext';
 
 const localizationStrings:LocalizationStrings<{
   title: string
@@ -13,7 +15,25 @@ const localizationStrings:LocalizationStrings<{
   }
 };
 
-export default function dashboard() {
+export default function Dashboard() {
+
+  const {user} = React.useContext(AuthContext);
+
+  const [sources, setSources] =
+    React.useState<firebase.database.DataSnapshot|undefined>(undefined);
+
+  React.useEffect(()=>{
+
+    if(!user)
+      return;
+
+    firebase.database().ref(
+      `users/${user.uid}/sources`
+    ).on('value',(value)=>setSources(value.val()));
+
+  },[user]);
+
+
   return <Layout
     title={localizationStrings}
     localizationStrings={localizationStrings}
@@ -23,17 +43,8 @@ export default function dashboard() {
       isProtected={true}
       redirectPath={'/sign_in'}
     >{
-      ({user}) => <div className={contentClassName}>
-          <pre>{
-            JSON.stringify(user, null, '\t')
-          }</pre>
-        <FirebaseDatabaseNode
-          path={`users/${user.uid}/sources`}
-        >{
-          ({value}) =>
-            // <Dashboard sources={value} />
-            <p>{JSON.stringify(value)}</p>
-        }</FirebaseDatabaseNode>
+      () => <div className={contentClassName}>
+        <p>{JSON.stringify(sources)}</p>
       </div>
     }</FilterUsers>
   }</Layout>;
