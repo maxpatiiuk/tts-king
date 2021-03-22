@@ -9,7 +9,7 @@ import commonLocalizationStrings from '../../const/commonStrings';
 
 //TODO: delete this page and replace it with a button in the `dashboard/profile`
 
-export default function sign_out() {
+export default function SignOut() {
 
   const router = useRouter();
   const [

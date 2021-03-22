@@ -3,7 +3,6 @@ import { AppProps }                 from 'next/app';
 import ErrorBoundary                from '../components/ErrorBoundary';
 import React                        from 'react';
 import firebase                     from 'firebase/app';
-import 'firebase/auth';
 import 'firebase/database';
 import { firebaseConfig }           from '../const/siteConfig';
 import { AuthProvider }             from '../components/AuthContext';
@@ -12,7 +11,7 @@ import { LanguageProvider }         from '../components/LanguageContext';
 if(!firebase.apps.length)
   firebase.initializeApp(firebaseConfig);
 
-export default function app({Component, pageProps}: AppProps) {
+export default function App({Component, pageProps}: AppProps) {
 
   return <LanguageProvider>
     <ErrorBoundary>
@@ -28,6 +27,8 @@ export default function app({Component, pageProps}: AppProps) {
 * TTS MASTER
 *
 * now:
+*  TODO: replace JSX with tailwind in ModalDialog
+*  TODO: add an `StatusLine` component
 *  TODO: integrate users with their firestone data
 *  TODO: create a record in a database whenever a new user signs in
 *  TODO: add offline PWA support (and service worker)

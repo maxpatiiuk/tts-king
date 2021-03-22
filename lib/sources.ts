@@ -1,7 +1,7 @@
 import { Language, LocalizationStrings } from './languages';
 
 export type DatabaseSource = {
-  label_color: string,
+  labelColor: string,
   priority: number,
 } & ({
   type: 'subscription',
@@ -27,7 +27,7 @@ export const defaultDatabaseSources = (
       type: 'category',
       label: localizationStrings[language].uncategorized,
       priority: 0,
-      label_color: '#0011ff',
+      labelColor: '#0011ff',
     },
   }
 );

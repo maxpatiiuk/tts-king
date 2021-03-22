@@ -69,7 +69,7 @@ function downloadFile({
   document.body.removeChild(element);
 }
 
-export default function profile() {
+export default function Profile() {
 
   const [
     isLoading,
