@@ -1,0 +1,170 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$user_id": {
+        ".write": "newData.hasChildren(
+                      [
+                        'subscribe_to_newsletter',
+                        'sources',
+                        'posts_content',
+                        'listening_stats',
+                        'total_stats',
+                        'deleted_posts_meta',
+                        'deleted_posts_content',
+                      ]
+                   )",
+        ".read": "$user_id === auth.uid",
+        "$other": {
+          ".validate": false,
+        },
+        "subscribe_to_newsletter": {
+          ".validate": "newData.isBoolean()",
+        },
+        "sources": {
+          "$source_name": {
+            ".write": "newData.exists() &&
+            					 newData.hasChildren(
+            								[
+              								'subscribed',
+              								'priority',
+              								'posts_meta',
+              								'posts_content',
+            								]
+            					 )",
+        		"$other": {
+       		   ".validate": false,
+       		  },
+            "subscribed": {
+              ".validate": "newData.isBoolean()",
+            }, 
+            "priority": {
+              ".validate": "(newData.isNumber() && newData.val() > 1) || newData.val() === false",
+            },
+            "posts_meta": {
+              "$post_id": {
+                ".write": "newData.hasChildren(['preview'])",
+                ".validate": "root.child(
+                              	'users/'
+                                	+ $user_id
+                                	+ '/posts_content/'
+                                	+ $post_id
+                              ).exists() &&
+                							(
+                  							$source_name != 'url' ||
+                  							newData.hasChild('source_url')
+                							) &&
+                  						(
+                  							$source_name != 'file' ||
+                  							newData.hasChild('file_name')
+              								)",
+                ".indexOn": ["preview"],
+                "$other": {
+       		   			".validate": false,
+       		  		},
+                "source_url": {
+                  ".validate": "$source_name === 'url' && newData.isString()",
+                },
+                "file_name": {
+                  ".validate": "$source_name === 'file' && newData.isString()",
+                },
+                "preview": {
+                  ".validate": "newData.isString() &&
+                  							newData.val().length !== 0 &&
+                                newData.val().length < 50",
+                },
+              },
+            },
+          },
+        },
+        "posts_content": {
+          "$post_id": {
+            ".validate": "newData.isString() && newData.val().length !== 0",
+          },
+        },
+        "listening_stats": {
+          "$year": {
+            ".validate": "$year >= 2021 && $year <= 3000",
+            "$month": {
+              ".validate": "$month >= 1 && $month <= 12 && newData.isNumber() && newData.val() > 0",
+              "$category": {
+            		".validate": "$category === 'posts' ||
+                							$category === 'paragraphs' ||
+                              $category === 'words' ||
+                              $category === 'characters'",
+            		".write": "(
+                              !data.exists() ||
+                              data.val() <= newData.val()
+                           ) &&
+                           newData.isNumber()",
+        		  }
+            },
+          },
+        },
+        "total_stats": {
+          "queued_posts": {
+            ".validate": "newData.isNumber()",
+          },
+          "$category": {
+            ".validate": "$category === 'posts' ||
+                          $category === 'paragraphs' ||
+                          $category === 'words' ||
+                          $category === 'characters'",
+            ".write": "(
+            							!data.exists() ||
+              						data.val() <= newData.val()
+            					 ) &&
+                       newData.isNumber()",
+          }
+        },
+        "deleted_posts_meta": {
+          "$post_id": {
+            ".write": "newData.hasChildren(['preview', 'source_name'])",
+            ".validate": "root.child(
+                            'users/'
+                              + $user_id
+                              + '/deleted_posts_content/'
+                              + $post_id
+                          ).exists() &&
+                          (
+                            newData.parent().child('source_name').val() != 'url' ||
+                            newData.hasChild('source_url')
+                          ) &&
+                          (
+                            newData.parent().child('source_name').val() != 'file' ||
+                            newData.hasChild('file_name')
+                          )",
+            ".indexOn": ["preview"],
+            "$other": {
+              ".validate": false,
+            },
+            "source_name": {
+              ".validate": "newData.isString() &&
+                						root.child('users/' + $user_id + '/sources/' + newData.val()).exists()",
+            },
+            "source_url": {
+              ".validate": "newData.parent().child('source_name').val() === 'url' &&
+              							newData.isString()",
+            },
+            "file_name": {
+              ".validate": "newData.parent().child('source_name').val() === 'file' &&
+              							newData.isString()",
+            },
+            "preview": {
+              ".validate": "newData.isString() &&
+                            newData.val().length !== 0 &&
+                            newData.val().length < 50",
+            },
+          },
+        },
+        "deleted_posts_content": {
+          "$post_id": {
+            ".validate": "newData.isString() && newData.val().length !== 0",
+          }
+        },
+      },
+    },
+  },
+}
+
