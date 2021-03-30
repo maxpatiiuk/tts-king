@@ -1,4 +1,4 @@
-name: Test
+name: Typescript Typechecker
 
 on: [push, pull_request]
 
@@ -17,4 +17,4 @@ jobs:
       - name: Install dependencies
         run: npm i
       - name: Typecheck
-        uses: andoshin11/typescript-error-reporter-action@v1.0.2
+        run: npx tsc
