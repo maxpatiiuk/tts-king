@@ -1,13 +1,13 @@
 import { Language, LocalizationStrings } from './languages';
 
 export type DatabaseSource = {
-  labelColor: string,
   priority: number,
 } & ({
   type: 'subscription',
   subscribed: boolean,
 } | {
   type: 'category',
+  labelColor: string,
   label: string
 });
 
@@ -34,6 +34,7 @@ export const defaultDatabaseSources = (
 
 export interface Source {
   label: string,
+  imgLink: string,
   description: string,
 }
 
@@ -43,6 +44,25 @@ export const sourceSubscriptions: Record<typeof subscriptionNames[number],
   Source> = {
   'oreally': {
     label: 'O\'Really Newsletter',
+    imgLink: '',
     description: 'here goes the description of this newsletter',
   },
 } as const;
+
+const getRandomColor = ()=>
+  `#${Math.floor(Math.random()*16777215).toString(16)}`;
+
+export const createNewCategory = (
+  sourceLabel: string
+):DatabaseSource=>({
+  type: 'category',
+  label: sourceLabel,
+  priority: 0,
+  labelColor: getRandomColor(),
+});
+
+export const createNewSubscription = ():DatabaseSource=>({
+  type: 'subscription',
+  priority: 0,
+  subscribed: true,
+});
