@@ -1,31 +1,34 @@
 import React                     from 'react';
 import Layout                    from '../../components/Layout';
 import FilterUsers               from '../../components/FilterUsers';
-import { contentClassName }               from '../../components/UI';
+import { contentClassName }      from '../../components/UI';
 import {
   extractString,
   Language,
   LocalizationStrings,
-} from '../../lib/languages';
+}                                from '../../lib/languages';
 import {
   dangerButtonClassName,
   fieldClassName,
   successButtonClassName,
 }                                from '../../components/InteractivePrimitives';
 import {
+  createNewCategory,
+  createNewSubscription,
   DatabaseSource,
   defaultDatabaseSources,
   Source,
   sourceSubscriptions,
-}                                from '../../lib/sources';
+} from '../../lib/sources';
 import {
   Action,
+  generateDispatch,
   generateReducer,
   State,
 }                                from '../../lib/stateManagement';
 import commonLocalizationStrings from '../../const/commonStrings';
 import { AuthContext }           from '../../components/AuthContext';
-import firebase                  from "firebase/app";
+import firebase                  from 'firebase/app';
 import { Loading }               from '../../components/ModalDialog';
 
 const localizationStrings: LocalizationStrings<{
@@ -69,81 +72,95 @@ function SourceLine({
   languageStrings,
   source: [sourceName, sourceData],
   commonStrings,
+  onRename: handleRename,
+  onLabelChange: handleLabelChange,
+  onPriorityChange: handlePriorityChange,
+  onToggleSubscribe: handleToggleSubscribe,
+  onDelete: handleDelete,
 }: {
   languageStrings: typeof localizationStrings[Language],
   source: [string, DatabaseSource],
-  commonStrings: typeof commonLocalizationStrings[Language]
+  commonStrings: typeof commonLocalizationStrings[Language],
+  onRename: (newName: string) => void,
+  onLabelChange: (newColor: string) => void,
+  onPriorityChange: (newPriority: number) => void,
+  onToggleSubscribe: () => void,
+  onDelete: () => void
 }) {
   // need to extract the value to silence the Stylelint error
-  const color = sourceData.labelColor;
+  const color = sourceData.type === 'subscription' ?
+    undefined :
+    sourceData.labelColor;
 
   return <div className='contents'>
-    <div key='sourceName'>{
+    <div>{
       sourceData.type === 'subscription' ?
         sourceSubscriptions[sourceName]?.label :
         <input
           className={`w-full ${fieldClassName}`}
           type='text'
           value={sourceData.label}
-          onChange={() => alert('Renamed')}
+          onChange={(event) => handleRename(event.target.value)}
         />
     }</div>
-    <div key='subscription' className='relative'>
-      <div className='absolute bottom-0 left-0 h-full'>
+    {
+      sourceData.type === 'subscription' ?
+        //TODO: display subscription image here
         <img
-          src={'data:image/svg+xml,%3Csvg ' +
-          'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"/%3E'}
-          alt=''
+          src={''}
+          alt='TODO: add image'
           className='block h-full w-auto'
-        />
-        <label>
-          <span
-            className='absolute inset-0 h-full w-auto rounded-full'
-            style={{
-              backgroundColor: color,
-            }}
-          />
-          <input
-            className={`sr-only`}
-            type='color'
-            value={sourceData.labelColor}
-            onChange={() => alert('Color changed')}
-          />
-        </label>
-      </div>
-    </div>
+        /> :
+        <div className='relative'>
+          <div className='absolute bottom-0 left-0 h-full'>
+            <img
+              src={'data:image/svg+xml,%3Csvg ' +
+              'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"/%3E'}
+              alt=''
+              className='block h-full w-auto'
+            />
+            <label>
+              <span
+                className='absolute inset-0 h-full w-auto rounded-full'
+                style={{
+                  backgroundColor: color,
+                }}
+              />
+              <input
+                className={`sr-only`}
+                type='color'
+                value={sourceData.labelColor}
+                onChange={(event) => handleLabelChange(event.target.value)}
+              />
+            </label>
+          </div>
+        </div>
+    }
     <input
       className={`${fieldClassName} w-full`}
       type='number'
       min={0}
       value={sourceData.priority}
-      onChange={() => alert('Priority Changed')}
+      onChange={(event) => handlePriorityChange(
+        parseInt(event.target.value) || 0
+      )}
     />
     <div>{
       'subscribed' in sourceData &&
-      (
+      <button
+        className={`${sourceData.subscribed ?
+          dangerButtonClassName :
+          successButtonClassName} w-full`}
+        onClick={handleToggleSubscribe}
+      >{
         sourceData.subscribed ?
-          <button
-            className={`${dangerButtonClassName} w-full`}
-            onClick={() =>
-              alert('Unsubscribed')
-            }
-          >{
-            languageStrings.unsubscribe
-          }</button> :
-          <button
-            className={`${successButtonClassName} w-full`}
-            onClick={() =>
-              alert('Subscribed')
-            }
-          >{
-            languageStrings.subscribe
-          }</button>
-      )
+          languageStrings.unsubscribe :
+          languageStrings.subscribe
+      }</button>
     }</div>
     <button
       className={`${dangerButtonClassName} w-full`}
-      onChange={() => alert('Are you sure?')}
+      onClick={handleDelete}
     >{
       commonStrings.delete
     }</button>
@@ -153,9 +170,11 @@ function SourceLine({
 function SourceSubscriptionLine({
   languageStrings,
   source: [, sourceData],
+  onSubscribe: handleSubscribe,
 }: {
   languageStrings: typeof localizationStrings[Language],
   source: [string, Source],
+  onSubscribe: () => void
 }) {
   return <div className='contents'>
     <div>
@@ -165,9 +184,7 @@ function SourceSubscriptionLine({
     <div>
       <button
         className={successButtonClassName}
-        onClick={() =>
-          alert('Subscribed')
-        }
+        onClick={handleSubscribe}
       >{
         languageStrings.subscribe
       }</button>
@@ -177,124 +194,312 @@ function SourceSubscriptionLine({
 
 type LoadingState = State<'LoadingState'>;
 
-type MainState = State<'MainState',{
+type MainState = State<'MainState', {
   newSourceName: string,
   searchQuery: string,
-  promptToDeleteSource: false|string,
+  promptToDeleteSource: false | string,
   userSources: Record<string, DatabaseSource>
   user: firebase.User,
+  refObjectDispatchCurried: (action: RefActions) => void
 }>
 
-type SourcesStates = LoadingState| MainState;
+type States = LoadingState | MainState;
 
 type LoadedAction = Action<'LoadedAction', {
   userSources: Record<string, DatabaseSource>,
-  user: firebase.User
+  user: firebase.User,
+  refObjectDispatchCurried: (action: RefActions) => void
 }>;
 
 type ChangeSearchQueryAction = Action<'ChangeSearchQueryAction', {
   searchQuery: string,
-}>
+}>;
 
-type ChangeNewSourceNameAction = Action<'ChangeNewSourceNameAction',{
+type ChangeNewSourceNameAction = Action<'ChangeNewSourceNameAction', {
   newSourceName: string,
-}>
+}>;
 
 type AddNewSourceAction = Action<'AddNewSourceAction'>;
 
-type RenameSourceAction = Action<'RenameSourceAction',{
+type RenameSourceAction = Action<'RenameSourceAction', {
   sourceName: string,
   sourceLabel: string,
-}>
+}>;
 
-type ToggleSourceSubscriptionAction = Action<'ToggleSourceSubscriptionAction',{
+type ChangeSourceLabelColorAction = Action<'ChangeSourceLabelColorAction',{
   sourceName: string,
-  subscribed: boolean,
-}>
+  labelColor: string,
+}>;
+
+type ChangeSourcePriorityAction = Action<'ChangeSourcePriorityAction',{
+  sourceName: string,
+  priority: number,
+}>;
+
+type ToggleSourceSubscriptionAction = Action<'ToggleSourceSubscriptionAction', {
+  sourceName: string,
+}>;
 
 type DeleteSourceAction = Action<'DeleteSourceAction', {
   sourceName: string,
-}>
+}>;
 
 type ConfirmDeleteSourceAction = Action<'ConfirmDeleteSourceAction'>;
 
 type CancelDeleteSourceAction = Action<'CancelDeleteSourceAction'>;
 
-type SourcesActions =
+type AddSubscriptionAction = Action<'AddSubscriptionAction',{
+  subscriptionName: string,
+}>;
+
+type AddSourceLineAction = Action<'AddSourceLineAction',{
+  sourceLine: DatabaseSource,
+  key: string,
+}>;
+
+type Actions =
   LoadedAction
   | ChangeSearchQueryAction
   | ChangeNewSourceNameAction
   | AddNewSourceAction
+  | AddSourceLineAction
   | RenameSourceAction
+  | ChangeSourceLabelColorAction
+  | ChangeSourcePriorityAction
   | ToggleSourceSubscriptionAction
   | DeleteSourceAction
   | ConfirmDeleteSourceAction
-  | CancelDeleteSourceAction;
+  | CancelDeleteSourceAction
+  | AddSubscriptionAction;
 
 
-function mainState(state:SourcesStates):MainState{
-  if(state.type !== 'MainState')
+function mainState(state: States): MainState {
+  if (state.type !== 'MainState')
     throw new Error('Invalid state');
   return state as MainState;
 }
 
-const reducer = generateReducer<SourcesStates,SourcesActions>({
-  'LoadedAction': ({action})=>({
-    type: 'MainState',
-    newSourceName: '',
-    searchQuery: '',
-    userSources: action.userSources,
-    promptToDeleteSource: false,
-    user: action.user,
-  }),
-  'ChangeSearchQueryAction': ({action, state})=>({
-    ...mainState(state),
-    searchQuery: action.searchQuery
-  }),
-  'ChangeNewSourceNameAction': ({action, state})=>({
-    ...mainState(state),
-    newSourceName: action.newSourceName
-  }),
-  'AddNewSourceAction': ({state:initialState})=>{
+const reducer = generateReducer<States, Actions>({
+  'LoadedAction': ({action}) => (
+    {
+      type: 'MainState',
+      newSourceName: '',
+      searchQuery: '',
+      userSources: action.userSources,
+      promptToDeleteSource: false,
+      user: action.user,
+      refObjectDispatchCurried: action.refObjectDispatchCurried,
+    }
+  ),
+  'ChangeSearchQueryAction': ({action, state}) => (
+    {
+      ...mainState(state),
+      searchQuery: action.searchQuery,
+    }
+  ),
+  'ChangeNewSourceNameAction': ({action, state}) => (
+    {
+      ...mainState(state),
+      newSourceName: action.newSourceName,
+    }
+  ),
+  'AddNewSourceAction': ({state: initialState}) => {
 
     const state = mainState(initialState);
 
-    firebase.database().ref(`users/${state.user.uid}`).on(
-      'value',
-      (value) => {
+    const newCategory: DatabaseSource = createNewCategory(
+      state.newSourceName
+    );
 
-      });
+    state.refObjectDispatchCurried({
+      type: 'RefRunAsyncTaskAction',
+      task: (dispatch)=>
+        firebase.database().ref(
+          `users/${state.user.uid}/sourcesMeta`,
+        ).push(newCategory).then((snapshot) => {
+          dispatch({
+            type: 'AddSourceLineAction',
+            key: snapshot.key!,
+            sourceLine: newCategory,
+          });
+          state.refObjectDispatchCurried({
+            type: 'RefUpdateSaveMessageAction',
+          });
+        }).catch(() =>
+          state.refObjectDispatchCurried({
+            type: 'RefShowDatabaseFailureAction',
+          }),
+        )
+    });
 
     return {
       ...state,
-      newSourceName: ''
+      newSourceName: '',
     };
   },
-  'RenameSourceAction': ({action, state})=>({
+  'AddSourceLineAction': ({action, state})=>({
     ...mainState(state),
+    userSources: {
+      ...mainState(state).userSources,
+      [action.key]:action.sourceLine,
+    }
+  }),
+  'RenameSourceAction': ({action, state}) => (
+    {
+      ...mainState(state),
 
-  }),
-  'ToggleSourceSubscriptionAction': ({action, state})=>({
-    ...mainState(state),
+    }
+  ),
+  'ChangeSourceLabelColorAction': ({action, state}) => (
+    {
+      ...mainState(state),
 
-  }),
-  'DeleteSourceAction': ({action, state})=>({
-    ...mainState(state),
-    promptToDeleteSource: action.sourceName
-  }),
-  'ConfirmDeleteSourceAction': ({action, state})=>({
-    ...mainState(state),
+    }
+  ),
+  'ChangeSourcePriorityAction': ({action, state}) => (
+    {
+      ...mainState(state),
 
-  }),
-  'CancelDeleteSourceAction': ({state})=>({
-    ...mainState(state),
-    promptToDeleteSource: false,
-  }),
+    }
+  ),
+  'ToggleSourceSubscriptionAction': ({action, state}) => (
+    {
+      ...mainState(state),
+      userSources: {
+        ...mainState(state).userSources,
+        [action.sourceName]: {
+          ...mainState(state).userSources[action.sourceName],
+          subscribed:  // @ts-ignore
+            !mainState(state).userSources[action.sourceName].subscribed
+        }
+      }
+    }
+  ),
+  'DeleteSourceAction': ({action, state}) => (
+    {
+      ...mainState(state),
+      promptToDeleteSource: action.sourceName,
+    }
+  ),
+  'ConfirmDeleteSourceAction': ({action, state}) => (
+    {
+      ...mainState(state),
+
+    }
+  ),
+  'CancelDeleteSourceAction': ({state}) => (
+    {
+      ...mainState(state),
+      promptToDeleteSource: false,
+    }
+  ),
+  'AddSubscriptionAction': ({action, state}) => {
+
+    const newSubscription = createNewSubscription();
+
+    //TODO: finish this
+    // firebase.database().ref(
+    //   `users/${state.user.uid}`,
+    // ).set(newSubscription).then(() =>
+    //   state.refObjectDispatchCurried({
+    //     type: 'RefUpdateSaveMessageAction',
+    //   }),
+    // ).catch(() =>
+    //   state.refObjectDispatchCurried({
+    //     type: 'RefShowDatabaseFailureAction',
+    //   }),
+    // );
+
+    return {
+      ...mainState(state),
+      userSources: {
+        ...mainState(state).userSources,
+        [action.subscriptionName]: newSubscription
+      }
+    };
+  },
+});
+
+type RefBaseState = State<'RefBaseState', {
+  saveMessageTimeout: NodeJS.Timeout | undefined,
+  showDatabaseFailureMessage: boolean,
+}>
+
+type RefStates = RefBaseState;
+
+type RefUpdateSaveMessageAction = Action<'RefUpdateSaveMessageAction'>;
+
+type RefShowDatabaseFailureAction = Action<'RefShowDatabaseFailureAction'>;
+
+type RefRunAsyncTaskAction = Action<'RefRunAsyncTaskAction', {
+  task: (
+    dispatch: (
+      action:Actions
+    )=>void
+  )=>void
+}>;
+
+type RefActions =
+  RefUpdateSaveMessageAction
+  | RefShowDatabaseFailureAction
+  | RefRunAsyncTaskAction;
+
+type RefActionsWithPayload = RefActions & {
+  payload: {
+    refObject: React.MutableRefObject<RefStates>,
+    dispatch: (action:Actions)=>void
+  }
+}
+
+const refInitialState: RefStates = {
+  type: 'RefBaseState',
+  saveMessageTimeout: undefined,
+  showDatabaseFailureMessage: false,
+} as const;
+
+const SAVE_MESSAGE_TIMEOUT = 1000;
+
+const refObjectDispatch = generateDispatch<RefActionsWithPayload>({
+  'RefUpdateSaveMessageAction': ({
+    payload: {
+      refObject,
+    },
+  }) => {
+    if (typeof refObject.current.saveMessageTimeout !== 'undefined')
+      clearTimeout(refObject.current.saveMessageTimeout);
+
+    refObject.current.saveMessageTimeout =
+      setTimeout(() => {
+        if (refObject.current.showDatabaseFailureMessage)
+          return;
+
+        //TODO: show success banner
+        console.log('saved');
+
+      }, SAVE_MESSAGE_TIMEOUT);
+  },
+  'RefShowDatabaseFailureAction': ({
+    payload: {
+      refObject,
+    },
+  }) => {
+    refObject.current.showDatabaseFailureMessage = true;
+
+    //TODO: show error banner
+    throw new Error('failed saving');
+  },
+  'RefRunAsyncTaskAction': ({
+    task,
+    payload: {
+      dispatch,
+    }
+  })=>task(dispatch),
 });
 
 export default function Sources() {
 
   const {user} = React.useContext(AuthContext);
+  const refObject = React.useRef<RefStates>(refInitialState);
 
   const [state, dispatch] = React.useReducer(
     reducer,
@@ -303,29 +508,39 @@ export default function Sources() {
     },
   );
 
-  React.useEffect(()=>{
+  const refObjectDispatchCurried = (action: RefActions) =>
+    refObjectDispatch({
+      ...action,
+      payload: {
+        refObject,
+        dispatch,
+      },
+    });
 
-    if(!user || state.type !== 'LoadingState')
+  React.useEffect(() => {
+
+    if (!user || state.type !== 'LoadingState')
       return;
 
     firebase.app().database().ref(
-      `users/${user.uid}/sourcesMeta`
-    ).on('value',(value)=>{
+      `users/${user.uid}/sourcesMeta`,
+    ).on('value', (value) => {
       dispatch({
         type: 'LoadedAction',
-        userSources: value.val(),
+        userSources: value.val() || {},
         user,
+        refObjectDispatchCurried,
       });
-    })
+    });
 
-  },[user, state.type]);
+  }, [user, state.type]);
 
 
-  if(state.type === 'LoadingState')
+  if (state.type === 'LoadingState')
     return <Loading />;
 
   return <Layout
-    title={extractString(commonLocalizationStrings,'sources')}
+    title={extractString(commonLocalizationStrings, 'sources')}
     privatePage
     localizationStrings={localizationStrings}
   >{
@@ -344,20 +559,17 @@ export default function Sources() {
           }}
         >
           <div className='contents text-2xl'>
-            <div key='sourceName'>{languageStrings.sourceName}</div>
-            <div key='label'>{languageStrings.label}</div>
-            <div key='priority'>{languageStrings.priority}</div>
-            <div
-              key='controls'
-              className='col-span-2'
-            >{languageStrings.controls}</div>
+            <div>{languageStrings.sourceName}</div>
+            <div>{languageStrings.label}</div>
+            <div>{languageStrings.priority}</div>
+            <div className='col-span-2'>{languageStrings.controls}</div>
           </div>
           <hr className='col-span-full' />
           {Object.entries(
-            (
-              state.userSources ||
-              defaultDatabaseSources(language)
-            ) as Record<string, DatabaseSource>,
+            {
+              ...state.userSources,
+              ...defaultDatabaseSources(language)
+            } as Record<string, DatabaseSource>,
           ).sort((
             [, {
               priority: priorityLeft,
@@ -373,33 +585,59 @@ export default function Sources() {
                 Number(priorityRight) ?
                   -1 :
                   1,
-          ).map((source, index) => <>
-            <SourceLine
-              key={source[0]}
-              languageStrings={languageStrings}
-              source={source}
-              commonStrings={commonStrings}
-            />
-            <hr className='col-span-full' key={index} />
-          </>)}
+          ).map(([sourceName, sourceData]) =>
+            <React.Fragment key={sourceName}>
+              <SourceLine
+                languageStrings={languageStrings}
+                source={[sourceName, sourceData]}
+                commonStrings={commonStrings}
+                onDelete={() => dispatch({
+                  type: 'DeleteSourceAction',
+                  sourceName: sourceName,
+                })}
+                onLabelChange={(labelColor) => dispatch({
+                  type: 'ChangeSourceLabelColorAction',
+                  sourceName: sourceName,
+                  labelColor
+                })}
+                onPriorityChange={(newPriority) => dispatch({
+                  type: 'ChangeSourcePriorityAction',
+                  sourceName: sourceName,
+                  priority: newPriority,
+                })}
+                onRename={(newName) => dispatch({
+                  type: 'RenameSourceAction',
+                  sourceName: sourceName,
+                  sourceLabel: newName
+                })}
+                onToggleSubscribe={()=>dispatch({
+                  type: 'ToggleSourceSubscriptionAction',
+                  sourceName: sourceName,
+                })}
+              />
+              <hr className='col-span-full' />
+            </React.Fragment>)}
           <div className='contents'>
-            <div key='newSourceName'>
+            <div>
               <input
                 className={`${fieldClassName} w-full`}
                 placeholder={
                   languageStrings.newSourceName
                 }
                 type='text'
-                value=''
-                onChange={() =>
-                  alert('Changed')
-                }
+                value={state.newSourceName}
+                onChange={(event)=>dispatch({
+                  type: 'ChangeNewSourceNameAction',
+                  newSourceName: event.target.value,
+                })}
               />
             </div>
-            <div className='col-end-6' key='addNewSource'>
+            <div className='col-end-6'>
               <button
                 className={`${successButtonClassName} w-full`}
-                onClick={() => alert('Added')}
+                onClick={()=>dispatch({
+                  type: 'AddNewSourceAction'
+                })}
               >{
                 commonStrings.add
               }</button>
@@ -416,8 +654,11 @@ export default function Sources() {
               languageStrings.search
             }
             type="text"
-            value=''
-            onChange={() => alert('Searching')}
+            value={state.searchQuery}
+            onChange={(event)=>dispatch({
+              type: 'ChangeSearchQueryAction',
+              searchQuery: event.target.value
+            })}
           />
         </div>
         <div
@@ -428,22 +669,21 @@ export default function Sources() {
         >
           {Object.entries(
             sourceSubscriptions,
-          ).filter(([sourceName]) =>
+          ).filter(([sourceName, {label}]) =>
             Object.keys(
               state.userSources || {},
-            ).indexOf(sourceName) === -1,
-          ).map((source, index, list) => <>
+            ).indexOf(sourceName) === -1 &&
+            label.indexOf(state.searchQuery) !== -1
+          ).map((source, index, list) => <React.Fragment key={source[0]}>
             <SourceSubscriptionLine
-              key={source[0]}
               languageStrings={languageStrings}
               source={source}
             />
             {
               index + 1 < list.length &&
-              <hr className='col-span-full' key={index} />
+              <hr className='col-span-full' />
             }
-          </>)
-          }
+          </React.Fragment>)}
         </div>
       </div>
     }</FilterUsers>
