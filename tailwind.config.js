@@ -29,6 +29,9 @@ module.exports = {
       colors: {
         shadow: '#0009',
       },
+      screens: {
+        print: { raw: 'print' },
+      },
     },
   },
   variants: {
