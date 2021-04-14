@@ -19,6 +19,9 @@ module.exports = {
       width: {
         'fit-content': 'fit-content',
       },
+      screens: {
+        'print': {'raw': 'print'}
+      }
     },
   },
   variants: {
