@@ -1,13 +1,13 @@
-import { LocalizationStrings } from '../lib/languages';
-import { strip }               from '../lib/localizationHelper';
+import type { LocalizationStrings } from '../lib/languages';
+import { strip } from '../lib/localizationHelper';
 
 const siteInfo: LocalizationStrings<{
-  title: string,
-  description: string,
-  keywords: string,
-  author: string,
-  tts: string,
-  king: string,
+  title: string;
+  description: string;
+  keywords: string;
+  author: string;
+  tts: string;
+  king: string;
 }> = {
   'en-US': {
     title: 'TTS King',

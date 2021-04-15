@@ -1,39 +1,41 @@
-import React                        from 'react';
-import {
-  DEFAULT_LANGUAGE,
-  Language,
-  LocalizationStrings,
-}                                   from '../lib/languages';
-import { useRouter }                from 'next/router';
+import { useRouter } from 'next/router';
+import React from 'react';
+import type { Language, LocalizationStrings } from '../lib/languages';
+import { DEFAULT_LANGUAGE } from '../lib/languages';
 
 const LanguageContext = React.createContext<Language>(DEFAULT_LANGUAGE);
 
-export const GetUserLanguage =
-  <DEFINITIONS extends Record<string, string | Function>>({
-    localizationStrings,
-    children,
-  }: {
-    localizationStrings: LocalizationStrings<DEFINITIONS>,
-    children: (
-      languageStrings: DEFINITIONS,
-      language: Language,
-    ) => React.ReactNode
-  }): JSX.Element => <LanguageContext.Consumer>{
-    (language) =>
+export const GetUserLanguage = <
+  DEFINITIONS extends Readonly<
+    Record<string, string | ((...arguments_: readonly never[]) => unknown)>
+  >
+>({
+  localizationStrings,
+  children,
+}: {
+  readonly localizationStrings: LocalizationStrings<DEFINITIONS>;
+  readonly children: (
+    languageStrings: DEFINITIONS,
+    language: Language
+  ) => React.ReactNode;
+}): JSX.Element => (
+  <LanguageContext.Consumer>
+    {(language): React.ReactNode =>
       children(localizationStrings[language], language)
-  }</LanguageContext.Consumer>;
-
+    }
+  </LanguageContext.Consumer>
+);
 
 export const LanguageProvider = ({
-  children
-}:{
-  children: React.ReactNode
-})=>{
+  children,
+}: {
+  readonly children: React.ReactNode;
+}): JSX.Element => {
+  const { defaultLocale = 'en-US', locale = defaultLocale } = useRouter();
 
-  const {defaultLocale = 'en-US', locale = defaultLocale} = useRouter();
-
-  return <LanguageContext.Provider value={locale as Language}>
-    {children}
-  </LanguageContext.Provider>;
-
+  return (
+    <LanguageContext.Provider value={locale}>
+      {children}
+    </LanguageContext.Provider>
+  );
 };

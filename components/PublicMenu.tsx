@@ -1,18 +1,16 @@
-import { Language, LocalizationStrings } from '../lib/languages';
-import React                             from 'react';
-import { GetUserLanguage }               from './LanguageContext';
-import Menu                              from './Menu';
-import {
-  mainPageMenuItem,
-  MenuItem,
-}                                        from '../lib/menuComponents';
-import commonLocalizationStrings         from '../const/commonStrings';
-import { AuthContext }                   from './AuthContext';
+import React from 'react';
+import commonLocalizationStrings from '../const/commonStrings';
+import type { Language, LocalizationStrings } from '../lib/languages';
+import type { MenuItem } from '../lib/menuComponents';
+import { mainPageMenuItem } from '../lib/menuComponents';
+import { AuthContext } from './AuthContext';
+import { GetUserLanguage } from './LanguageContext';
+import Menu from './Menu';
 
 const localizationStrings: LocalizationStrings<{
-  about: string,
-  signIn: string,
-  pricing: string,
+  about: string;
+  signIn: string;
+  pricing: string;
 }> = {
   'en-US': {
     about: 'About',
@@ -22,48 +20,48 @@ const localizationStrings: LocalizationStrings<{
 };
 
 const menuItemsDictionary = (
-  languageStrings: typeof localizationStrings[Language],
-  language: Language,
-): (
-  Record<'left' | 'right' | 'rightSignedIn', Record<string, MenuItem>>
-  ) => (
-  {
-    'left': {
-      '/': mainPageMenuItem(language),
-      '/about': {
-        label: languageStrings.about,
-      },
-      '/pricing': {
-        label: languageStrings.pricing,
-      },
+  languageStrings: Readonly<typeof localizationStrings[Language]>,
+  language: Language
+): Record<'left' | 'right' | 'rightSignedIn', Record<string, MenuItem>> => ({
+  left: {
+    '/': mainPageMenuItem(language),
+    '/about': {
+      label: languageStrings.about,
     },
-    'right': {
-      '/sign_in': {
-        label: languageStrings.signIn,
-      },
+    '/pricing': {
+      label: languageStrings.pricing,
     },
-    'rightSignedIn': {
-      '/dashboard': {
-        label: commonLocalizationStrings[language].dashboard,
-      },
+  },
+  right: {
+    '/sign_in': {
+      label: languageStrings.signIn,
     },
-  }
-);
+  },
+  rightSignedIn: {
+    '/dashboard': {
+      label: commonLocalizationStrings[language].dashboard,
+    },
+  },
+});
 
-export function PublicMenu() {
+export function PublicMenu(): JSX.Element {
+  const { user } = React.useContext(AuthContext);
 
-  const {user} = React.useContext(AuthContext);
-
-  return <GetUserLanguage
-    localizationStrings={localizationStrings}
-  >{
-    (languageStrings, language) => <Menu menuItemGroups={[
-      menuItemsDictionary(languageStrings, language).left,
-      menuItemsDictionary(languageStrings, language)[
-        user ?
-          'rightSignedIn' :
-          'right'
-        ],
-    ]} />
-  }</GetUserLanguage>;
+  return (
+    <GetUserLanguage localizationStrings={localizationStrings}>
+      {(
+        languageStrings: Readonly<typeof localizationStrings[Language]>,
+        language: Language
+      ): JSX.Element => (
+        <Menu
+          menuItemGroups={[
+            menuItemsDictionary(languageStrings, language).left,
+            menuItemsDictionary(languageStrings, language)[
+              user ? 'rightSignedIn' : 'right'
+            ],
+          ]}
+        />
+      )}
+    </GetUserLanguage>
+  );
 }

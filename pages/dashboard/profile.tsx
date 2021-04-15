@@ -1,37 +1,30 @@
-import React                     from 'react';
-import Layout                    from '../../components/Layout';
-import FilterUsers               from '../../components/FilterUsers';
-import { contentClassName }      from '../../components/UI';
-import {
-  Loading,
-  ModalDialog,
-}                                from '../../components/ModalDialog';
-import Image                     from 'next/image';
-import { useRouter }             from 'next/router';
-import {
-  extractString,
-  Language,
-  LocalizationStrings,
-}                                from '../../lib/languages';
+import firebase from 'firebase/app';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React from 'react';
+import FilterUsers from '../../components/FilterUsers';
 import {
   dangerButtonClassName,
   dangerLinkClassName,
   LabeledField,
   primaryButtonClassName,
   successButtonClassName,
-}                                from '../../components/InteractivePrimitives';
-import firebase                  from 'firebase/app';
+} from '../../components/InteractivePrimitives';
+import Layout from '../../components/Layout';
+import { Loading, ModalDialog } from '../../components/ModalDialog';
+import { contentClassName } from '../../components/UI';
 import commonLocalizationStrings from '../../const/commonStrings';
-
+import type { Language, LocalizationStrings } from '../../lib/languages';
+import { extractString } from '../../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  downloadData: string,
-  deleteAccountConfirmationTitle: string,
-  deleteAccountConfirmation: string,
-  deleteAccountConsequences: string,
-  downloadAndDeleteAccount: string,
-  noSavedData: string,
-  deleteAccount: string,
+  downloadData: string;
+  deleteAccountConfirmationTitle: string;
+  deleteAccountConfirmation: string;
+  deleteAccountConsequences: string;
+  downloadAndDeleteAccount: string;
+  noSavedData: string;
+  deleteAccount: string;
 }> = {
   'en-US': {
     downloadData: 'Download my data',
@@ -41,197 +34,205 @@ const localizationStrings: LocalizationStrings<{
     deleteAccountConsequences: `You listening stats and saved stories
       would be permanently deleted.`,
     downloadAndDeleteAccount: 'Download my data and delete',
-    noSavedData: 'We don\'t have any saved data on you',
+    noSavedData: "We don't have any saved data on you",
     deleteAccount: 'Delete account',
   },
 };
-
 
 function downloadFile({
   data,
   fileName,
 }: {
-  data: string,
-  fileName: string,
-}) {
+  readonly data: string;
+  readonly fileName: string;
+}): void {
   const element = document.createElement('a');
   element.setAttribute(
     'href',
-    'data:text/plain;charset=utf-8,' + encodeURIComponent(data),
+    `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`
   );
   element.setAttribute('download', fileName);
 
   element.style.display = 'none';
-  document.body.appendChild(element);
+  document.body.append(element);
 
   element.click();
 
-  document.body.removeChild(element);
+  element.remove();
 }
 
-export default function Profile() {
-
-  const [
-    isLoading,
-    setIsLoading,
-  ] = React.useState<boolean>(false);
+export default function Profile(): JSX.Element {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [
     showDeleteUserPrompt,
     setShowDeleteUserPrompt,
   ] = React.useState<boolean>(false);
-  const [
-    currentUser,
-    setCurrentUser,
-  ] = React.useState<firebase.UserInfo | false>(false);
-  const [
-    currentLanguage,
-    setCurrentLanguage,
-  ] = React.useState<Language | false>(false);
-
+  const [currentUser, setCurrentUser] = React.useState<
+    firebase.UserInfo | false
+  >(false);
+  const [currentLanguage, setCurrentLanguage] = React.useState<
+    Language | false
+  >(false);
 
   const router = useRouter();
 
-  async function signOut() {
+  async function signOut(): Promise<void> {
     await router.push('/');
     await firebase.auth().signOut();
   }
 
-  async function deleteUserAccount(changeState: boolean = false) {
+  async function deleteUserAccount(changeState = false): Promise<void> {
+    if (typeof currentUser === 'boolean') return;
 
-    if (!currentUser)
-      return;
+    if (changeState) setIsLoading(true);
 
-    if (changeState)
-      setIsLoading(true);
-
-    await firebase.database().ref(
-      `users/${currentUser.uid}`,
-    ).set(null);
+    await firebase.database().ref(`users/${currentUser.uid}`).set(undefined);
 
     await signOut();
   }
 
-  async function downloadUserData(callback?: (() => void)) {
-
-    if (!currentUser || !currentLanguage)
+  function downloadUserData(callback?: () => void): void {
+    if (
+      typeof currentUser === 'boolean' ||
+      typeof currentLanguage === 'boolean'
+    )
       return;
 
     setIsLoading(true);
 
-    firebase.database().ref(`users/${currentUser.uid}`).on(
-      'value',
-      (value) => {
-
+    firebase
+      .database()
+      .ref(`users/${currentUser.uid}`)
+      // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+      .on('value', (value: Readonly<firebase.database.DataSnapshot>) => {
         downloadFile({
-          data: value.val() ||
+          data:
+            (value.val() as string) ||
             localizationStrings[currentLanguage].noSavedData,
           fileName: `${currentUser.uid}.json`,
         });
 
-        if (callback)
-          callback();
-      },
-    );
+        if (callback) callback();
+      });
   }
 
-  return <Layout
-    privatePage
-    title={extractString(commonLocalizationStrings, 'profile')}
-    localizationStrings={localizationStrings}
-  >{
-    (languageStrings, language, commonStrings) => <>
+  return (
+    <Layout
+      privatePage
+      title={extractString(commonLocalizationStrings, 'profile')}
+      localizationStrings={localizationStrings}
+    >
+      {(
+        languageStrings: Readonly<typeof localizationStrings[Language]>,
+        _language: Language,
+        commonLanguageStrings: Readonly<
+          typeof commonLocalizationStrings[Language]
+        >
+      ): JSX.Element => {
+        if (typeof currentLanguage === 'boolean')
+          setCurrentLanguage(currentLanguage);
 
-      {!currentLanguage && setCurrentLanguage(language)}
-      {isLoading && <Loading />}
+        return (
+          <>
+            {isLoading && <Loading />}
 
-      <FilterUsers
-        isProtected={true}
-        redirectPath={'/sign_in'}
-      >{
-        ({user}) => <div className={`${contentClassName} flex-col`}>
+            <FilterUsers isProtected={true} redirectPath={'/sign_in'}>
+              {/* eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types */}
+              {({ user }): JSX.Element => {
+                if (typeof currentUser === 'boolean') setCurrentUser(user);
 
-          {!currentUser && setCurrentUser(user)}
+                return (
+                  <div className={`${contentClassName} flex-col`}>
+                    <div className="flex justify-center">
+                      <Image
+                        className="rounded-full"
+                        // TODO: add default user ava
+                        src={user.photoURL ?? ''}
+                        alt={user.displayName ?? ''}
+                        width={96}
+                        height={96}
+                      />
+                    </div>
 
-          <div className='flex justify-center'>
-            <Image
-              className='rounded-full'
-              src={user.photoURL || ''}  // TODO: add default user ava
-              alt={user.displayName || ''}
-              width={96}
-              height={96}
-            />
-          </div>
+                    <LabeledField label="Name">{user.displayName}</LabeledField>
 
-          <LabeledField label='Name'>
-            {user.displayName}
-          </LabeledField>
+                    <LabeledField label="Email">{user.email}</LabeledField>
 
-          <LabeledField label='Email'>
-            {user.email}
-          </LabeledField>
+                    <button
+                      type="button"
+                      className={`${dangerLinkClassName} block mt-4`}
+                      onClick={(): void =>
+                        downloadUserData(() => setIsLoading(false))
+                      }
+                    >
+                      {languageStrings.downloadData}
+                    </button>
 
-          <button
-            className={`${dangerLinkClassName} block mt-4`}
-            onClick={() => downloadUserData(() => setIsLoading(false))}
-          >{
-            languageStrings.downloadData
-          }</button>
-
-          {
-            showDeleteUserPrompt &&
-            <ModalDialog
-              title={
-                languageStrings.deleteAccountConfirmationTitle
-              }
-              buttons={<>
-                <button
-                  className={primaryButtonClassName}
-                  onClick={() =>
-                    setShowDeleteUserPrompt(
-                      false,
+                    {showDeleteUserPrompt && (
+                      <ModalDialog
+                        title={languageStrings.deleteAccountConfirmationTitle}
+                        buttons={
+                          <>
+                            <button
+                              type="button"
+                              className={primaryButtonClassName}
+                              onClick={(): void =>
+                                setShowDeleteUserPrompt(false)
+                              }
+                            >
+                              {commonLanguageStrings.cancelDelete}
+                            </button>
+                            <button
+                              type="button"
+                              className={successButtonClassName}
+                              onClick={(): void =>
+                                downloadUserData(
+                                  (): void => void deleteUserAccount(false)
+                                )
+                              }
+                            >
+                              {languageStrings.downloadAndDeleteAccount}
+                            </button>
+                            <button
+                              type="button"
+                              className={dangerButtonClassName}
+                              onClick={async (): Promise<void> =>
+                                deleteUserAccount()
+                              }
+                            >
+                              {commonLanguageStrings.confirmDelete}
+                            </button>
+                          </>
+                        }
+                      >
+                        {languageStrings.deleteAccountConfirmation}
+                        <br />
+                        <br />
+                        {languageStrings.deleteAccountConsequences}
+                      </ModalDialog>
                     )}
-                >
-                  {commonStrings.cancelDelete}
-                </button>
-                <button
-                  className={successButtonClassName}
-                  onClick={() => downloadUserData(
-                    () => deleteUserAccount(false),
-                  )}
-                >
-                  {languageStrings.downloadAndDeleteAccount}
-                </button>
-                <button
-                  className={dangerButtonClassName}
-                  onClick={() => deleteUserAccount()}
-                >
-                  {commonStrings.confirmDelete}
-                </button>
-              </>}
-            >
-              {languageStrings.deleteAccountConfirmation}
-              <br /><br />
-              {languageStrings.deleteAccountConsequences}
-            </ModalDialog>
-          }
-          <button
-            className={`${dangerLinkClassName} block`}
-            onClick={() =>
-              setShowDeleteUserPrompt(true)
-            }
-          >{
-            languageStrings.deleteAccount
-          }</button>
+                    <button
+                      type="button"
+                      className={`${dangerLinkClassName} block`}
+                      onClick={(): void => setShowDeleteUserPrompt(true)}
+                    >
+                      {languageStrings.deleteAccount}
+                    </button>
 
-          <button
-            className={`${dangerLinkClassName} block`}
-            onClick={signOut}
-          >{
-            commonStrings.signOut
-          }</button>
-
-        </div>
-      }</FilterUsers>
-    </>
-  }</Layout>;
+                    <button
+                      type="button"
+                      className={`${dangerLinkClassName} block`}
+                      onClick={signOut}
+                    >
+                      {commonLanguageStrings.signOut}
+                    </button>
+                  </div>
+                );
+              }}
+            </FilterUsers>
+          </>
+        );
+      }}
+    </Layout>
+  );
 }

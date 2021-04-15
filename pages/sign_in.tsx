@@ -1,19 +1,16 @@
-import Layout        from '../components/Layout';
-import React         from 'react';
-import { Centered }  from '../components/UI';
-import {
-  Language,
-  LocalizationStrings,
-} from '../lib/languages';
-import FilterUsers   from '../components/FilterUsers';
+import firebase from 'firebase/app';
 import { useRouter } from 'next/router';
-import firebase      from 'firebase/app';
+import React from 'react';
+import FilterUsers from '../components/FilterUsers';
+import Layout from '../components/Layout';
+import { Centered } from '../components/UI';
+import type { Language, LocalizationStrings } from '../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  title: string,
-  choseSignInMethod: string,
-  signInWithGoogle: string,
-  unexpectedErrorHasOccurred: string,
+  title: string;
+  choseSignInMethod: string;
+  signInWithGoogle: string;
+  unexpectedErrorHasOccurred: string;
 }> = {
   'en-US': {
     title: 'Sign In ',
@@ -23,64 +20,65 @@ const localizationStrings: LocalizationStrings<{
   },
 };
 
-export default function SignIn() {
-
-  const [
-    errorMessage,
-    setErrorMessage,
-  ] = React.useState<string | undefined>(undefined);
+export default function SignIn(): JSX.Element {
+  const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
+    undefined
+  );
   const router = useRouter();
 
   async function initializeSignIn(
-    languageStrings: typeof localizationStrings[Language]
-  ) {
+    languageStrings: Readonly<typeof localizationStrings[Language]>
+  ): Promise<void> {
     try {
       setErrorMessage(undefined);
       const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
       await firebase.auth().signInWithPopup(googleAuthProvider);
-      localStorage.setItem('signedIn','1');
+      localStorage.setItem('signedIn', '1');
       await router.push('/dashboard');
-    }
-    catch (error) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : '';
       setErrorMessage(
         `${languageStrings.unexpectedErrorHasOccurred}:
-        <br/>${error.message}`,
+        <br/>${errorMessage}`
       );
     }
   }
 
-  return <Layout
-    pageUrl='sign_in'
-    title={localizationStrings}
-    localizationStrings={localizationStrings}
-  >{
-    (languageStrings) => <FilterUsers
-      isProtected={false}
-      redirectPath='/'
-    >{
-      () => <Centered>
-        <div>
-          {
-            typeof errorMessage !== 'undefined' && <div
-              className='p-4 text-white bg-red-400 mb-4'
-            >{errorMessage}</div>
-          }
-          <h2>{languageStrings.choseSignInMethod}</h2>
-          <div className="flex flex-column gap-y-1 pt-4">
-            <button
-              className='border border-gray-200 p-4
+  return (
+    <Layout
+      pageUrl="sign_in"
+      title={localizationStrings}
+      localizationStrings={localizationStrings}
+    >
+      {(
+        languageStrings: Readonly<typeof localizationStrings[Language]>
+      ): JSX.Element => (
+        <FilterUsers isProtected={false} redirectPath="/">
+          {(): JSX.Element => (
+            <Centered>
+              <div>
+                {typeof errorMessage !== 'undefined' && (
+                  <div className="p-4 text-white bg-red-400 mb-4">
+                    {errorMessage}
+                  </div>
+                )}
+                <h2>{languageStrings.choseSignInMethod}</h2>
+                <div className="flex flex-column gap-y-1 pt-4">
+                  <button
+                    type="button"
+                    className="border border-gray-200 p-4
                   bg-gray-200 hover:bg-white w-full
-                  box-content'
-              onClick={initializeSignIn.bind(
-                null,
-                languageStrings,
-              )}
-            >
-              {languageStrings.signInWithGoogle}
-            </button>
-          </div>
-        </div>
-      </Centered>
-    }</FilterUsers>
-  }</Layout>;
+                  box-content"
+                    onClick={initializeSignIn.bind(undefined, languageStrings)}
+                  >
+                    {languageStrings.signInWithGoogle}
+                  </button>
+                </div>
+              </div>
+            </Centered>
+          )}
+        </FilterUsers>
+      )}
+    </Layout>
+  );
 }
