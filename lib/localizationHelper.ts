@@ -1,2 +1,2 @@
-export const strip = (value: string) =>
+export const strip = (value: string): string =>
   value.trim().replace(/\s+/, ' ');

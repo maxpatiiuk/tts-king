@@ -1,11 +1,11 @@
-import Layout                       from '../components/Layout';
-import { PublicMenu }               from '../components/PublicMenu';
-import { Centered }            from '../components/UI';
-import { LocalizationStrings } from '../lib/languages';
+import Layout from '../components/Layout';
+import { PublicMenu } from '../components/PublicMenu';
+import { Centered } from '../components/UI';
+import type { Language, LocalizationStrings } from '../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  title: string,
-  comeBackLater: string,
+  title: string;
+  comeBackLater: string;
 }> = {
   'en-US': {
     title: 'About us ',
@@ -13,19 +13,23 @@ const localizationStrings: LocalizationStrings<{
   },
 };
 
-
-const about = () =>
+const about = (): JSX.Element => (
   <Layout
-    pageUrl='about'
+    pageUrl="about"
     title={localizationStrings}
     localizationStrings={localizationStrings}
-  >{
-    (languageStrings) => <>
-      <PublicMenu />
-      <Centered>
-        <p>{languageStrings.comeBackLater}</p>
-      </Centered>
-    </>
-  }</Layout>;
+  >
+    {(
+      languageStrings: Readonly<typeof localizationStrings[Language]>
+    ): JSX.Element => (
+      <>
+        <PublicMenu />
+        <Centered>
+          <p>{languageStrings.comeBackLater}</p>
+        </Centered>
+      </>
+    )}
+  </Layout>
+);
 
 export default about;

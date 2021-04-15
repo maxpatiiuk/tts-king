@@ -5,15 +5,15 @@
     "users": {
       "$user_id": {
         ".write": "newData.hasChildren(
-                      [
-                        'subscribe_to_newsletter',
-                        'sources',
-                        'posts_content',
-                        'listening_stats',
-                        'total_stats',
-                        'deleted_posts_meta',
-                        'deleted_posts_content',
-                      ]
+                     [
+                       'subscribe_to_newsletter',
+                       'sources',
+                       'posts_content',
+                       'listening_stats',
+                       'total_stats',
+                       'deleted_posts_meta',
+                       'deleted_posts_content',
+                     ]
                    )",
         ".read": "$user_id === auth.uid",
         "$other": {
@@ -25,20 +25,20 @@
         "sources": {
           "$source_name": {
             ".write": "newData.exists() &&
-            					 newData.hasChildren(
-            								[
-              								'subscribed',
-              								'priority',
-              								'posts_meta',
-              								'posts_content',
-            								]
-            					 )",
-        		"$other": {
-       		   ".validate": false,
-       		  },
+                       newData.hasChildren(
+                            [
+                              'subscribed',
+                              'priority',
+                              'posts_meta',
+                              'posts_content',
+                            ]
+                       )",
+            "$other": {
+              ".validate": false,
+             },
             "subscribed": {
               ".validate": "newData.isBoolean()",
-            }, 
+            },
             "priority": {
               ".validate": "(newData.isNumber() && newData.val() > 1) || newData.val() === false",
             },
@@ -46,23 +46,23 @@
               "$post_id": {
                 ".write": "newData.hasChildren(['preview'])",
                 ".validate": "root.child(
-                              	'users/'
-                                	+ $user_id
-                                	+ '/posts_content/'
-                                	+ $post_id
+                                'users/'
+                                  + $user_id
+                                  + '/posts_content/'
+                                  + $post_id
                               ).exists() &&
-                							(
-                  							$source_name != 'url' ||
-                  							newData.hasChild('source_url')
-                							) &&
-                  						(
-                  							$source_name != 'file' ||
-                  							newData.hasChild('file_name')
-              								)",
+                              (
+                                $source_name != 'url' ||
+                                newData.hasChild('source_url')
+                              ) &&
+                              (
+                                $source_name != 'file' ||
+                                newData.hasChild('file_name')
+                              )",
                 ".indexOn": ["preview"],
                 "$other": {
-       		   			".validate": false,
-       		  		},
+                    ".validate": false,
+                 },
                 "source_url": {
                   ".validate": "$source_name === 'url' && newData.isString()",
                 },
@@ -71,7 +71,7 @@
                 },
                 "preview": {
                   ".validate": "newData.isString() &&
-                  							newData.val().length !== 0 &&
+                                newData.val().length !== 0 &&
                                 newData.val().length < 50",
                 },
               },
@@ -89,16 +89,16 @@
             "$month": {
               ".validate": "$month >= 1 && $month <= 12 && newData.isNumber() && newData.val() > 0",
               "$category": {
-            		".validate": "$category === 'posts' ||
-                							$category === 'paragraphs' ||
+                ".validate": "$category === 'posts' ||
+                              $category === 'paragraphs' ||
                               $category === 'words' ||
                               $category === 'characters'",
-            		".write": "(
+                ".write": "(
                               !data.exists() ||
                               data.val() <= newData.val()
                            ) &&
                            newData.isNumber()",
-        		  }
+              }
             },
           },
         },
@@ -112,9 +112,9 @@
                           $category === 'words' ||
                           $category === 'characters'",
             ".write": "(
-            							!data.exists() ||
-              						data.val() <= newData.val()
-            					 ) &&
+                          !data.exists() ||
+                          data.val() <= newData.val()
+                       ) &&
                        newData.isNumber()",
           }
         },
@@ -141,15 +141,15 @@
             },
             "source_name": {
               ".validate": "newData.isString() &&
-                						root.child('users/' + $user_id + '/sources/' + newData.val()).exists()",
+                            root.child('users/' + $user_id + '/sources/' + newData.val()).exists()",
             },
             "source_url": {
               ".validate": "newData.parent().child('source_name').val() === 'url' &&
-              							newData.isString()",
+                            newData.isString()",
             },
             "file_name": {
               ".validate": "newData.parent().child('source_name').val() === 'file' &&
-              							newData.isString()",
+                            newData.isString()",
             },
             "preview": {
               ".validate": "newData.isString() &&
@@ -167,4 +167,3 @@
     },
   },
 }
-
