@@ -39,7 +39,7 @@ export default function FilterUsers<
     if (!isClientSide) return;
 
     localStorage.setItem('signedIn', user ? '1' : '0');
-  }, [user, typeof window, isClientSide]);
+  }, [user, isClientSide]);
 
   if (
     !isClientSide ||
