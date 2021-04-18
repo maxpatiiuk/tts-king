@@ -18,13 +18,13 @@ import type { Language, LocalizationStrings } from '../../lib/languages';
 import { extractString } from '../../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  downloadData: string;
-  deleteAccountConfirmationTitle: string;
-  deleteAccountConfirmation: string;
-  deleteAccountConsequences: string;
-  downloadAndDeleteAccount: string;
-  noSavedData: string;
-  deleteAccount: string;
+  readonly downloadData: string;
+  readonly deleteAccountConfirmationTitle: string;
+  readonly deleteAccountConfirmation: string;
+  readonly deleteAccountConsequences: string;
+  readonly downloadAndDeleteAccount: string;
+  readonly noSavedData: string;
+  readonly deleteAccount: string;
 }> = {
   'en-US': {
     downloadData: 'Download my data',

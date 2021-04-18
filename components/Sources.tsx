@@ -1,12 +1,8 @@
 import React from 'react';
 import type commonLocalizationStrings from '../const/commonStrings';
 import type { Language } from '../lib/languages';
-import type {
-  DatabaseSource,
-  Source,
-  localizationStrings,
-} from '../lib/sources';
-import { sourceSubscriptions } from '../lib/sources';
+import type { DatabaseSource, localizationStrings } from '../lib/sources';
+import { defaultDatabaseSources, sourceSubscriptions } from '../lib/sources';
 import {
   dangerButtonClassName,
   fieldClassName,
@@ -15,7 +11,107 @@ import {
 
 const DEFAULT_SOURCE_PRIORITY = 0;
 
-export function SourceLine({
+export function UserSources({
+  languageStrings,
+  commonLanguageStrings,
+  language,
+  sources,
+  newSourceName,
+  onDelete: handleDelete,
+  onLabelChange: handleLabelChange,
+  onPriorityChange: handlePriorityChange,
+  onRename: handleRename,
+  onToggleSubscribe: handleToggleSubscribe,
+  onNewSourceNameChange: handleNewSourceNameChange,
+  onNewSourceAddAction: handleNewSourceAddAction,
+}: {
+  readonly languageStrings: typeof localizationStrings[Language];
+  readonly commonLanguageStrings: typeof commonLocalizationStrings[Language];
+  readonly language: Language;
+  readonly sources: Readonly<Record<string, DatabaseSource>>;
+  readonly newSourceName: string;
+  readonly onDelete: (sourceName: string) => void;
+  readonly onLabelChange: (sourceName: string, labelColor: string) => void;
+  readonly onPriorityChange: (sourceName: string, newPriority: number) => void;
+  readonly onRename: (sourceName: string, newName: string) => void;
+  readonly onToggleSubscribe: (sourceName: string) => void;
+  readonly onNewSourceNameChange: (newSourceName: string) => void;
+  readonly onNewSourceAddAction: () => void;
+}): JSX.Element {
+  return (
+    <div
+      className="grid gap-3 mb-10"
+      style={{
+        gridTemplateColumns: 'auto repeat(4, min-content)',
+      }}
+    >
+      <div className="contents text-2xl">
+        <div>{languageStrings.sourceName}</div>
+        <div>{languageStrings.label}</div>
+        <div>{languageStrings.priority}</div>
+        <div className="col-span-2">{languageStrings.controls}</div>
+      </div>
+      <hr className="col-span-full" />
+      {Object.entries({
+        ...sources,
+        ...defaultDatabaseSources(language),
+      } as Record<string, DatabaseSource>)
+        .sort(
+          ([, { priority: priorityLeft }], [, { priority: priorityRight }]) =>
+            Number(priorityLeft) === Number(priorityRight)
+              ? 0
+              : Number(priorityLeft) === Number(priorityRight)
+              ? -1
+              : 1
+        )
+        .map(([sourceName, sourceData]) => (
+          <React.Fragment key={sourceName}>
+            <SourceLine
+              languageStrings={languageStrings}
+              source={[sourceName, sourceData]}
+              commonStrings={commonLanguageStrings}
+              onDelete={handleDelete.bind(undefined, sourceName)}
+              onLabelChange={handleLabelChange.bind(undefined, sourceName)}
+              onPriorityChange={handlePriorityChange.bind(
+                undefined,
+                sourceName
+              )}
+              onRename={handleRename.bind(undefined, sourceName)}
+              onToggleSubscribe={handleToggleSubscribe.bind(
+                undefined,
+                sourceName
+              )}
+            />
+            <hr className="col-span-full" />
+          </React.Fragment>
+        ))}
+      <div className="contents">
+        <div>
+          <input
+            className={`${fieldClassName} w-full`}
+            placeholder={languageStrings.newSourceName}
+            type="text"
+            value={newSourceName}
+            onChange={(event): void =>
+              handleNewSourceNameChange(event.target.value)
+            }
+          />
+        </div>
+        <div className="col-end-6">
+          <button
+            type="button"
+            className={`${successButtonClassName} w-full`}
+            onClick={handleNewSourceAddAction}
+          >
+            {commonLanguageStrings.add}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SourceLine({
   languageStrings,
   source: [sourceName, sourceData],
   commonStrings,
@@ -120,34 +216,6 @@ export function SourceLine({
       >
         {commonStrings.delete}
       </button>
-    </div>
-  );
-}
-
-export function SourceSubscriptionLine({
-  languageStrings,
-  source: [, sourceData],
-  onSubscribe: handleSubscribe,
-}: {
-  readonly languageStrings: typeof localizationStrings[Language];
-  readonly source: [string, Source];
-  readonly onSubscribe: () => void;
-}): JSX.Element {
-  return (
-    <div className="contents">
-      <div>
-        {sourceData.label}
-        <span className="text-gray-600"> - {sourceData.description}</span>
-      </div>
-      <div>
-        <button
-          type="button"
-          className={successButtonClassName}
-          onClick={handleSubscribe}
-        >
-          {languageStrings.subscribe}
-        </button>
-      </div>
     </div>
   );
 }

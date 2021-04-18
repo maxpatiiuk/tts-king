@@ -1,16 +1,16 @@
 import type { LocalizationStrings } from '../lib/languages';
 
 const commonLocalizationStrings: LocalizationStrings<{
-  yes: string;
-  no: string;
-  add: string;
-  delete: string;
-  confirmDelete: string;
-  cancelDelete: string;
-  profile: string;
-  dashboard: string;
-  signOut: string;
-  sources: string;
+  readonly yes: string;
+  readonly no: string;
+  readonly add: string;
+  readonly delete: string;
+  readonly confirmDelete: string;
+  readonly cancelDelete: string;
+  readonly profile: string;
+  readonly dashboard: string;
+  readonly signOut: string;
+  readonly sources: string;
 }> = {
   'en-US': {
     yes: 'Yes',

@@ -6,9 +6,9 @@ import { PublicMenu } from './PublicMenu';
 import { Centered } from './UI';
 
 const localizationStrings: LocalizationStrings<{
-  header: string;
-  message: string;
-  returnToHomePage: string;
+  readonly header: string;
+  readonly message: string;
+  readonly returnToHomePage: string;
 }> = {
   'en-US': {
     header: 'Oops! Nothing was found',

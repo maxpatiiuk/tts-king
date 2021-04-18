@@ -1,21 +1,21 @@
 import type { Language, LocalizationStrings } from './languages';
 
 export const localizationStrings: LocalizationStrings<{
-  mySources: string;
-  availableSubscriptions: string;
-  subscribe: string;
-  unsubscribe: string;
-  priority: string;
-  search: string;
-  newSourceName: string;
-  sourceName: string;
-  controls: string;
-  confirmDeleteTitle: string;
-  confirmDeleteMessage: string;
-  confirmDeleteSourceMessage: string;
-  confirmDeleteSubscription: string;
-  label: string;
-  uncategorized: string;
+  readonly mySources: string;
+  readonly availableSubscriptions: string;
+  readonly subscribe: string;
+  readonly unsubscribe: string;
+  readonly priority: string;
+  readonly search: string;
+  readonly newSourceName: string;
+  readonly sourceName: string;
+  readonly controls: string;
+  readonly confirmDeleteTitle: string;
+  readonly confirmDeleteMessage: string;
+  readonly confirmDeleteSourceMessage: string;
+  readonly confirmDeleteSubscription: string;
+  readonly label: string;
+  readonly uncategorized: string;
 }> = {
   'en-US': {
     mySources: 'My sources',
