@@ -11,7 +11,6 @@ export function ModalDialog({
 }: {
   readonly isOpen?: boolean;
   readonly title: string;
-  readonly onClose?: () => void;
   readonly buttons?: React.ReactNode;
   readonly children: React.ReactNode;
   readonly onCloseClick?: () => void;
@@ -26,32 +25,12 @@ export function ModalDialog({
         isOpen={isOpen}
         closeTimeoutMS={100}
         contentLabel={title}
-        style={{
-          overlay: {
-            opacity: 0,
-            transition: 'opacity 100ms ease-in-out',
-            width: '100vw',
-            height: '100vh',
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#0009',
-          },
-          content: {
-            position: 'unset',
-            inset: 'unset',
-            border: 'unset',
-            background: 'unset',
-            overflow: 'unset',
-            borderRadius: 'unset',
-            outline: 'unset',
-            padding: 'unset',
-          },
-        }}
-        portalClassName={className}
-        className={'w-full'}
+        portalClassName={`${className}`}
+        overlayClassName={
+          'w-screen h-screen absolute inset-0 flex items-center opacity-0 ' +
+          'justify-center bg-shadow transition-opacity'
+        }
+        className={'w-full outline-none'}
         shouldCloseOnEsc={typeof handleCloseClick === 'function'}
       >
         <div className="bg-white shadow-xl w-auto w-1/2 m-auto">
