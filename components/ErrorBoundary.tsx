@@ -50,9 +50,9 @@ export default class ErrorBoundary extends React.Component<
     errorInfo: undefined,
   };
 
-  private readonly handleReload = void window.location.reload;
+  private readonly handleReload = (): void => window.location.reload();
 
-  private readonly handleHistoryBack = void window.location.reload;
+  private readonly handleHistoryBack = (): void => window.location.reload();
 
   public componentDidCatch(
     error: { readonly toString: () => string },
