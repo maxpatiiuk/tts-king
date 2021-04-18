@@ -4,8 +4,8 @@ const useClientSideRendering = (): boolean => {
   const [isClientSide, setIsClientSide] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (typeof window !== 'undefined') setIsClientSide(true);
-  }, [typeof window]);
+    if (typeof localStorage !== 'undefined') setIsClientSide(true);
+  }, [typeof localStorage]);
 
   return isClientSide;
 };
