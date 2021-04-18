@@ -5,7 +5,7 @@ import { DEFAULT_LANGUAGE } from '../lib/languages';
 
 const LanguageContext = React.createContext<Language>(DEFAULT_LANGUAGE);
 
-export const GetUserLanguage = <
+export function GetUserLanguage<
   DEFINITIONS extends Readonly<
     Record<string, string | ((...arguments_: readonly never[]) => unknown)>
   >
@@ -18,13 +18,15 @@ export const GetUserLanguage = <
     languageStrings: DEFINITIONS,
     language: Language
   ) => React.ReactNode;
-}): JSX.Element => (
-  <LanguageContext.Consumer>
-    {(language): React.ReactNode =>
-      children(localizationStrings[language], language)
-    }
-  </LanguageContext.Consumer>
-);
+}): JSX.Element {
+  return (
+    <LanguageContext.Consumer>
+      {(language): React.ReactNode =>
+        children(localizationStrings[language], language)
+      }
+    </LanguageContext.Consumer>
+  );
+}
 
 export const LanguageProvider = ({
   children,
