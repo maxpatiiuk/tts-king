@@ -7,7 +7,7 @@ import { GetUserLanguage } from './LanguageContext';
 import Menu from './Menu';
 
 const localizationStrings: LocalizationStrings<{
-  stats: string;
+  readonly stats: string;
 }> = {
   'en-US': {
     stats: 'Stats',

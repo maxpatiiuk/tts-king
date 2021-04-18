@@ -4,9 +4,9 @@ import { Centered } from '../components/UI';
 import type { Language, LocalizationStrings } from '../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  title: string;
-  header: string;
-  subheader: string;
+  readonly title: string;
+  readonly header: string;
+  readonly subheader: string;
 }> = {
   'en-US': {
     title: 'Pricing ',

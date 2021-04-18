@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import type { RefActions } from '../refReducers/Sources';
 import type { DatabaseSource, DatabaseSubscription } from '../lib/sources';
 import { createNewCategory, createNewSubscription } from '../lib/sources';

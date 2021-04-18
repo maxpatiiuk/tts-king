@@ -2,12 +2,12 @@ import type { LocalizationStrings } from '../lib/languages';
 import { strip } from '../lib/localizationHelper';
 
 const siteInfo: LocalizationStrings<{
-  title: string;
-  description: string;
-  keywords: string;
-  author: string;
-  tts: string;
-  king: string;
+  readonly title: string;
+  readonly description: string;
+  readonly keywords: string;
+  readonly author: string;
+  readonly tts: string;
+  readonly king: string;
 }> = {
   'en-US': {
     title: 'TTS King',

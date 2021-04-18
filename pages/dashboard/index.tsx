@@ -7,7 +7,7 @@ import { contentClassName } from '../../components/UI';
 import type { LocalizationStrings } from '../../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  title: string;
+  readonly title: string;
 }> = {
   'en-US': {
     title: 'Dashboard',

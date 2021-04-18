@@ -7,10 +7,10 @@ import { Centered } from '../components/UI';
 import type { Language, LocalizationStrings } from '../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  title: string;
-  choseSignInMethod: string;
-  signInWithGoogle: string;
-  unexpectedErrorHasOccurred: string;
+  readonly title: string;
+  readonly choseSignInMethod: string;
+  readonly signInWithGoogle: string;
+  readonly unexpectedErrorHasOccurred: string;
 }> = {
   'en-US': {
     title: 'Sign In ',

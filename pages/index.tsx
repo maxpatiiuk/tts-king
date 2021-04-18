@@ -8,12 +8,12 @@ import siteInfo from '../const/siteInfo';
 import type { Language, LocalizationStrings } from '../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  header: string;
-  paragraph1: string;
-  paragraph2: string;
-  goToDashboard: string;
-  signUp: string;
-  actionStatement: (actionLink: Readonly<JSX.Element>) => JSX.Element;
+  readonly header: string;
+  readonly paragraph1: string;
+  readonly paragraph2: string;
+  readonly goToDashboard: string;
+  readonly signUp: string;
+  readonly actionStatement: (actionLink: Readonly<JSX.Element>) => JSX.Element;
 }> = {
   'en-US': {
     header: 'Because your time is important!',

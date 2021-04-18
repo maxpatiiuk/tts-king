@@ -16,21 +16,21 @@ import { ModalDialog } from './ModalDialog';
 
 type ErrorBoundaryState =
   | {
-      hasError: false;
-      error: undefined;
-      errorInfo: undefined;
+      readonly hasError: false;
+      readonly error: undefined;
+      readonly errorInfo: undefined;
     }
   | {
-      hasError: true;
-      error: { toString: () => string };
-      errorInfo: { componentStack: string };
+      readonly hasError: true;
+      readonly error: { toString: () => string };
+      readonly errorInfo: { componentStack: string };
     };
 
 const localizationStrings: LocalizationStrings<{
-  title: string;
-  reload: string;
-  previousPage: string;
-  unexpectedErrorHasOccurred: string;
+  readonly title: string;
+  readonly reload: string;
+  readonly previousPage: string;
+  readonly unexpectedErrorHasOccurred: string;
 }> = {
   'en-US': {
     title: 'Unexpected Error',

@@ -4,8 +4,8 @@ import { Centered } from '../components/UI';
 import type { Language, LocalizationStrings } from '../lib/languages';
 
 const localizationStrings: LocalizationStrings<{
-  title: string;
-  comeBackLater: string;
+  readonly title: string;
+  readonly comeBackLater: string;
 }> = {
   'en-US': {
     title: 'About us ',

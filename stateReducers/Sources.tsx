@@ -1,22 +1,15 @@
-import type firebase from 'firebase';
+import type firebase from 'firebase/app';
 import React from 'react';
 import FilterUsers from '../components/FilterUsers';
-import {
-  fieldClassName,
-  successButtonClassName,
-} from '../components/InteractivePrimitives';
 import Layout from '../components/Layout';
 import { Loading } from '../components/ModalDialog';
-import { SourceLine, SourceSubscriptionLine } from '../components/Sources';
+import { UserSources } from '../components/Sources';
+import { AvailableSubscriptions } from '../components/Subscriptions';
 import { contentClassName } from '../components/UI';
 import commonLocalizationStrings from '../const/commonStrings';
 import type { Language } from '../lib/languages';
 import { extractString } from '../lib/languages';
-import {
-  defaultDatabaseSources,
-  localizationStrings,
-  sourceSubscriptions,
-} from '../lib/sources';
+import { localizationStrings } from '../lib/sources';
 import type { DatabaseSource } from '../lib/sources';
 import type { State } from '../lib/stateManagement';
 import { generateReducer } from '../lib/stateManagement';
@@ -74,149 +67,77 @@ export const stateReducer = generateReducer<JSX.Element, StateWithProps>({
                 <h2 className="text-xl sm:text-4xl mb-3">
                   {languageStrings.mySources}
                 </h2>
-                <div
-                  className="grid gap-3 mb-10"
-                  style={{
-                    gridTemplateColumns: 'auto repeat(4, min-content)',
-                  }}
-                >
-                  <div className="contents text-2xl">
-                    <div>{languageStrings.sourceName}</div>
-                    <div>{languageStrings.label}</div>
-                    <div>{languageStrings.priority}</div>
-                    <div className="col-span-2">{languageStrings.controls}</div>
-                  </div>
-                  <hr className="col-span-full" />
-                  {Object.entries({
-                    ...state.userSources,
-                    ...defaultDatabaseSources(language),
-                  } as Record<string, DatabaseSource>)
-                    .sort(
-                      (
-                        [, { priority: priorityLeft }],
-                        [, { priority: priorityRight }]
-                      ) =>
-                        Number(priorityLeft) === Number(priorityRight)
-                          ? 0
-                          : Number(priorityLeft) === Number(priorityRight)
-                          ? -1
-                          : 1
-                    )
-                    .map(([sourceName, sourceData]) => (
-                      <React.Fragment key={sourceName}>
-                        <SourceLine
-                          languageStrings={languageStrings}
-                          source={[sourceName, sourceData]}
-                          commonStrings={commonLanguageStrings}
-                          onDelete={(): void =>
-                            props.dispatch({
-                              type: 'DeleteSourceAction',
-                              sourceName,
-                            })
-                          }
-                          onLabelChange={(labelColor): void =>
-                            props.dispatch({
-                              type: 'ChangeSourceLabelColorAction',
-                              sourceName,
-                              labelColor,
-                            })
-                          }
-                          onPriorityChange={(newPriority): void =>
-                            props.dispatch({
-                              type: 'ChangeSourcePriorityAction',
-                              sourceName,
-                              priority: newPriority,
-                            })
-                          }
-                          onRename={(newName): void =>
-                            props.dispatch({
-                              type: 'RenameSourceAction',
-                              sourceName,
-                              sourceLabel: newName,
-                            })
-                          }
-                          onToggleSubscribe={(): void =>
-                            props.dispatch({
-                              type: 'ToggleSourceSubscriptionAction',
-                              sourceName,
-                            })
-                          }
-                        />
-                        <hr className="col-span-full" />
-                      </React.Fragment>
-                    ))}
-                  <div className="contents">
-                    <div>
-                      <input
-                        className={`${fieldClassName} w-full`}
-                        placeholder={languageStrings.newSourceName}
-                        type="text"
-                        value={state.newSourceName}
-                        onChange={(event): void =>
-                          props.dispatch({
-                            type: 'ChangeNewSourceNameAction',
-                            newSourceName: event.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="col-end-6">
-                      <button
-                        type="button"
-                        className={`${successButtonClassName} w-full`}
-                        onClick={(): void =>
-                          props.dispatch({
-                            type: 'AddNewSourceAction',
-                          })
-                        }
-                      >
-                        {commonLanguageStrings.add}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-between mb-3">
-                  <h2 className="text-xl sm:text-4xl">
-                    {languageStrings.availableSubscriptions}
-                  </h2>
-                  <input
-                    className={fieldClassName}
-                    placeholder={languageStrings.search}
-                    type="text"
-                    value={state.searchQuery}
-                    onChange={(event): void =>
-                      props.dispatch({
-                        type: 'ChangeSearchQueryAction',
-                        searchQuery: event.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div
-                  className="grid gap-3"
-                  style={{
-                    gridTemplateColumns: '1fr min-content',
-                  }}
-                >
-                  {Object.entries(sourceSubscriptions)
-                    .filter(
-                      ([sourceName, { label }]) =>
-                        !Object.keys(state.userSources ?? {}).includes(
-                          sourceName
-                        ) && label.includes(state.searchQuery)
-                    )
-                    .map((source, index, list) => (
-                      <React.Fragment key={source[0]}>
-                        <SourceSubscriptionLine
-                          languageStrings={languageStrings}
-                          source={source}
-                        />
-                        {index + 1 < list.length && (
-                          <hr className="col-span-full" />
-                        )}
-                      </React.Fragment>
-                    ))}
-                </div>
+                <UserSources
+                  languageStrings={languageStrings}
+                  commonLanguageStrings={commonLanguageStrings}
+                  language={language}
+                  sources={state.userSources}
+                  newSourceName={state.newSourceName}
+                  onDelete={(sourceName: string): void =>
+                    props.dispatch({
+                      type: 'DeleteSourceAction',
+                      sourceName,
+                    })
+                  }
+                  onLabelChange={(
+                    sourceName: string,
+                    labelColor: string
+                  ): void =>
+                    props.dispatch({
+                      type: 'ChangeSourceLabelColorAction',
+                      sourceName,
+                      labelColor,
+                    })
+                  }
+                  onPriorityChange={(sourceName, newPriority): void =>
+                    props.dispatch({
+                      type: 'ChangeSourcePriorityAction',
+                      sourceName,
+                      priority: newPriority,
+                    })
+                  }
+                  onRename={(sourceName, newName): void =>
+                    props.dispatch({
+                      type: 'RenameSourceAction',
+                      sourceName,
+                      sourceLabel: newName,
+                    })
+                  }
+                  onToggleSubscribe={(sourceName): void =>
+                    props.dispatch({
+                      type: 'ToggleSourceSubscriptionAction',
+                      sourceName,
+                    })
+                  }
+                  onNewSourceNameChange={(newSourceName): void =>
+                    props.dispatch({
+                      type: 'ChangeNewSourceNameAction',
+                      newSourceName,
+                    })
+                  }
+                  onNewSourceAddAction={(): void =>
+                    props.dispatch({
+                      type: 'AddNewSourceAction',
+                    })
+                  }
+                />
+                <AvailableSubscriptions
+                  languageStrings={languageStrings}
+                  searchQuery={state.searchQuery}
+                  userSources={state.userSources}
+                  onChangeSearchQuery={(searchQuery): void =>
+                    props.dispatch({
+                      type: 'ChangeSearchQueryAction',
+                      searchQuery,
+                    })
+                  }
+                  onAddSubscription={(subscriptionName): void =>
+                    props.dispatch({
+                      type: 'AddSubscriptionAction',
+                      subscriptionName,
+                    })
+                  }
+                />
               </div>
             )}
           </FilterUsers>
