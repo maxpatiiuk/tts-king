@@ -8,5 +8,5 @@ export type DatabasePost = (
       fileName: string;
     }
 ) & {
-  preview: string;
+  readonly preview: string;
 };

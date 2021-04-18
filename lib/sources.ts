@@ -1,26 +1,60 @@
 import type { Language, LocalizationStrings } from './languages';
 
-export type DatabaseSource = {
-  priority: number;
-} & (
-  | {
-      type: 'subscription';
-      subscribed: boolean;
-    }
-  | {
-      type: 'category';
-      labelColor: string;
-      label: string;
-    }
-);
-
-const localizationStrings: LocalizationStrings<{
+export const localizationStrings: LocalizationStrings<{
+  mySources: string;
+  availableSubscriptions: string;
+  subscribe: string;
+  unsubscribe: string;
+  priority: string;
+  search: string;
+  newSourceName: string;
+  sourceName: string;
+  controls: string;
+  confirmDeleteTitle: string;
+  confirmDeleteMessage: string;
+  confirmDeleteSourceMessage: string;
+  confirmDeleteSubscription: string;
+  label: string;
   uncategorized: string;
 }> = {
   'en-US': {
+    mySources: 'My sources',
+    availableSubscriptions: 'Available Subscriptions',
+    subscribe: 'Subscribe',
+    unsubscribe: 'Unsubscribe',
+    priority: 'Priority',
+    search: '🔍\tSearch',
+    newSourceName: "New Source's Name",
+    sourceName: 'Source Name',
+    controls: 'Controls',
+    confirmDeleteTitle: 'Confirm Deletion',
+    confirmDeleteMessage: 'Are you sure you want to delete this source?',
+    confirmDeleteSourceMessage:
+      'All posts belonging to this source would be removed',
+    confirmDeleteSubscription:
+      'All posts added by this subscription would be removed',
+    label: 'Label',
     uncategorized: 'Uncategorized',
   },
 };
+
+interface DatabaseSourceBase {
+  readonly type: string;
+  readonly priority: number;
+}
+
+export interface DatabaseSubscription extends DatabaseSourceBase {
+  readonly type: 'subscription';
+  readonly subscribed: boolean;
+}
+
+export interface DatabaseCategory extends DatabaseSourceBase {
+  readonly type: 'category';
+  readonly labelColor: string;
+  readonly label: string;
+}
+
+export type DatabaseSource = DatabaseSubscription | DatabaseCategory;
 
 export const defaultDatabaseSources = (
   language: Language
@@ -34,18 +68,18 @@ export const defaultDatabaseSources = (
 });
 
 export interface Source {
-  label: string;
-  imgLink: string;
-  description: string;
+  readonly label: string;
+  readonly imgLink: string;
+  readonly description: string;
 }
 
-const subscriptionNames: Readonly<string[]> = ['oreally'] as const;
+const subscriptionNames: Readonly<string[]> = ["o'reilly"] as const;
 
 export const sourceSubscriptions: Record<
   typeof subscriptionNames[number],
   Source
 > = {
-  oreally: {
+  "o'reilly": {
     label: "O'Really Newsletter",
     imgLink: '',
     description: 'here goes the description of this newsletter',
