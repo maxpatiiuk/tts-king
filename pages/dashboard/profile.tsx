@@ -136,7 +136,7 @@ export default function Profile(): JSX.Element {
           <>
             {isLoading && <Loading />}
 
-            <FilterUsers isProtected={true} redirectPath={'/sign_in'}>
+            <FilterUsers protected>
               {/* eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types */}
               {({ user }): JSX.Element => {
                 if (typeof currentUser === 'boolean') setCurrentUser(user);

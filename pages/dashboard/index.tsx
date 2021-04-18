@@ -40,7 +40,7 @@ export default function Dashboard(): JSX.Element {
       privatePage
     >
       {(): JSX.Element => (
-        <FilterUsers isProtected={true} redirectPath={'/sign_in'}>
+        <FilterUsers protected>
           {(): JSX.Element => (
             <div className={contentClassName}>
               <p>{JSON.stringify(sources)}</p>

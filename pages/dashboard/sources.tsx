@@ -531,7 +531,7 @@ export default function Sources() {
       localizationStrings={localizationStrings}
     >
       {(languageStrings, language, commonStrings) => (
-        <FilterUsers isProtected={true} redirectPath={'/signIn'}>
+        <FilterUsers protected>
           {() => (
             <div className={contentClassName}>
               <h2 className="text-xl sm:text-4xl mb-3">
