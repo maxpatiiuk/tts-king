@@ -1,6 +1,9 @@
 import React from 'react';
 import type { StatusLineStatus } from '../lib/statusLineConfig';
-import { DEFAULT_STATUS_LINE_TIMEOUT } from '../lib/statusLineConfig';
+import {
+  DEFAULT_STATUS_LINE_TIMEOUT,
+  STATUS_LINE_ANIMATION_DURATION,
+} from '../lib/statusLineConfig';
 
 export function StatusLine({
   statusStackPusher,
@@ -16,17 +19,23 @@ export function StatusLine({
   >(undefined);
 
   const updateStack = React.useRef<StatusLineStatus[]>([]);
+  const lastMessage = React.useRef<StatusLineStatus['message'] | undefined>(
+    undefined
+  );
   const timeOutId = React.useRef<undefined | ReturnType<typeof setTimeout>>(
     undefined
   );
+
+  if (configuration?.message) lastMessage.current = configuration.message;
 
   function updateStatus(): void {
     timeOutId.current =
       updateStack.current.length > 0
         ? setTimeout(() => {
             updateStack.current.shift();
-            updateStatus();
-          }, durationOfVisibility)
+            setConfiguration(undefined);
+            setTimeout(updateStatus, STATUS_LINE_ANIMATION_DURATION);
+          }, durationOfVisibility + STATUS_LINE_ANIMATION_DURATION)
         : undefined;
     setConfiguration(updateStack.current[0]);
   }
@@ -52,14 +61,14 @@ export function StatusLine({
     >
       <div
         className={`transform absolute bottom-0 left-0 transition-transform
-        transition-none duration-100 w-screen p-5 pointer-events-auto
-        text-xl${
+        transition-none duration-100 w-screen pointer-events-auto
+        text-xl ${
           typeof configuration === 'undefined'
-            ? 'translate-y-0'
-            : 'translate-y-full'
+            ? 'translate-y-full'
+            : 'translate-y-0'
         }`}
       >
-        {configuration?.message ?? ''}
+        {lastMessage.current}
       </div>
     </div>
   );
