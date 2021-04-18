@@ -7,14 +7,20 @@ import { PrivateMenu } from './PrivateMenu';
 import { PublicMenu } from './PublicMenu';
 import useClientSideRendering from './useClientSideRendering';
 
-// TODO: provide default `redirectPath` depending on `isProtected`
-export default function FilterUsers<IS_PROTECTED extends boolean>({
-  isProtected,
+const defaultRedirectLocations = {
+  protected: '/sign_in',
+  notProtected: '/profile',
+} as const;
+
+export default function FilterUsers<
+  IS_PROTECTED extends true | undefined = undefined
+>({
+  protected: pageIsProtected = undefined,
   redirectPath,
   children,
 }: {
-  readonly isProtected: IS_PROTECTED;
-  readonly redirectPath: string;
+  readonly protected?: IS_PROTECTED;
+  readonly redirectPath?: string;
   readonly children: (props: {
     readonly user: IS_PROTECTED extends true ? firebase.User : null;
   }) => React.ReactNode;
@@ -22,6 +28,12 @@ export default function FilterUsers<IS_PROTECTED extends boolean>({
   const router = useRouter();
   const isClientSide = useClientSideRendering();
   const { user } = React.useContext(AuthContext);
+
+  const isProtected = typeof pageIsProtected === 'boolean' && pageIsProtected;
+
+  const resolvedRedirectPath =
+    redirectPath ??
+    defaultRedirectLocations[isProtected ? 'protected' : 'notProtected'];
 
   React.useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -45,7 +57,7 @@ export default function FilterUsers<IS_PROTECTED extends boolean>({
       </>
     );
   else {
-    void router.push(redirectPath);
+    void router.push(resolvedRedirectPath);
     return <Loading />;
   }
 }

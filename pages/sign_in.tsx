@@ -53,7 +53,7 @@ export default function SignIn(): JSX.Element {
       {(
         languageStrings: Readonly<typeof localizationStrings[Language]>
       ): JSX.Element => (
-        <FilterUsers isProtected={false} redirectPath="/">
+        <FilterUsers protected>
           {(): JSX.Element => (
             <Centered>
               <div>
