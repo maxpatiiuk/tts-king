@@ -2,7 +2,6 @@ import Link from 'next/link';
 import React from 'react';
 import { AuthContext } from '../components/AuthContext';
 import Layout from '../components/Layout';
-import { ModalDialog } from '../components/ModalDialog';
 import { PublicMenu } from '../components/PublicMenu';
 import { Centered } from '../components/UI';
 import siteInfo from '../const/siteInfo';
@@ -44,7 +43,6 @@ export default function index(): JSX.Element {
         <>
           <PublicMenu />
           <Centered>
-            <ModalDialog title="Test">Testing</ModalDialog>
             <h1
               className="sm:text-right text-8xl font-bold bg-clip-text
           bg-gradient-to-l sm:bg-gradient-to-tr from-yellow-400
