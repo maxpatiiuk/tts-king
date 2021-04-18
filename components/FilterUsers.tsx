@@ -9,7 +9,7 @@ import useClientSideRendering from './useClientSideRendering';
 
 const defaultRedirectLocations = {
   protected: '/sign_in',
-  notProtected: '/profile',
+  notProtected: '/dashboard',
 } as const;
 
 export default function FilterUsers<
@@ -36,15 +36,15 @@ export default function FilterUsers<
     defaultRedirectLocations[isProtected ? 'protected' : 'notProtected'];
 
   React.useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (!isClientSide) return;
 
     localStorage.setItem('signedIn', user ? '1' : '0');
-  }, [user, typeof window]);
+  }, [user, typeof window, isClientSide]);
 
   if (
     !isClientSide ||
-    typeof window === 'undefined' ||
-    localStorage.getItem('signedIn') !== null
+    typeof localStorage === 'undefined' ||
+    localStorage.getItem('signedIn') === null
   )
     return <Loading />;
   else if (Boolean(user) === isProtected)
