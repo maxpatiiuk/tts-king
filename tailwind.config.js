@@ -16,6 +16,9 @@ module.exports = {
       width: {
         'fit-content': 'fit-content',
       },
+      colors: {
+        shadow: '#0009',
+      },
     },
   },
   variants: {
