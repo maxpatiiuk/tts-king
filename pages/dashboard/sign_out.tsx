@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { AuthContext } from '../../components/AuthContext';
 import FilterUsers from '../../components/FilterUsers';
 import Layout from '../../components/Layout';
 import { Loading } from '../../components/ModalDialog';
@@ -11,18 +12,18 @@ import { extractString } from '../../lib/languages';
 
 export default function SignOut(): JSX.Element {
   const router = useRouter();
-  const [firebaseLoaded, setFirebaseLoaded] = React.useState<boolean>(false);
+  const { user } = React.useContext(AuthContext);
 
   React.useEffect(() => {
-    if (firebaseLoaded)
-      (async (): Promise<void> => {
-        localStorage.setItem('signedIn', '0');
-        await firebase.auth().signOut();
-        await router.push('/');
-      })().catch((error) => {
-        throw error;
-      });
-  }, [firebaseLoaded]);
+    if (typeof user === 'undefined') return;
+    (async (): Promise<void> => {
+      localStorage.setItem('signedIn', '0');
+      await firebase.auth().signOut();
+      await router.push('/');
+    })().catch((error) => {
+      throw error;
+    });
+  }, [user]);
 
   return (
     <Layout
@@ -32,8 +33,6 @@ export default function SignOut(): JSX.Element {
       {(): JSX.Element => (
         <FilterUsers>
           {(): JSX.Element => {
-            if (!firebaseLoaded) setFirebaseLoaded(true);
-
             return <Loading />;
           }}
         </FilterUsers>

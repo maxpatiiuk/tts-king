@@ -27,10 +27,7 @@ export default function Dashboard(): JSX.Element {
     firebase
       .database()
       .ref(`users/${user.uid}/sources`)
-      // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-      .on('value', (value: Readonly<firebase.database.DataSnapshot>) =>
-        setSources(value.val())
-      );
+      .on('value', (value) => setSources(value.val()));
   }, [user]);
 
   return (
