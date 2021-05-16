@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { AuthContext } from '../../components/AuthContext';
 import FilterUsers from '../../components/FilterUsers';
 import {
   dangerButtonClassName,
@@ -10,6 +11,7 @@ import {
   primaryButtonClassName,
   successButtonClassName,
 } from '../../components/InteractivePrimitives';
+import { LanguageContext } from '../../components/LanguageContext';
 import Layout from '../../components/Layout';
 import { Loading, ModalDialog } from '../../components/ModalDialog';
 import { contentClassName } from '../../components/UI';
@@ -67,12 +69,8 @@ export default function Profile(): JSX.Element {
     showDeleteUserPrompt,
     setShowDeleteUserPrompt,
   ] = React.useState<boolean>(false);
-  const [currentUser, setCurrentUser] = React.useState<
-    firebase.UserInfo | false
-  >(false);
-  const [currentLanguage, setCurrentLanguage] = React.useState<
-    Language | false
-  >(false);
+  const { user } = React.useContext(AuthContext);
+  const language = React.useContext(LanguageContext);
 
   const router = useRouter();
 
@@ -82,34 +80,28 @@ export default function Profile(): JSX.Element {
   }
 
   async function deleteUserAccount(changeState = false): Promise<void> {
-    if (typeof currentUser === 'boolean') return;
+    if (typeof user === 'undefined') return;
 
     if (changeState) setIsLoading(true);
 
-    await firebase.database().ref(`users/${currentUser.uid}`).set(undefined);
+    await firebase.database().ref(`users/${user.uid}`).set(undefined);
 
     await signOut();
   }
 
   function downloadUserData(callback?: () => void): void {
-    if (
-      typeof currentUser === 'boolean' ||
-      typeof currentLanguage === 'boolean'
-    )
-      return;
-
+    if (typeof user === 'undefined') return;
     setIsLoading(true);
 
     firebase
       .database()
-      .ref(`users/${currentUser.uid}`)
-      // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-      .on('value', (value: Readonly<firebase.database.DataSnapshot>) => {
+      .ref(`users/${user.uid}`)
+      .on('value', (value) => {
         downloadFile({
           data:
             (value.val() as string) ||
-            localizationStrings[currentLanguage].noSavedData,
-          fileName: `${currentUser.uid}.json`,
+            localizationStrings[language].noSavedData,
+          fileName: `${user.uid}.json`,
         });
 
         if (callback) callback();
@@ -129,106 +121,96 @@ export default function Profile(): JSX.Element {
           typeof commonLocalizationStrings[Language]
         >
       ): JSX.Element => {
-        if (typeof currentLanguage === 'boolean')
-          setCurrentLanguage(currentLanguage);
-
         return (
           <>
             {isLoading && <Loading />}
 
             <FilterUsers protected>
-              {/* eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types */}
-              {({ user }): JSX.Element => {
-                if (typeof currentUser === 'boolean') setCurrentUser(user);
+              {({ user }): JSX.Element => (
+                <div className={`${contentClassName} flex-col`}>
+                  <div className="flex justify-center">
+                    <Image
+                      className="rounded-full"
+                      // TODO: add default user avatar
+                      src={user.photoURL ?? ''}
+                      alt={user.displayName ?? ''}
+                      width={96}
+                      height={96}
+                    />
+                  </div>
 
-                return (
-                  <div className={`${contentClassName} flex-col`}>
-                    <div className="flex justify-center">
-                      <Image
-                        className="rounded-full"
-                        // TODO: add default user ava
-                        src={user.photoURL ?? ''}
-                        alt={user.displayName ?? ''}
-                        width={96}
-                        height={96}
-                      />
-                    </div>
+                  <LabeledField label="Name">{user.displayName}</LabeledField>
 
-                    <LabeledField label="Name">{user.displayName}</LabeledField>
+                  <LabeledField label="Email">{user.email}</LabeledField>
 
-                    <LabeledField label="Email">{user.email}</LabeledField>
+                  <button
+                    type="button"
+                    className={`${dangerLinkClassName} block mt-4`}
+                    onClick={(): void =>
+                      downloadUserData(() => setIsLoading(false))
+                    }
+                  >
+                    {languageStrings.downloadData}
+                  </button>
 
-                    <button
-                      type="button"
-                      className={`${dangerLinkClassName} block mt-4`}
-                      onClick={(): void =>
-                        downloadUserData(() => setIsLoading(false))
+                  {showDeleteUserPrompt && (
+                    <ModalDialog
+                      title={languageStrings.deleteAccountConfirmationTitle}
+                      buttons={
+                        <>
+                          <button
+                            type="button"
+                            className={primaryButtonClassName}
+                            onClick={(): void => setShowDeleteUserPrompt(false)}
+                          >
+                            {commonLanguageStrings.cancelDelete}
+                          </button>
+                          <button
+                            type="button"
+                            className={successButtonClassName}
+                            onClick={(): void =>
+                              downloadUserData(
+                                (): void => void deleteUserAccount(false)
+                              )
+                            }
+                          >
+                            {languageStrings.downloadAndDeleteAccount}
+                          </button>
+                          <button
+                            type="button"
+                            className={dangerButtonClassName}
+                            onClick={async (): Promise<void> =>
+                              deleteUserAccount()
+                            }
+                          >
+                            {commonLanguageStrings.confirmDelete}
+                          </button>
+                        </>
                       }
                     >
-                      {languageStrings.downloadData}
-                    </button>
+                      {languageStrings.deleteAccountConfirmation}
+                      <br />
+                      <br />
+                      {languageStrings.deleteAccountConsequences}
+                    </ModalDialog>
+                  )}
+                  <button
+                    type="button"
+                    className={`${dangerLinkClassName} block`}
+                    onClick={(): void => setShowDeleteUserPrompt(true)}
+                  >
+                    {languageStrings.deleteAccount}
+                  </button>
 
-                    {showDeleteUserPrompt && (
-                      <ModalDialog
-                        title={languageStrings.deleteAccountConfirmationTitle}
-                        buttons={
-                          <>
-                            <button
-                              type="button"
-                              className={primaryButtonClassName}
-                              onClick={(): void =>
-                                setShowDeleteUserPrompt(false)
-                              }
-                            >
-                              {commonLanguageStrings.cancelDelete}
-                            </button>
-                            <button
-                              type="button"
-                              className={successButtonClassName}
-                              onClick={(): void =>
-                                downloadUserData(
-                                  (): void => void deleteUserAccount(false)
-                                )
-                              }
-                            >
-                              {languageStrings.downloadAndDeleteAccount}
-                            </button>
-                            <button
-                              type="button"
-                              className={dangerButtonClassName}
-                              onClick={async (): Promise<void> =>
-                                deleteUserAccount()
-                              }
-                            >
-                              {commonLanguageStrings.confirmDelete}
-                            </button>
-                          </>
-                        }
-                      >
-                        {languageStrings.deleteAccountConfirmation}
-                        <br />
-                        <br />
-                        {languageStrings.deleteAccountConsequences}
-                      </ModalDialog>
-                    )}
-                    <button
-                      type="button"
-                      className={`${dangerLinkClassName} block`}
-                      onClick={(): void => setShowDeleteUserPrompt(true)}
-                    >
-                      {languageStrings.deleteAccount}
-                    </button>
-
-                    <button
-                      type="button"
-                      className={`${dangerLinkClassName} block`}
-                      onClick={signOut}
-                    >
-                      {commonLanguageStrings.signOut}
-                    </button>
-                  </div>
-                );
-              }}
+                  <button
+                    type="button"
+                    className={`${dangerLinkClassName} block`}
+                    onClick={signOut}
+                  >
+                    {commonLanguageStrings.signOut}
+                  </button>
+                </div>
+              )}
             </FilterUsers>
           </>
         );

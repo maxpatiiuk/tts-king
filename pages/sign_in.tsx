@@ -3,8 +3,11 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import FilterUsers from '../components/FilterUsers';
 import Layout from '../components/Layout';
+import { StatusLineContext } from '../components/StatusLine';
 import { Centered } from '../components/UI';
+import createNewUser from '../lib/createNewUser';
 import type { Language, LocalizationStrings } from '../lib/languages';
+import { statusLineContentClassName } from '../lib/statusLineConfig';
 
 const localizationStrings: LocalizationStrings<{
   readonly title: string;
@@ -21,26 +24,32 @@ const localizationStrings: LocalizationStrings<{
 };
 
 export default function SignIn(): JSX.Element {
-  const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
-    undefined
-  );
   const router = useRouter();
+  const addErrorMessage = React.useContext(StatusLineContext);
 
   async function initializeSignIn(
     languageStrings: Readonly<typeof localizationStrings[Language]>
   ): Promise<void> {
     try {
-      setErrorMessage(undefined);
       const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-      await firebase.auth().signInWithPopup(googleAuthProvider);
+      const userCredentials = await firebase
+        .auth()
+        .signInWithPopup(googleAuthProvider);
+      if (userCredentials.additionalUserInfo?.isNewUser === true)
+        createNewUser(userCredentials.user);
       localStorage.setItem('signedIn', '1');
       await router.push('/dashboard');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : '';
-      setErrorMessage(
-        `${languageStrings.unexpectedErrorHasOccurred}:
-        <br/>${errorMessage}`
-      );
+      addErrorMessage({
+        message: (
+          <span className={statusLineContentClassName}>
+            ${languageStrings.unexpectedErrorHasOccurred}:
+            <br />${errorMessage}
+          </span>
+        ),
+        id: '',
+      });
     }
   }
 
@@ -57,11 +66,6 @@ export default function SignIn(): JSX.Element {
           {(): JSX.Element => (
             <Centered>
               <div>
-                {typeof errorMessage !== 'undefined' && (
-                  <div className="p-4 text-white bg-red-400 mb-4">
-                    {errorMessage}
-                  </div>
-                )}
                 <h2>{languageStrings.choseSignInMethod}</h2>
                 <div className="flex flex-column gap-y-1 pt-4">
                   <button
