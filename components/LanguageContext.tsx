@@ -3,7 +3,8 @@ import React from 'react';
 import type { Language, LocalizationStrings } from '../lib/languages';
 import { DEFAULT_LANGUAGE } from '../lib/languages';
 
-const LanguageContext = React.createContext<Language>(DEFAULT_LANGUAGE);
+export const LanguageContext = React.createContext<Language>(DEFAULT_LANGUAGE);
+LanguageContext.displayName = 'LanguageContext';
 
 export function GetUserLanguage<
   DEFINITIONS extends Readonly<
