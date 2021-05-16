@@ -5,14 +5,19 @@ import {
   STATUS_LINE_ANIMATION_DURATION,
 } from '../lib/statusLineConfig';
 
-export function StatusLine({
-  statusStackPusher,
+export const StatusLineContext = React.createContext<
+  (status: Readonly<StatusLineStatus>) => void
+>(() => {
+  throw new Error('Not Defined');
+});
+StatusLineContext.displayName = 'StatusLineContext';
+
+export function StatusLineProvider({
   durationOfVisibility = DEFAULT_STATUS_LINE_TIMEOUT,
+  children,
 }: {
-  readonly statusStackPusher: (
-    addStatusCallback: (status: Readonly<StatusLineStatus>) => void
-  ) => void;
   readonly durationOfVisibility?: number;
+  readonly children: Readonly<JSX.Element>;
 }): JSX.Element {
   const [configuration, setConfiguration] = React.useState<
     StatusLineStatus | undefined
@@ -26,7 +31,8 @@ export function StatusLine({
     undefined
   );
 
-  if (configuration?.message) lastMessage.current = configuration.message;
+  if (typeof configuration?.message !== 'undefined')
+    lastMessage.current = configuration.message;
 
   function updateStatus(): void {
     timeOutId.current =
@@ -40,36 +46,39 @@ export function StatusLine({
     setConfiguration(updateStack.current[0]);
   }
 
-  React.useEffect(() => {
-    statusStackPusher((status: Readonly<StatusLineStatus>): void => {
-      if (
-        status.id !== '' &&
-        updateStack.current.some(
-          ({ id }: { readonly id: string }) => id === status.id
-        )
+  function addStatus(status: Readonly<StatusLineStatus>): void {
+    if (
+      status.id !== '' &&
+      updateStack.current.some(
+        ({ id }: { readonly id: string }) => id === status.id
       )
-        return;
-      updateStack.current.push(status);
-      if (typeof timeOutId.current === 'undefined') updateStatus();
-    });
-  }, []);
+    )
+      return;
+    updateStack.current.push(status);
+    if (typeof timeOutId.current === 'undefined') updateStatus();
+  }
 
   return (
-    <div
-      className={`absolute inset-0 w-screen h-screen pointer-events-none
-        overflow-hidden`}
-    >
+    <StatusLineContext.Provider value={addStatus}>
+      {children}
       <div
-        className={`transform absolute bottom-0 left-0 transition-transform
+        className={`absolute inset-0 w-screen h-screen pointer-events-none
+        overflow-hidden ${
+          typeof lastMessage.current === 'undefined' ? 'hidden' : ''
+        }`}
+      >
+        <div
+          className={`transform absolute bottom-0 left-0 transition-transform
         transition-none duration-100 w-screen pointer-events-auto
         text-xl ${
           typeof configuration === 'undefined'
             ? 'translate-y-full'
             : 'translate-y-0'
         }`}
-      >
-        {lastMessage.current}
+        >
+          {lastMessage.current}
+        </div>
       </div>
-    </div>
+    </StatusLineContext.Provider>
   );
 }
