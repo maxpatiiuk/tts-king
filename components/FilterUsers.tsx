@@ -21,7 +21,7 @@ export default function FilterUsers<
 }: {
   readonly protected?: IS_PROTECTED;
   readonly redirectPath?: string;
-  readonly children: (props: {
+  readonly children?: (props: {
     readonly user: IS_PROTECTED extends true ? firebase.User : null;
   }) => React.ReactNode;
 }): JSX.Element {
@@ -48,7 +48,9 @@ export default function FilterUsers<
   )
     return <Loading />;
   else if (Boolean(user) === isProtected)
-    return (
+    return typeof children === 'undefined' ? (
+      <React.Fragment />
+    ) : (
       <>
         {isProtected ? <PrivateMenu /> : <PublicMenu />}
         {children({

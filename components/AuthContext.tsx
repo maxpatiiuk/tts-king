@@ -5,6 +5,7 @@ import React from 'react';
 export const AuthContext = React.createContext<{
   user?: firebase.User;
 }>({});
+AuthContext.displayName = 'AuthContext';
 
 export const AuthProvider = ({
   children,
