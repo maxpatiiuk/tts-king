@@ -1,6 +1,8 @@
+import 'tailwindcss/tailwind.css';
+
 import type { AppProps } from 'next/app';
 import React from 'react';
-import 'tailwindcss/tailwind.css';
+
 import ErrorBoundary from '../components/ErrorBoundary';
 import { LanguageProvider } from '../components/LanguageContext';
 import { StatusLineProvider } from '../components/StatusLine';

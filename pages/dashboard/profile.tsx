@@ -1,10 +1,11 @@
 import { signOut } from 'firebase/auth';
-import { ref, set, onValue } from 'firebase/database';
+import { onValue, ref, set } from 'firebase/database';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useFirebase, useAuth } from '../../components/FirebaseApp';
+
 import FilterUsers from '../../components/FilterUsers';
+import { useAuth, useFirebase } from '../../components/FirebaseApp';
 import {
   dangerButtonClassName,
   dangerLinkClassName,

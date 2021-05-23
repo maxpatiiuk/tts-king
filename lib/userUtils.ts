@@ -1,6 +1,6 @@
-import { FirebaseApp } from 'firebase/app';
-import { Auth, User } from 'firebase/auth';
-import { FirebaseDatabase } from 'firebase/database';
+import type { FirebaseApp } from 'firebase/app';
+import type { Auth, User } from 'firebase/auth';
+import type { FirebaseDatabase } from 'firebase/database';
 
 export type FirebaseUser = {
   readonly user: User | 'loading' | false;

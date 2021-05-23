@@ -14,7 +14,6 @@ const commonLocalizationStrings: LocalizationStrings<{
 }> = {
   'en-US': {
     yes: 'Yes',
-    // eslint-disable-next-line id-length
     no: 'No',
     add: 'Add',
     delete: 'Delete',

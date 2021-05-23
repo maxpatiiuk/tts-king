@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import React from 'react';
+
+import { useAuth } from '../components/FirebaseApp';
 import Layout from '../components/Layout';
 import { PublicMenu } from '../components/PublicMenu';
-import { useAuth } from '../components/FirebaseApp';
 import { Centered } from '../components/UI';
 import siteInfo from '../const/siteInfo';
 import type { Language, LocalizationStrings } from '../lib/languages';
+import { extractUser } from '../lib/userUtils';
 
 const localizationStrings: LocalizationStrings<{
   readonly header: string;
@@ -57,17 +59,7 @@ export default function index(): JSX.Element {
               <p className="pt-4">{languageStrings.paragraph2}</p>
               <p className="pt-3">
                 {languageStrings.actionStatement(
-                  user ? (
-                    <Link href="/dashboard">
-                      <a
-                        className="hover:bg-red-500
-                    hover:text-white bg-transparent
-                    text-red-500"
-                      >
-                        {languageStrings.goToDashboard}
-                      </a>
-                    </Link>
-                  ) : (
+                  typeof extractUser(user) === 'undefined' ? (
                     <Link href="/sign_in">
                       <a
                         className="hover:bg-red-500
@@ -75,6 +67,16 @@ export default function index(): JSX.Element {
                     text-red-500"
                       >
                         {languageStrings.signUp}
+                      </a>
+                    </Link>
+                  ) : (
+                    <Link href="/dashboard">
+                      <a
+                        className="hover:bg-red-500
+                    hover:text-white bg-transparent
+                    text-red-500"
+                      >
+                        {languageStrings.goToDashboard}
                       </a>
                     </Link>
                   )

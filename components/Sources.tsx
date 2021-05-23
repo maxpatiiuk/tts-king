@@ -1,4 +1,5 @@
 import React from 'react';
+
 import type commonLocalizationStrings from '../const/commonStrings';
 import type { Language } from '../lib/languages';
 import type { DatabaseSource, localizationStrings } from '../lib/sources';

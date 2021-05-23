@@ -1,5 +1,8 @@
 import type { User } from 'firebase/auth';
 import React from 'react';
+import type { State } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
+
 import FilterUsers from '../components/FilterUsers';
 import Layout from '../components/Layout';
 import { Loading } from '../components/ModalDialog';
@@ -9,10 +12,8 @@ import { contentClassName } from '../components/UI';
 import commonLocalizationStrings from '../const/commonStrings';
 import type { Language } from '../lib/languages';
 import { extractString } from '../lib/languages';
-import { localizationStrings } from '../lib/sources';
 import type { DatabaseSource } from '../lib/sources';
-import type { State } from 'typesafe-reducer';
-import { generateReducer } from 'typesafe-reducer';
+import { localizationStrings } from '../lib/sources';
 import type { Actions } from '../reducers/Sources';
 import type { RefActions } from '../refReducers/Sources';
 

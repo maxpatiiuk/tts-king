@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
+
 import type { Language, LocalizationStrings } from '../lib/languages';
 import { DEFAULT_LANGUAGE } from '../lib/languages';
 

@@ -1,6 +1,7 @@
 import type { User } from 'firebase/auth';
 import type { FirebaseDatabase } from 'firebase/database';
 import { ref, set } from 'firebase/database';
+
 import { getRandomColor } from './dataGenerators';
 import type { DatabaseUser } from './firebaseDataModel';
 

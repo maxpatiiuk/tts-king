@@ -21,7 +21,7 @@ export function safe<T>(value: T | undefined): T {
 
 // Convert all nullable types to undefined
 export const nullSafe = <T>(
-  value: T | undefined | null | false | '' | typeof NaN
+  value: T | undefined | null | false | '' | typeof Number.NaN
 ): T | undefined => (Boolean(value) ? (value as T) : undefined);
 
 /*

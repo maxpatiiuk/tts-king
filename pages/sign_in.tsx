@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import React from 'react';
+
 import FilterUsers from '../components/FilterUsers';
 import { useFirebase } from '../components/FirebaseApp';
 import Layout from '../components/Layout';

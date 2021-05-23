@@ -1,12 +1,13 @@
 import type { User } from 'firebase/auth';
-import { ref, push } from 'firebase/database';
-import { safe } from '../lib/typescriptCommonTypes';
-import { FirebaseObject } from '../lib/userUtils';
-import type { RefActions } from '../refReducers/Sources';
-import type { DatabaseSource, DatabaseSubscription } from '../lib/sources';
-import { createNewCategory, createNewSubscription } from '../lib/sources';
+import { push, ref } from 'firebase/database';
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
+
+import type { DatabaseSource, DatabaseSubscription } from '../lib/sources';
+import { createNewCategory, createNewSubscription } from '../lib/sources';
+import { safe } from '../lib/typescriptCommonTypes';
+import type { FirebaseObject } from '../lib/userUtils';
+import type { RefActions } from '../refReducers/Sources';
 import type { States } from '../stateReducers/Sources';
 import { mainState } from '../stateReducers/Sources';
 

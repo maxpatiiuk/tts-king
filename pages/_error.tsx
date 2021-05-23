@@ -1,5 +1,6 @@
 import type { NextPageContext } from 'next';
 import React from 'react';
+
 import ErrorPage from '../components/ErrorPage';
 
 const error = ({ statusCode }: InitialProps): JSX.Element => (

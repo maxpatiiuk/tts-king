@@ -1,4 +1,5 @@
 import React from 'react';
+
 import type { StatusLineStatus } from '../lib/statusLineConfig';
 import {
   DEFAULT_STATUS_LINE_TIMEOUT,
