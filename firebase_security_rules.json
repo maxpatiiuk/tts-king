@@ -27,17 +27,49 @@
             ".write": "newData.exists() &&
                        newData.hasChildren(
                             [
+                              'type',
                               'subscribed',
                               'priority',
                               'postsMeta',
-                              'postsContent',
                             ]
+                       ) &&
+                       (
+                         (
+                         	newData.child('type').val() === 'subscription' &&
+                         	newData.hasChildren(
+                           [
+                             'subscribed'
+                           ]
+                         	)
+                       	) ||
+                       	(
+                       	  newData.child('type').val() === 'category' &&
+                          newData.hasChildren(
+                            [
+                              'label',
+                              'labelColor'
+                            ]
+                          )
+                         )
                        )",
             "$other": {
               ".validate": false,
              },
+            "type": {
+              ".validate": "newData.val() === 'subscription' || newData.val() === 'category'"
+            },
             "subscribed": {
-              ".validate": "newData.isBoolean()",
+              ".validate": "newData.parent().child('type').val() === 'subscription' &&
+                            newData.isBoolean()",
+            },
+            "label": {
+              ".validate": "newData.parent().child('type').val() === 'category' &&
+                            newData.isString()",
+            },
+            "labelColor": {
+              ".validate": "newData.parent().child('type').val() === 'category' &&
+                            newData.isString() &&
+                            newData.val().matches(/^#[0-9a-f]{6}$/)",
             },
             "priority": {
               ".validate": "(newData.isNumber() && newData.val() > 1) || newData.val() === false",
@@ -137,11 +169,13 @@
                           )",
             ".indexOn": ["preview"],
             "$other": {
-              ".validate": false,
-            },
+                ".validate": false,
+             },
             "sourceName": {
               ".validate": "newData.isString() &&
-                            root.child('users/' + $userId + '/sources/' + newData.val()).exists()",
+                            root.child(
+                              'users/' + $userId + '/sources/' + newData.val()
+                            ).exists()",
             },
             "sourceUrl": {
               ".validate": "newData.parent().child('sourceName').val() === 'url' &&
