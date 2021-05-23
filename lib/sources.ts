@@ -1,4 +1,7 @@
+import { getRandomColor } from './dataGenerators';
 import type { Language, LocalizationStrings } from './languages';
+import type { DatabasePost } from './posts';
+import type { RA } from './typescriptCommonTypes';
 
 export const localizationStrings: LocalizationStrings<{
   readonly mySources: string;
@@ -41,6 +44,7 @@ export const localizationStrings: LocalizationStrings<{
 interface DatabaseSourceBase {
   readonly type: string;
   readonly priority: number;
+  readonly postsMeta: RA<DatabasePost>;
 }
 
 export interface DatabaseSubscription extends DatabaseSourceBase {
@@ -64,6 +68,7 @@ export const defaultDatabaseSources = (
     label: localizationStrings[language].uncategorized,
     priority: 0,
     labelColor: '#0011ff',
+    postsMeta: [],
   },
 });
 
@@ -73,7 +78,7 @@ export interface Source {
   readonly description: string;
 }
 
-const subscriptionNames: Readonly<string[]> = ["o'reilly"] as const;
+const subscriptionNames: RA<string> = ["o'reilly"] as const;
 
 export const sourceSubscriptions: Record<
   typeof subscriptionNames[number],
@@ -86,21 +91,17 @@ export const sourceSubscriptions: Record<
   },
 } as const;
 
-const MAX_COLOR = 16_777_215;
-const HEX_RADIX = 16;
-
-const getRandomColor = (): string =>
-  `#${Math.floor(Math.random() * MAX_COLOR).toString(HEX_RADIX)}`;
-
 export const createNewCategory = (sourceLabel: string): DatabaseSource => ({
   type: 'category',
   label: sourceLabel,
   priority: 0,
   labelColor: getRandomColor(),
+  postsMeta: [],
 });
 
 export const createNewSubscription = (): DatabaseSource => ({
   type: 'subscription',
   priority: 0,
   subscribed: true,
+  postsMeta: [],
 });
