@@ -1,8 +1,9 @@
-import firebase from 'firebase/app';
+import { signOut } from 'firebase/auth';
+import { ref, set, onValue } from 'firebase/database';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { AuthContext } from '../../components/AuthContext';
+import { useFirebase, useAuth } from '../../components/FirebaseApp';
 import FilterUsers from '../../components/FilterUsers';
 import {
   dangerButtonClassName,
@@ -18,6 +19,8 @@ import { contentClassName } from '../../components/UI';
 import commonLocalizationStrings from '../../const/commonStrings';
 import type { Language, LocalizationStrings } from '../../lib/languages';
 import { extractString } from '../../lib/languages';
+import { safe } from '../../lib/typescriptCommonTypes';
+import { extractUser } from '../../lib/userUtils';
 
 const localizationStrings: LocalizationStrings<{
   readonly downloadData: string;
@@ -64,48 +67,48 @@ function downloadFile({
 }
 
 export default function Profile(): JSX.Element {
+  const { firebaseAuth, firebaseDatabase } = useFirebase();
+  const { user } = useAuth();
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [
-    showDeleteUserPrompt,
-    setShowDeleteUserPrompt,
-  ] = React.useState<boolean>(false);
-  const { user } = React.useContext(AuthContext);
+  const [showDeleteUserPrompt, setShowDeleteUserPrompt] =
+    React.useState<boolean>(false);
   const language = React.useContext(LanguageContext);
 
   const router = useRouter();
 
-  async function signOut(): Promise<void> {
+  async function doSignOut(): Promise<void> {
     await router.push('/');
-    await firebase.auth().signOut();
+    await signOut(safe(firebaseAuth));
   }
 
   async function deleteUserAccount(changeState = false): Promise<void> {
-    if (typeof user === 'undefined') return;
-
     if (changeState) setIsLoading(true);
 
-    await firebase.database().ref(`users/${user.uid}`).set(undefined);
+    await set(
+      ref(safe(firebaseDatabase), `users/${safe(extractUser(user)).uid}`),
+      undefined
+    );
 
-    await signOut();
+    await doSignOut();
   }
 
   function downloadUserData(callback?: () => void): void {
-    if (typeof user === 'undefined') return;
     setIsLoading(true);
 
-    firebase
-      .database()
-      .ref(`users/${user.uid}`)
-      .on('value', (value) => {
+    onValue(
+      ref(safe(firebaseDatabase), `users/${safe(extractUser(user)).uid}`),
+      (value) => {
         downloadFile({
           data:
             (value.val() as string) ||
             localizationStrings[language].noSavedData,
-          fileName: `${user.uid}.json`,
+          fileName: `${safe(extractUser(user)).uid}.json`,
         });
 
         if (callback) callback();
-      });
+      }
+    );
   }
 
   return (
@@ -205,7 +208,7 @@ export default function Profile(): JSX.Element {
                   <button
                     type="button"
                     className={`${dangerLinkClassName} block`}
-                    onClick={signOut}
+                    onClick={doSignOut}
                   >
                     {commonLanguageStrings.signOut}
                   </button>

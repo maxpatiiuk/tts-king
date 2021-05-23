@@ -1,15 +1,12 @@
 import type React from 'react';
-import type { Action, State } from '../lib/stateManagement';
-import { generateDispatch } from '../lib/stateManagement';
+import type { Action, State } from 'typesafe-reducer';
+import { generateDispatch } from 'typesafe-reducer';
 import type { Actions } from '../reducers/Sources';
 
-type RefBaseState = State<
-  'RefBaseState',
-  {
-    saveMessageTimeout: NodeJS.Timeout | undefined;
-    showDatabaseFailureMessage: boolean;
-  }
->;
+type RefBaseState = State<'RefBaseState'> & {
+  saveMessageTimeout: NodeJS.Timeout | undefined;
+  showDatabaseFailureMessage: boolean;
+};
 
 export type RefStates = RefBaseState;
 

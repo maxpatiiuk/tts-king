@@ -1,9 +1,10 @@
-import firebase from 'firebase/app';
+import type { User } from 'firebase/auth';
+import { ref, push } from 'firebase/database';
 import type { RefActions } from '../refReducers/Sources';
 import type { DatabaseSource, DatabaseSubscription } from '../lib/sources';
 import { createNewCategory, createNewSubscription } from '../lib/sources';
-import type { Action } from '../lib/stateManagement';
-import { generateReducer } from '../lib/stateManagement';
+import type { Action } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 import type { States } from '../stateReducers/Sources';
 import { mainState } from '../stateReducers/Sources';
 
@@ -11,7 +12,7 @@ type LoadedAction = Action<
   'LoadedAction',
   {
     userSources: Record<string, DatabaseSource>;
-    user: firebase.User;
+    user: User;
     refObjectDispatchCurried: (action: RefActions) => void;
   }
 >;
@@ -130,10 +131,7 @@ export const reducer = generateReducer<States, Actions>({
     state.refObjectDispatchCurried({
       type: 'RefRunAsyncTaskAction',
       task: async (dispatch) =>
-        firebase
-          .database()
-          .ref(`users/${state.user.uid}/sourcesMeta`)
-          .push(newCategory)
+        push(ref(firebaseDatabase, `users/${state.user.uid}/sourcesMeta`))
           .then((snapshot) => {
             dispatch({
               type: 'AddSourceLineAction',
@@ -178,9 +176,11 @@ export const reducer = generateReducer<States, Actions>({
       ...mainState(state).userSources,
       [action.sourceName]: {
         ...mainState(state).userSources[action.sourceName],
-        subscribed: !(mainState(state).userSources[
-          action.sourceName
-        ] as DatabaseSubscription).subscribed,
+        subscribed: !(
+          mainState(state).userSources[
+            action.sourceName
+          ] as DatabaseSubscription
+        ).subscribed,
       },
     },
   }),

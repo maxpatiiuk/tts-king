@@ -1,11 +1,12 @@
-import firebase from 'firebase/app';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import React from 'react';
 import FilterUsers from '../components/FilterUsers';
+import { useFirebase } from '../components/FirebaseApp';
 import Layout from '../components/Layout';
 import { StatusLineContext } from '../components/StatusLine';
 import { Centered } from '../components/UI';
-import createNewUser from '../lib/createNewUser';
+import { createNewUser } from '../lib/createNewUser';
 import type { Language, LocalizationStrings } from '../lib/languages';
 import { statusLineContentClassName } from '../lib/statusLineConfig';
 
@@ -25,18 +26,27 @@ const localizationStrings: LocalizationStrings<{
 
 export default function SignIn(): JSX.Element {
   const router = useRouter();
+  const { firebaseAuth, firebaseDatabase } = useFirebase();
   const addErrorMessage = React.useContext(StatusLineContext);
 
   async function initializeSignIn(
     languageStrings: Readonly<typeof localizationStrings[Language]>
   ): Promise<void> {
     try {
-      const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-      const userCredentials = await firebase
-        .auth()
-        .signInWithPopup(googleAuthProvider);
-      if (userCredentials.additionalUserInfo?.isNewUser === true)
-        createNewUser(userCredentials.user);
+      if (
+        typeof firebaseDatabase === 'undefined' ||
+        typeof firebaseAuth === 'undefined'
+      )
+        throw new Error('Firebase is not initialized');
+
+      const googleAuthProvider = new GoogleAuthProvider();
+      const userCredentials = await signInWithPopup(
+        firebaseAuth,
+        googleAuthProvider
+      );
+      if (userCredentials.operationType === 'link')
+        // TODO: test this code
+        await createNewUser(firebaseDatabase, userCredentials.user);
       localStorage.setItem('signedIn', '1');
       await router.push('/dashboard');
     } catch (error: unknown) {
