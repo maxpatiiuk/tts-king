@@ -1,14 +1,17 @@
-import firebase from 'firebase/app';
+import { onValue, ref } from 'firebase/database';
 import React from 'react';
-import { AuthContext } from '../../components/AuthContext';
+import { useFirebase, useAuth } from '../../components/FirebaseApp';
 import { Loading } from '../../components/ModalDialog';
+import { ensure, safe } from '../../lib/typescriptCommonTypes';
+import { extractUser } from '../../lib/userUtils';
 import { reducer } from '../../reducers/Sources';
 import type { RefActions, RefStates } from '../../refReducers/Sources';
 import { refInitialState, refObjectDispatch } from '../../refReducers/Sources';
 import { stateReducer } from '../../stateReducers/Sources';
 
 export default function Sources(): JSX.Element {
-  const { user } = React.useContext(AuthContext);
+  const { firebaseDatabase } = useFirebase();
+  const { user } = useAuth();
   const refObject = React.useRef<RefStates>(refInitialState);
 
   const [state, dispatch] = React.useReducer(reducer, {
@@ -24,22 +27,29 @@ export default function Sources(): JSX.Element {
       },
     });
 
-  React.useEffect(() => {
-    if (!user || state.type !== 'LoadingState') return;
+  React.useEffect(
+    ...ensure(
+      (user, firebaseDatabase) => {
+        if (state.type !== 'LoadingState') return;
 
-    firebase
-      .app()
-      .database()
-      .ref(`users/${user.uid}/sourcesMeta`)
-      .on('value', (value) => {
-        dispatch({
-          type: 'LoadedAction',
-          userSources: (value.val() as Record<never, unknown>) ?? {},
-          user,
-          refObjectDispatchCurried,
-        });
-      });
-  }, [user, state.type]);
+        onValue(
+          ref(
+            firebaseDatabase,
+            `users/${safe(extractUser(user)).uid}/sourcesMeta`
+          ),
+          (value) =>
+            dispatch({
+              type: 'LoadedAction',
+              userSources: (value.val() as Record<never, unknown>) ?? {},
+              user: safe(extractUser(user)),
+              refObjectDispatchCurried,
+            })
+        );
+      },
+      [user, firebaseDatabase],
+      [state.type]
+    )
+  );
 
   if (state.type === 'LoadingState') return <Loading />;
 

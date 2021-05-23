@@ -1,4 +1,4 @@
-import type firebase from 'firebase/app';
+import type { User } from 'firebase/auth';
 import React from 'react';
 import FilterUsers from '../components/FilterUsers';
 import Layout from '../components/Layout';
@@ -11,8 +11,8 @@ import type { Language } from '../lib/languages';
 import { extractString } from '../lib/languages';
 import { localizationStrings } from '../lib/sources';
 import type { DatabaseSource } from '../lib/sources';
-import type { State } from '../lib/stateManagement';
-import { generateReducer } from '../lib/stateManagement';
+import type { State } from 'typesafe-reducer';
+import { generateReducer } from 'typesafe-reducer';
 import type { Actions } from '../reducers/Sources';
 import type { RefActions } from '../refReducers/Sources';
 
@@ -25,7 +25,7 @@ export type MainState = State<
     readonly searchQuery: string;
     readonly promptToDeleteSource: false | string;
     readonly userSources: Record<string, DatabaseSource>;
-    readonly user: firebase.User;
+    readonly user: User;
     readonly refObjectDispatchCurried: (action: RefActions) => void;
   }
 >;

@@ -3,7 +3,7 @@ import commonLocalizationStrings from '../const/commonStrings';
 import type { Language, LocalizationStrings } from '../lib/languages';
 import type { MenuItem } from '../lib/menuComponents';
 import { mainPageMenuItem } from '../lib/menuComponents';
-import { AuthContext } from './AuthContext';
+import { useAuth } from './FirebaseApp';
 import { GetUserLanguage } from './LanguageContext';
 import Menu from './Menu';
 
@@ -45,7 +45,7 @@ const menuItemsDictionary = (
 });
 
 export function PublicMenu(): JSX.Element {
-  const { user } = React.useContext(AuthContext);
+  const { user } = useAuth();
 
   return (
     <GetUserLanguage localizationStrings={localizationStrings}>

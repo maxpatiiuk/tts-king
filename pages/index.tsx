@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import React from 'react';
-import { AuthContext } from '../components/AuthContext';
 import Layout from '../components/Layout';
 import { PublicMenu } from '../components/PublicMenu';
+import { useAuth } from '../components/FirebaseApp';
 import { Centered } from '../components/UI';
 import siteInfo from '../const/siteInfo';
 import type { Language, LocalizationStrings } from '../lib/languages';
@@ -32,7 +32,7 @@ const localizationStrings: LocalizationStrings<{
 };
 
 export default function index(): JSX.Element {
-  const { user } = React.useContext(AuthContext);
+  const { user } = useAuth();
 
   return (
     <Layout title="" pageUrl="" localizationStrings={localizationStrings}>

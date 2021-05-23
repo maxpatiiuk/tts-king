@@ -1,10 +1,14 @@
-import firebase from 'firebase/app';
+import { ref, onValue } from 'firebase/database';
 import React from 'react';
-import { AuthContext } from '../../components/AuthContext';
 import FilterUsers from '../../components/FilterUsers';
+import { useFirebase, useAuth } from '../../components/FirebaseApp';
 import Layout from '../../components/Layout';
 import { contentClassName } from '../../components/UI';
 import type { LocalizationStrings } from '../../lib/languages';
+import type { DatabaseSource } from '../../lib/sources';
+import { ensure } from '../../lib/typescriptCommonTypes';
+import type { IR } from '../../lib/typescriptCommonTypes';
+import { extractUser } from '../../lib/userUtils';
 
 const localizationStrings: LocalizationStrings<{
   readonly title: string;
@@ -15,20 +19,21 @@ const localizationStrings: LocalizationStrings<{
 };
 
 export default function Dashboard(): JSX.Element {
-  const { user } = React.useContext(AuthContext);
+  const { firebaseDatabase } = useFirebase();
+  const { user } = useAuth();
 
-  const [sources, setSources] = React.useState<
-    firebase.database.DataSnapshot | undefined
-  >(undefined);
+  const [sources, setSources] =
+    React.useState<IR<DatabaseSource> | undefined>(undefined);
 
-  React.useEffect(() => {
-    if (!user) return;
-
-    firebase
-      .database()
-      .ref(`users/${user.uid}/sources`)
-      .on('value', (value) => setSources(value.val()));
-  }, [user]);
+  React.useEffect(
+    ...ensure(
+      (firebaseDatabase, user) =>
+        onValue(ref(firebaseDatabase, `users/${user.uid}/sources`), (value) =>
+          setSources(value.val())
+        ),
+      [firebaseDatabase, extractUser(user)]
+    )
+  );
 
   return (
     <Layout
