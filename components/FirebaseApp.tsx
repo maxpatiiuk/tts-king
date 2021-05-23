@@ -1,9 +1,10 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { getApps, initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 import React from 'react';
+
 import { firebaseConfig } from '../const/siteConfig';
-import { FirebaseObject, FirebaseUser } from '../lib/userUtils';
+import type { FirebaseObject, FirebaseUser } from '../lib/userUtils';
 
 export const useFirebase = (): FirebaseObject => {
   const [object, setObject] = React.useState<FirebaseObject>({

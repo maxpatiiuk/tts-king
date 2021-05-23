@@ -1,4 +1,5 @@
 import React from 'react';
+
 import commonLocalizationStrings from '../const/commonStrings';
 import type { Language, LocalizationStrings } from '../lib/languages';
 import type { MenuItem } from '../lib/menuComponents';

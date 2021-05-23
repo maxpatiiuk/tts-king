@@ -1,6 +1,7 @@
 import type { User } from 'firebase/auth';
 import { useRouter } from 'next/router';
 import React from 'react';
+
 import { useAuth } from './FirebaseApp';
 import { Loading } from './ModalDialog';
 import { PrivateMenu } from './PrivateMenu';

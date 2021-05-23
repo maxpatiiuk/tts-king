@@ -1,13 +1,14 @@
-import { ref, onValue } from 'firebase/database';
+import { onValue, ref } from 'firebase/database';
 import React from 'react';
+
 import FilterUsers from '../../components/FilterUsers';
-import { useFirebase, useAuth } from '../../components/FirebaseApp';
+import { useAuth, useFirebase } from '../../components/FirebaseApp';
 import Layout from '../../components/Layout';
 import { contentClassName } from '../../components/UI';
 import type { LocalizationStrings } from '../../lib/languages';
 import type { DatabaseSource } from '../../lib/sources';
-import { ensure } from '../../lib/typescriptCommonTypes';
 import type { IR } from '../../lib/typescriptCommonTypes';
+import { ensure } from '../../lib/typescriptCommonTypes';
 import { extractUser } from '../../lib/userUtils';
 
 const localizationStrings: LocalizationStrings<{
