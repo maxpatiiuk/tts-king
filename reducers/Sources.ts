@@ -1,5 +1,7 @@
 import type { User } from 'firebase/auth';
 import { ref, push } from 'firebase/database';
+import { safe } from '../lib/typescriptCommonTypes';
+import { FirebaseObject } from '../lib/userUtils';
 import type { RefActions } from '../refReducers/Sources';
 import type { DatabaseSource, DatabaseSubscription } from '../lib/sources';
 import { createNewCategory, createNewSubscription } from '../lib/sources';
@@ -105,7 +107,14 @@ export type Actions =
   | CancelDeleteSourceAction
   | AddSubscriptionAction;
 
-export const reducer = generateReducer<States, Actions>({
+export type ActionWithPayload = Actions & {
+  readonly payload: {
+    readonly firebase: FirebaseObject;
+    readonly user: User;
+  };
+};
+
+export const reducer = generateReducer<States, ActionWithPayload>({
   LoadedAction: ({ action }) => ({
     type: 'MainState',
     newSourceName: '',
@@ -123,7 +132,12 @@ export const reducer = generateReducer<States, Actions>({
     ...mainState(state),
     newSourceName: action.newSourceName,
   }),
-  AddNewSourceAction: ({ state: initialState }) => {
+  AddNewSourceAction: ({
+    state: initialState,
+    action: {
+      payload: { firebase },
+    },
+  }) => {
     const state = mainState(initialState);
 
     const newCategory: DatabaseSource = createNewCategory(state.newSourceName);
@@ -131,7 +145,12 @@ export const reducer = generateReducer<States, Actions>({
     state.refObjectDispatchCurried({
       type: 'RefRunAsyncTaskAction',
       task: async (dispatch) =>
-        push(ref(firebaseDatabase, `users/${state.user.uid}/sourcesMeta`))
+        push(
+          ref(
+            safe(firebase.firebaseDatabase),
+            `users/${state.user.uid}/sourcesMeta`
+          )
+        )
           .then((snapshot) => {
             dispatch({
               type: 'AddSourceLineAction',
@@ -161,13 +180,13 @@ export const reducer = generateReducer<States, Actions>({
       [action.key]: action.sourceLine,
     },
   }),
-  RenameSourceAction: ({ action, state }) => ({
+  RenameSourceAction: ({ state }) => ({
     ...mainState(state),
   }),
-  ChangeSourceLabelColorAction: ({ action, state }) => ({
+  ChangeSourceLabelColorAction: ({ state }) => ({
     ...mainState(state),
   }),
-  ChangeSourcePriorityAction: ({ action, state }) => ({
+  ChangeSourcePriorityAction: ({ state }) => ({
     ...mainState(state),
   }),
   ToggleSourceSubscriptionAction: ({ action, state }) => ({
@@ -188,7 +207,7 @@ export const reducer = generateReducer<States, Actions>({
     ...mainState(state),
     promptToDeleteSource: action.sourceName,
   }),
-  ConfirmDeleteSourceAction: ({ action, state }) => ({
+  ConfirmDeleteSourceAction: ({ state }) => ({
     ...mainState(state),
   }),
   CancelDeleteSourceAction: ({ state }) => ({

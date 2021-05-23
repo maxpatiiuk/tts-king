@@ -148,7 +148,7 @@ export default function Layout<
                * use it's default value in that case
                */
               typeof localizationStrings === 'undefined'
-                ? ((undefined as unknown) as DEFINITIONS)
+                ? (undefined as unknown as DEFINITIONS)
                 : localizationStrings[language],
               language,
               commonLocalizationStrings[language]

@@ -19,17 +19,14 @@ export function StatusLineProvider({
   readonly durationOfVisibility?: number;
   readonly children: Readonly<JSX.Element>;
 }): JSX.Element {
-  const [configuration, setConfiguration] = React.useState<
-    StatusLineStatus | undefined
-  >(undefined);
+  const [configuration, setConfiguration] =
+    React.useState<StatusLineStatus | undefined>(undefined);
 
   const updateStack = React.useRef<StatusLineStatus[]>([]);
-  const lastMessage = React.useRef<StatusLineStatus['message'] | undefined>(
-    undefined
-  );
-  const timeOutId = React.useRef<undefined | ReturnType<typeof setTimeout>>(
-    undefined
-  );
+  const lastMessage =
+    React.useRef<StatusLineStatus['message'] | undefined>(undefined);
+  const timeOutId =
+    React.useRef<undefined | ReturnType<typeof setTimeout>>(undefined);
 
   if (typeof configuration?.message !== 'undefined')
     lastMessage.current = configuration.message;

@@ -9,13 +9,5 @@ module.exports = {
     node: true,
   },
   extends: ['@maxxxxxdlp/eslint-config'],
-  rules: {
-    '@typescript-eslint/prefer-readonly-parameter-types': [
-      'error',
-      {
-        ignoreInferredTypes: true,
-      },
-    ],
-    'react/prop-types': 'off',
-  },
+  rules: {},
 };
