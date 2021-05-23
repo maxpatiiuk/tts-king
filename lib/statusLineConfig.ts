@@ -1,4 +1,4 @@
-export const DEFAULT_STATUS_LINE_TIMEOUT = 1500;
+export const DEFAULT_STATUS_LINE_TIMEOUT = 2000;
 
 /*
  * If updating this value, should also update the className in
