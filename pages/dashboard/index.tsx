@@ -8,8 +8,6 @@ import { contentClassName } from '../../components/UI';
 import type { LocalizationStrings } from '../../lib/languages';
 import type { DatabaseSource } from '../../lib/sources';
 import type { IR } from '../../lib/typescriptCommonTypes';
-import { ensure } from '../../lib/typescriptCommonTypes';
-import { extractUser } from '../../lib/userUtils';
 
 const localizationStrings: LocalizationStrings<{
   readonly title: string;
@@ -26,15 +24,14 @@ export default function Dashboard(): JSX.Element {
   const [sources, setSources] =
     React.useState<IR<DatabaseSource> | undefined>(undefined);
 
-  React.useEffect(
-    ...ensure(
-      (firebaseDatabase, user) =>
-        onValue(ref(firebaseDatabase, `users/${user.uid}/sources`), (value) =>
-          setSources(value.val())
-        ),
-      [firebaseDatabase, extractUser(user)]
-    )
-  );
+  React.useEffect(() => {
+    if (typeof firebaseDatabase === 'undefined' || typeof user !== 'object')
+      return;
+
+    onValue(ref(firebaseDatabase, `users/${user.uid}/sources`), (value) =>
+      setSources(value.val())
+    );
+  }, [firebaseDatabase, user]);
 
   return (
     <Layout
