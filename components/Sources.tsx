@@ -154,7 +154,7 @@ function SourceLine({
         <img src={''} alt="TODO: add image" className="block h-full w-auto" />
       ) : (
         <div className="relative">
-          <div className="absolute bottom-0 left-0 h-full">
+          <div className="absolute bottom-0 h-0 min-h-2.5 ml-1/6">
             <img
               src={
                 'data:image/svg+xml,%3Csvg ' +

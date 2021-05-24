@@ -1,3 +1,5 @@
+// ESM is not supported in this type of file
+// eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   purge: {
     content: ['./pages/**/*.tsx', './components/**/*.tsx'],
@@ -15,6 +17,14 @@ module.exports = {
     extend: {
       width: {
         'fit-content': 'fit-content',
+      },
+      minHeight: {
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        2.5: `${2 + 0.375}rem`,
+      },
+      margin: {
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        '1/6': `${100 / 6}%`,
       },
       colors: {
         shadow: '#0009',

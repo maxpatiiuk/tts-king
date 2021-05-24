@@ -80,7 +80,7 @@ function SourceSubscriptionLine({
 }): JSX.Element {
   return (
     <div className="contents">
-      <div>
+      <div className="flex items-center">
         {sourceData.label}
         <span className="text-gray-600"> - {sourceData.description}</span>
       </div>

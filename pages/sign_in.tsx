@@ -54,7 +54,7 @@ export default function SignIn(): JSX.Element {
       const errorMessage = error instanceof Error ? error.message : '';
       addErrorMessage({
         message: (
-          <span className={statusLineContentClassName}>
+          <span className={`${statusLineContentClassName} bg-red-200`}>
             ${languageStrings.unexpectedErrorHasOccurred}:
             <br />${errorMessage}
           </span>
