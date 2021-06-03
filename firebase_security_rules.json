@@ -4,17 +4,21 @@
     ".write": false,
     "users": {
       "$userId": {
-        ".write": "newData.hasChildren(
-                     [
-                       'subscribeToNewsletter',
-                       'sources',
-                       'postsContent',
-                       'listeningStats',
-                       'totalStats',
-                       'deletedPostsMeta',
-                       'deletedPostsContent',
-                     ]
-                   )",
+        ".write": "$userId === auth.uid &&
+        					 (
+        						 !newData.exists() ||
+           				   newData.hasChildren(
+                       [
+                         'subscribeToNewsletter',
+                         'sources',
+                         'postsContent',
+                         'listeningStats',
+                         'totalStats',
+                         'deletedPostsMeta',
+                         'deletedPostsContent',
+                       ]
+                     )
+         					 )",
         ".read": "$userId === auth.uid",
         "$other": {
           ".validate": false,
@@ -24,34 +28,32 @@
         },
         "sources": {
           "$sourceName": {
-            ".write": "newData.exists() &&
-                       newData.hasChildren(
+            ".validate": "newData.hasChildren(
                             [
                               'type',
                               'subscribed',
                               'priority',
-                              'postsMeta',
                             ]
-                       ) &&
-                       (
-                         (
-                         	newData.child('type').val() === 'subscription' &&
-                         	newData.hasChildren(
-                           [
-                             'subscribed'
-                           ]
-                         	)
-                       	) ||
-                       	(
-                       	  newData.child('type').val() === 'category' &&
-                          newData.hasChildren(
-                            [
-                              'label',
-                              'labelColor'
-                            ]
-                          )
-                         )
-                       )",
+                          ) &&
+                          (
+                            (
+                             newData.child('type').val() === 'subscription' &&
+                             newData.hasChildren(
+                              [
+                                'subscribed'
+                              ]
+                             )
+                           ) ||
+                           (
+                             newData.child('type').val() === 'category' &&
+                             newData.hasChildren(
+                               [
+                                 'label',
+                                 'labelColor'
+                               ]
+                             )
+                            )
+                          )",
             "$other": {
               ".validate": false,
              },
@@ -74,100 +76,124 @@
             "priority": {
               ".validate": "(newData.isNumber() && newData.val() > 1) || newData.val() === false",
             },
-            "postsMeta": {
-              "$postId": {
-                ".write": "newData.hasChildren(['preview'])",
-                ".validate": "root.child(
-                                'users/'
-                                  + $userId
-                                  + '/postsContent/'
-                                  + $postId
-                              ).exists() &&
-                              (
-                                $sourceName != 'url' ||
-                                newData.hasChild('sourceUrl')
-                              ) &&
-                              (
-                                $sourceName != 'file' ||
-                                newData.hasChild('fileName')
-                              )",
-                ".indexOn": ["preview"],
-                "$other": {
-                    ".validate": false,
-                 },
-                "sourceUrl": {
-                  ".validate": "$sourceName === 'url' && newData.isString()",
-                },
-                "fileName": {
-                  ".validate": "$sourceName === 'file' && newData.isString()",
-                },
-                "preview": {
-                  ".validate": "newData.isString() &&
-                                newData.val().length !== 0 &&
-                                newData.val().length < 50",
-                },
-              },
+          },
+        },
+        "postsMeta": {
+          "$postId": {
+            ".validate": "newData.parent().child(
+                            'postContent/'
+                              + $postId
+                          ).exists() &&
+                          newData.hasChildren(['preview', 'sourceName']) &&
+                          (
+                            newData.child('sourceName').val() != 'url' ||
+                            newData.hasChild('sourceUrl')
+                          ) &&
+                          (
+                            newData.child('sourceName').val() != 'file' ||
+                            newData.hasChild('fileName')
+                          )",
+            ".indexOn": ["preview","sourceName"],
+            "$other": {
+                ".validate": false,
+             },
+            "sourceName": {
+              ".validate": "newData.isString() &&
+                            root.child(
+                              'users/' + $userId + '/sources/' + newData.val()
+                            ).exists()",
+            },
+            "sourceUrl": {
+              ".validate": "newData.parent().child('sourceName').val() === 'url' &&
+                            newData.isString()",
+            },
+            "fileName": {
+              ".validate": "newData.parent().child('sourceName').val() === 'file' &&
+                            newData.isString()",
+            },
+            "preview": {
+              ".validate": "newData.isString() &&
+                            newData.val().length !== 0 &&
+                            newData.val().length < 50",
             },
           },
         },
         "postsContent": {
           "$postId": {
-            ".validate": "newData.isString() && newData.val().length !== 0",
+            ".validate": "newData.isString()",
           },
         },
         "listeningStats": {
+          ".write": "$userId === auth.uid &&
+        					 	 newData.exists()",
           "$year": {
+            ".write": "$userId === auth.uid &&
+        					 	   newData.exists()",
             ".validate": "$year >= 2021 && $year <= 3000",
             "$month": {
-              ".validate": "$month >= 1 && $month <= 12 && newData.isNumber() && newData.val() > 0",
+              ".write": "$userId === auth.uid &&
+        					 	     newData.exists()",
+              ".validate": "$month >= 1 &&
+                            $month <= 12 &&
+                            newData.hasChildren([
+                              'posts',
+                              'paragraphs',
+                              'words',
+                              'characters'
+                            ])",
               "$category": {
-                ".validate": "$category === 'posts' ||
+                ".validate": "($category === 'posts' ||
                               $category === 'paragraphs' ||
                               $category === 'words' ||
-                              $category === 'characters'",
-                ".write": "(
-                              !data.exists() ||
-                              data.val() <= newData.val()
-                           ) &&
-                           newData.isNumber()",
+                              $category === 'characters')
+                              && newData.isNumber() && (
+                                !data.exists() ||
+                                data.val() <= newData.val()
+                              ) &&
+                              newData.val()>0",
               }
             },
           },
         },
         "totalStats": {
-          "queuedPosts": {
-            ".validate": "newData.isNumber()",
-          },
+          ".validate": "newData.hasChildren([
+                          'queuedPosts',
+                          'posts',
+                          'paragraphs',
+                          'words',
+                          'characters',
+          							])",
           "$category": {
-            ".validate": "$category === 'posts' ||
+            ".validate": "($category === 'queuedPosts' ||
+            							$category === 'posts' ||
                           $category === 'paragraphs' ||
                           $category === 'words' ||
-                          $category === 'characters'",
-            ".write": "(
-                          !data.exists() ||
-                          data.val() <= newData.val()
-                       ) &&
-                       newData.isNumber()",
+                          $category === 'characters')
+                          && newData.isNumber() && (
+                            !data.exists() ||
+                            data.val() <= newData.val()
+                          ) &&
+                          newData.val()>0",
           }
         },
         "deletedPostsMeta": {
           "$postId": {
-            ".write": "newData.hasChildren(['preview', 'sourceName'])",
-            ".validate": "root.child(
+            ".validate": "newData.hasChildren(['preview', 'sourceName']) &&
+            							root.child(
                             'users/'
                               + $userId
                               + '/deletedPostsContent/'
                               + $postId
                           ).exists() &&
                           (
-                            newData.parent().child('sourceName').val() != 'url' ||
+                            newData.child('sourceName').val() != 'url' ||
                             newData.hasChild('sourceUrl')
                           ) &&
                           (
-                            newData.parent().child('sourceName').val() != 'file' ||
+                            newData.child('sourceName').val() != 'file' ||
                             newData.hasChild('fileName')
                           )",
-            ".indexOn": ["preview"],
+            ".indexOn": ["preview","sourceName"],
             "$other": {
                 ".validate": false,
              },
@@ -201,3 +227,4 @@
     },
   },
 }
+
