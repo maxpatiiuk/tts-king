@@ -26,7 +26,7 @@
     "typesafe-reducer": "^1.0.2"
   },
   "devDependencies": {
-    "@maxxxxxdlp/eslint-config": "^1.0.1",
+    "@maxxxxxdlp/eslint-config": "^1.0.2",
     "@maxxxxxdlp/prettier-config": "^1.0.2",
     "@maxxxxxdlp/stylelint-config": "^0.1.2",
     "@types/node": "^15.3.0",
