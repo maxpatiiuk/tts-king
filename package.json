@@ -15,7 +15,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "firebase": "^9.0.0-beta.7",
+    "firebase": "^9.1.1",
     "firebase-admin": "^9.11.1",
     "next": "^11.0.1",
     "nookies": "^2.5.2",
