@@ -10,6 +10,7 @@ import { Centered } from '../components/UI';
 import { createNewUser } from '../lib/createNewUser';
 import type { Language, LocalizationStrings } from '../lib/languages';
 import { statusLineContentClassName } from '../lib/statusLineConfig';
+import { safe } from '../lib/typescriptCommonTypes';
 
 const localizationStrings: LocalizationStrings<{
   readonly title: string;
@@ -34,23 +35,22 @@ export default function SignIn(): JSX.Element {
     languageStrings: Readonly<typeof localizationStrings[Language]>
   ): Promise<void> {
     try {
-      if (
-        typeof firebaseDatabase === 'undefined' ||
-        typeof firebaseAuth === 'undefined'
-      )
-        throw new Error('Firebase is not initialized');
-
       const googleAuthProvider = new GoogleAuthProvider();
       const userCredentials = await signInWithPopup(
-        firebaseAuth,
+        safe(firebaseAuth),
         googleAuthProvider
       );
-      if (userCredentials.operationType === 'link')
-        // TODO: test this code
-        await createNewUser(firebaseDatabase, userCredentials.user);
+      /*
+       *If (
+       *userCredentials.user.metadata.creationTime ===
+       *userCredentials.user.metadata.lastSignInTime
+       *)
+       */
+      await createNewUser(safe(firebaseDatabase), userCredentials.user);
       localStorage.setItem('signedIn', '1');
-      await router.push('/dashboard');
+      // Await router.push('/dashboard');
     } catch (error: unknown) {
+      console.error(error);
       const errorMessage = error instanceof Error ? error.message : '';
       addErrorMessage({
         message: (

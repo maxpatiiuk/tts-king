@@ -17,4 +17,4 @@ export interface StatusLineStatus {
   readonly id: string;
 }
 
-export const statusLineContentClassName = 'p-5';
+export const statusLineContentClassName = 'block p-5';

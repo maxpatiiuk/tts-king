@@ -1,3 +1,5 @@
+// ESM is not supported in this type of file
+// eslint-disable-next-line unicorn/prefer-module
 module.exports = {
   plugins:
     // process.env.NODE_ENV === 'production' ?
