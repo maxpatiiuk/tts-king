@@ -66,13 +66,13 @@ export function StatusLineProvider({
         }`}
       >
         <div
-          className={`transform absolute bottom-0 left-0 transition-transform
-        transition-none duration-100 w-screen pointer-events-auto
-        text-xl ${
-          typeof configuration === 'undefined'
-            ? 'translate-y-full'
-            : 'translate-y-0'
-        }`}
+          className={`transform absolute bottom-0 left-0
+          motion-safe:transition-transform transition-none duration-100 w-screen
+          pointer-events-auto text-xl ${
+            typeof configuration === 'undefined'
+              ? 'translate-y-full'
+              : 'translate-y-0'
+          }`}
         >
           {lastMessage.current}
         </div>
