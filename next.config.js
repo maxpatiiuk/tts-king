@@ -7,6 +7,7 @@ module.exports = {
   images: {
     domains: ['lh3.googleusercontent.com'],
   },
+  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
