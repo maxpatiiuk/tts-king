@@ -1,4 +1,4 @@
-import { onValue, ref } from 'firebase/database';
+import { onValue, ref } from '@firebase/database';
 import React from 'react';
 
 import FilterUsers from '../../components/FilterUsers';
@@ -21,8 +21,9 @@ export default function Dashboard(): JSX.Element {
   const { firebaseDatabase } = useFirebase();
   const { user } = useAuth();
 
-  const [sources, setSources] =
-    React.useState<IR<DatabaseSource> | undefined>(undefined);
+  const [sources, setSources] = React.useState<IR<DatabaseSource> | undefined>(
+    undefined
+  );
 
   React.useEffect(() => {
     if (typeof firebaseDatabase === 'undefined' || typeof user !== 'object')

@@ -1,4 +1,4 @@
-import { onValue, ref } from 'firebase/database';
+import { onValue, ref } from '@firebase/database';
 import React from 'react';
 
 import { useAuth, useFirebase } from '../../components/FirebaseApp';

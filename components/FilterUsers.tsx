@@ -1,4 +1,4 @@
-import type { User } from 'firebase/auth';
+import type { User } from '@firebase/auth';
 import { useRouter } from 'next/router';
 import React from 'react';
 

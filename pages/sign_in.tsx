@@ -1,5 +1,4 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { useRouter } from 'next/router';
+import { GoogleAuthProvider, signInWithPopup } from '@firebase/auth';
 import React from 'react';
 
 import FilterUsers from '../components/FilterUsers';
@@ -27,7 +26,6 @@ const localizationStrings: LocalizationStrings<{
 };
 
 export default function SignIn(): JSX.Element {
-  const router = useRouter();
   const { firebaseAuth, firebaseDatabase } = useFirebase();
   const addErrorMessage = React.useContext(StatusLineContext);
 
@@ -78,12 +76,10 @@ export default function SignIn(): JSX.Element {
             <Centered>
               <div>
                 <h2>{languageStrings.choseSignInMethod}</h2>
-                <div className="flex flex-column gap-y-1 pt-4">
+                <div className="flex-column gap-y-1 flex pt-4">
                   <button
                     type="button"
-                    className="border border-gray-200 p-4
-                  bg-gray-200 hover:bg-white w-full
-                  box-content"
+                    className="hover:bg-white box-content w-full p-4 bg-gray-200 border border-gray-200"
                     onClick={initializeSignIn.bind(undefined, languageStrings)}
                   >
                     {languageStrings.signInWithGoogle}

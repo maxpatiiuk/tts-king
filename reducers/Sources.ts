@@ -1,5 +1,5 @@
-import type { User } from 'firebase/auth';
-import { push, ref } from 'firebase/database';
+import type { User } from '@firebase/auth';
+import { push, ref } from '@firebase/database';
 import type { Action } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
 
