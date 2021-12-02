@@ -1,6 +1,6 @@
-import type { User } from 'firebase/auth';
-import type { FirebaseDatabase } from 'firebase/database';
-import { ref, set } from 'firebase/database';
+import type { User } from '@firebase/auth';
+import type { Database } from '@firebase/database';
+import { ref, set } from '@firebase/database';
 
 import { getRandomColor } from './dataGenerators';
 import type { DatabaseUser } from './firebaseDataModel';
@@ -31,7 +31,7 @@ const newUserData: DatabaseUser = {
 
 export const createNewUser = async (
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-  firebaseDatabase: FirebaseDatabase,
+  firebaseDatabase: Database,
   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
   user: Readonly<User>
 ): Promise<void> =>

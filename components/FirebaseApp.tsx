@@ -1,6 +1,6 @@
-import { getApps, initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { getApps, initializeApp } from '@firebase/app';
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import { getDatabase } from '@firebase/database';
 import React from 'react';
 
 import { firebaseConfig } from '../const/siteConfig';

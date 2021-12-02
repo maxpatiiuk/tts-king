@@ -1,4 +1,4 @@
-import type { User } from 'firebase/auth';
+import type { User } from '@firebase/auth';
 import React from 'react';
 import type { State } from 'typesafe-reducer';
 import { generateReducer } from 'typesafe-reducer';
@@ -65,7 +65,7 @@ export const stateReducer = generateReducer<JSX.Element, StateWithProps>({
           <FilterUsers protected>
             {(): JSX.Element => (
               <div className={contentClassName}>
-                <h2 className="text-xl sm:text-4xl mb-3">
+                <h2 className="sm:text-4xl mb-3 text-xl">
                   {languageStrings.mySources}
                 </h2>
                 <UserSources

@@ -1,5 +1,5 @@
-import { signOut } from 'firebase/auth';
-import { onValue, ref, set } from 'firebase/database';
+import { signOut } from '@firebase/auth';
+import { onValue, ref, set } from '@firebase/database';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
