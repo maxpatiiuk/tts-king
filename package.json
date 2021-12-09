@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/maxxxxxdlp/TTS_KING"
+    "url": "https://github.com/maxpatiiuk/TTS_KING"
   },
   "scripts": {
     "build": "next build",

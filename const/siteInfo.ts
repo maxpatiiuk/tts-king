@@ -21,7 +21,7 @@ const siteInfo: LocalizationStrings<{
       speech, convert websites to audio, website to audio, website
       to audiobook, reader mode, website reader mode, distraction
       free browser`),
-    author: 'Maksym Patiiuk',
+    author: 'Max Patiiuk',
   },
 };
 
