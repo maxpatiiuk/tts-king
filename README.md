@@ -7,8 +7,13 @@ productive no matter where you are!
 ![Main Page](./docs/src/main_page.png)
 
 ```
-WARNING: THIS SITE IS STILL UNDER DEVELOPMENT
-Some features might be broken or missing
+UPDATE:
+While I still love the idea behind this site, other priorities do not
+allow me to dedicate enough time to this side project.
+I may continue this project in the future, even if it would have to be
+downscaled.
+In either case, I have gained valuable experience even from what I have
+implemented so far.
 ```
 
 ## Development
