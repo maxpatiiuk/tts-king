@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@maxxxxxdlp/eslint-config": "^1.0.9",
-    "@maxxxxxdlp/prettier-config": "^1.0.3",
+    "@maxxxxxdlp/prettier-config": "^1.0.4",
     "@maxxxxxdlp/stylelint-config": "^1.0.0",
     "@types/node": "^16.11.11",
     "@types/react": "^17.0.37",
