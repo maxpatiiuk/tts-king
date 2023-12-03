@@ -21,7 +21,7 @@
     "nookies": "^2.5.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-modal": "^3.14.4",
+    "react-modal": "^3.16.1",
     "tailwindcss": "^2.2.19",
     "typesafe-reducer": "^1.0.2"
   },
@@ -32,7 +32,7 @@
     "@types/node": "^16.11.11",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
-    "@types/react-modal": "^3.13.1",
+    "@types/react-modal": "^3.16.3",
     "@types/styled-jsx": "^3.4.4",
     "autoprefixer": "^10.4.0",
     "eslint": "^8.3.0",
